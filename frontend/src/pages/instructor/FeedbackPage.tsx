@@ -88,7 +88,7 @@ export const FeedbackPage = () => {
                         <p className="text-sm text-gray-500">{new Date(feedback.created_at || '').toLocaleDateString()}</p>
                     </div>
                 </div>
-                {renderStars(feedback.rating)}
+                {renderStars(feedback.rating || 0)}
             </div>
             <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
                 {feedback.comments || feedback.review_text || feedback.message || 'No written feedback provided.'}
@@ -111,8 +111,8 @@ export const FeedbackPage = () => {
                     <button
                         onClick={() => setActiveTab('instructor')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === 'instructor'
-                                ? 'bg-indigo-600 text-white'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                            ? 'bg-indigo-600 text-white'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                             }`}
                     >
                         Instructor Feedback
@@ -120,8 +120,8 @@ export const FeedbackPage = () => {
                     <button
                         onClick={() => setActiveTab('course')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === 'course'
-                                ? 'bg-indigo-600 text-white'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                            ? 'bg-indigo-600 text-white'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                             }`}
                     >
                         Course Feedback

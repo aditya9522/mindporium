@@ -30,3 +30,11 @@ export const announcementService = {
         await api.delete(`/announcements/${id}`);
     },
 };
+
+export interface Announcement {
+    id: number;
+    title: string;
+    content: string;
+    is_pinned: boolean;
+    created_at: string;
+}
