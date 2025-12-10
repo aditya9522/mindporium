@@ -2,8 +2,9 @@ export interface Community {
     id: number;
     name: string;
     description: string;
-    slug: string;
-    cover_image?: string;
+    slug?: string; // Optional in response?
+    cover_image?: string; // Deprecated?
+    banner?: string; // Backend field
     icon?: string;
     member_count: number;
     post_count: number;
@@ -13,6 +14,7 @@ export interface Community {
     is_member?: boolean; // Helper for UI
 }
 
+// ... existing Post/Comment interfaces ...
 export interface Post {
     id: number;
     community_id: number;
@@ -49,6 +51,8 @@ export interface Comment {
 export interface CreateCommunityRequest {
     name: string;
     description: string;
+    icon?: string;
+    banner?: string;
     is_private?: boolean;
 }
 

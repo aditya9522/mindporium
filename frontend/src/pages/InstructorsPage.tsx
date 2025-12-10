@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { userService } from '../services/user.service';
 import { Loader2, GraduationCap, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../lib/utils';
 
 export const InstructorsPage = () => {
     const [instructors, setInstructors] = useState<any[]>([]);
@@ -59,7 +60,7 @@ export const InstructorsPage = () => {
                                         <div className="w-24 h-24 rounded-xl bg-white p-1 shadow-lg group-hover:shadow-xl transition-shadow">
                                             {instructor.photo ? (
                                                 <img
-                                                    src={instructor.photo}
+                                                    src={getImageUrl(instructor.photo)}
                                                     alt={instructor.full_name}
                                                     className="w-full h-full object-cover rounded-lg"
                                                 />

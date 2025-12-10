@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../lib/utils';
 import type { Course } from '../../types/course';
 import { BookOpen, Clock, DollarSign, Users } from 'lucide-react';
 
@@ -14,7 +15,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                 <div className="relative h-48 bg-gradient-to-br from-indigo-500 to-teal-500 overflow-hidden">
                     {course.thumbnail ? (
                         <img
-                            src={course.thumbnail}
+                            src={getImageUrl(course.thumbnail)}
                             alt={course.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
@@ -27,8 +28,8 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                     {/* Category Badge */}
                     <div className="absolute top-3 right-3">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${course.category === 'free'
-                                ? 'bg-green-500 text-white'
-                                : 'bg-yellow-500 text-white'
+                            ? 'bg-green-500 text-white'
+                            : 'bg-yellow-500 text-white'
                             }`}>
                             {course.category === 'free' ? 'FREE' : 'PAID'}
                         </span>

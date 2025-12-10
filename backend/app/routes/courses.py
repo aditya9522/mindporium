@@ -2,7 +2,7 @@ from typing import Any, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, or_
 from sqlalchemy.orm import selectinload
 
 from app.api import deps
@@ -97,16 +97,42 @@ async def update_course(
     """
     Update a course. Instructor only.
     """
-    result = await db.execute(select(Course).where(Course.id == course_id))
+    result = await db.execute(
+        select(Course)
+        .options(selectinload(Course.instructors))
+        .where(Course.id == course_id)
+    )
     course = result.scalars().first()
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
     
-    # Check permissions (Admin can edit all, Instructor only their own)
-    if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
+    # Check permissions (Admin can edit all, Instructor only their own or assigned)
+    is_assigned = False
+    if course.instructors:
+        for instructor in course.instructors:
+             if instructor.id == current_user.id:
+                 is_assigned = True
+                 break
+
+    if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     update_data = course_in.model_dump(exclude_unset=True)
+    
+    # Handle instructors assignment
+    if "instructors" in update_data:
+        instructor_ids = update_data.pop("instructors")
+        if instructor_ids is not None:
+             # Verify all instructors exist and are actually instructors
+             instructors_result = await db.execute(
+                 select(User).where(User.id.in_(instructor_ids), User.role == RoleEnum.instructor)
+             )
+             instructors = instructors_result.scalars().all()
+             if len(instructors) != len(instructor_ids):
+                 raise HTTPException(status_code=400, detail="One or more instructors not found or invalid")
+             
+             course.instructors = instructors
+
     for field, value in update_data.items():
         setattr(course, field, value)
 
@@ -151,7 +177,12 @@ async def get_my_courses(
     """
     Get all courses created by the current instructor.
     """
-    query = select(Course).where(Course.created_by == current_user.id)
+    query = select(Course).where(
+        or_(
+            Course.created_by == current_user.id,
+            Course.instructors.any(User.id == current_user.id)
+        )
+    )
     
     if search:
         query = query.where(Course.title.ilike(f"%{search}%"))

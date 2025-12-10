@@ -22,6 +22,11 @@ export const adminService = {
         return response.data;
     },
 
+    createSetting: async (data: any): Promise<SystemSetting> => {
+        const response = await api.post<SystemSetting>('/admin/settings', data);
+        return response.data;
+    },
+
     getUsers: async (): Promise<any[]> => {
         const response = await api.get('/users/');
         return response.data;

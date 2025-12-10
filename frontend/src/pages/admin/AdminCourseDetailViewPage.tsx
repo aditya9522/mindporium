@@ -16,6 +16,7 @@ import { ResourcesTab } from './course-detail-tabs/ResourcesTab';
 import { TestsTab } from './course-detail-tabs/TestsTab';
 import { AnnouncementsTab } from './course-detail-tabs/AnnouncementsTab';
 import { CommunityTab } from './course-detail-tabs/CommunityTab';
+import { InstructorsTab } from './course-detail-tabs/InstructorsTab';
 import { SettingsTab } from './course-detail-tabs/SettingsTab';
 
 export const AdminCourseDetailViewPage = () => {
@@ -101,6 +102,11 @@ export const AdminCourseDetailViewPage = () => {
             path: `${basePath}/courses/${id}/tracking`,
             label: 'Tracking',
             icon: Activity
+        },
+        {
+            path: `${basePath}/courses/${id}/view/instructors`,
+            label: 'Instructors',
+            icon: Users
         },
         {
             path: `${basePath}/courses/${id}/view/settings`,
@@ -216,6 +222,7 @@ export const AdminCourseDetailViewPage = () => {
                             <Route path="tests" element={<TestsTab courseData={courseData} />} />
                             <Route path="announcements" element={<AnnouncementsTab courseData={courseData} />} />
                             <Route path="community" element={<CommunityTab courseData={courseData} />} />
+                            <Route path="instructors" element={<InstructorsTab courseData={courseData} refreshData={() => fetchCourseData(parseInt(id!))} />} />
                             <Route path="settings" element={<SettingsTab courseData={courseData} refreshData={() => fetchCourseData(parseInt(id!))} />} />
                         </Routes>
                     </div>

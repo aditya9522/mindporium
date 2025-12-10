@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Star, MessageSquare, ThumbsUp, User as UserIcon, Loader2 } from 'lucide-react';
 import api from '../../lib/axios';
+import { getImageUrl } from '../../lib/utils';
 
 interface Review {
     id: number;
@@ -147,7 +148,7 @@ export const CourseReviewsPage = () => {
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
                                             {review.user.photo ? (
-                                                <img src={review.user.photo} alt={review.user.full_name} className="w-full h-full object-cover" />
+                                                <img src={getImageUrl(review.user.photo)} alt={review.user.full_name} className="w-full h-full object-cover" />
                                             ) : (
                                                 <UserIcon className="w-5 h-5 text-indigo-600" />
                                             )}

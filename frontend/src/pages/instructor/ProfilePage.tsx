@@ -3,6 +3,7 @@ import { useAuthStore } from '../../store/auth.store';
 import { instructorService } from '../../services/instructor.service';
 import { Loader2, Mail, Phone, Globe, Linkedin, Twitter, Github, Award, BookOpen, Users, Star, Briefcase, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../lib/utils';
 
 export const ProfilePage = () => {
     const { user } = useAuthStore();
@@ -45,7 +46,7 @@ export const ProfilePage = () => {
             <div className="relative h-64 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
                 {instructor.banner_image ? (
                     <img
-                        src={instructor.banner_image}
+                        src={getImageUrl(instructor.banner_image)}
                         alt="Banner"
                         className="w-full h-full object-cover"
                     />
@@ -72,7 +73,7 @@ export const ProfilePage = () => {
                             <div className="relative">
                                 {instructor.photo ? (
                                     <img
-                                        src={instructor.photo}
+                                        src={getImageUrl(instructor.photo)}
                                         alt={instructor.full_name}
                                         className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                     />

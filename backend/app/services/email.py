@@ -120,7 +120,7 @@ class EmailService:
                     </p>
                     <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
                     <p style="text-align: center; color: #999; font-size: 12px;">
-                        © 2024 Mindporium. All rights reserved.
+                        © 2025 Mindporium. All rights reserved.
                     </p>
                 </div>
             </body>

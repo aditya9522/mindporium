@@ -27,6 +27,7 @@ class CourseUpdate(BaseModel):
     price: Optional[float] = None
     is_published: Optional[bool] = None
     tags: Optional[List[str]] = None
+    instructors: Optional[List[int]] = None
 
 
 class CourseResponse(CourseBase):

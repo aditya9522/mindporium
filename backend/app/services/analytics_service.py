@@ -104,7 +104,12 @@ class AnalyticsService:
         """
         # Get instructor courses
         courses_query = await db.execute(
-            select(Course).where(Course.created_by == instructor_id)
+            select(Course).where(
+                or_(
+                    Course.created_by == instructor_id,
+                    Course.instructors.any(User.id == instructor_id)
+                )
+            )
         )
         courses = courses_query.scalars().all()
         course_ids = [c.id for c in courses]
@@ -156,7 +161,7 @@ class AnalyticsService:
             Feedback:
             {combined_feedback}
 
-            Provide the analysis in a structured format."""
+            Provide the analysis in a structured format with proper headings and in short and concise manner."""
             
             sentiment_analysis = await llm_service.generate_response(prompt)
         
@@ -192,7 +197,12 @@ class AnalyticsService:
         """
         # Get instructor's courses
         courses_query = await db.execute(
-            select(Course).where(Course.created_by == instructor_id)
+            select(Course).where(
+                or_(
+                    Course.created_by == instructor_id,
+                    Course.instructors.any(User.id == instructor_id)
+                )
+            )
         )
         courses = courses_query.scalars().all()
         course_ids = [c.id for c in courses]
@@ -201,7 +211,7 @@ class AnalyticsService:
             return {
                 "total_courses": 0,
                 "total_students": 0,
-                "total_revenue": 0,
+                "total_revenue": 0.0,
                 "active_courses": 0,
                 "recent_enrollments": [],
                 "upcoming_classes": [],
@@ -334,7 +344,12 @@ class AnalyticsService:
         """
         # Get instructor's courses
         courses_query = await db.execute(
-            select(Course).where(Course.created_by == instructor_id)
+            select(Course).where(
+                or_(
+                    Course.created_by == instructor_id,
+                    Course.instructors.any(User.id == instructor_id)
+                )
+            )
         )
         courses = courses_query.scalars().all()
         course_ids = [c.id for c in courses]

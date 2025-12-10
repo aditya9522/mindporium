@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, BookOpen, GraduationCap, Settings } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import { useSidebarStore } from '../../store/sidebar.store';
+import { getImageUrl } from '../../lib/utils';
 
 export const PublicSidebar = () => {
     const location = useLocation();
@@ -37,7 +38,7 @@ export const PublicSidebar = () => {
                         <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg">
                             {user.photo ? (
                                 <img
-                                    src={user.photo}
+                                    src={getImageUrl(user.photo)}
                                     alt={user.full_name}
                                     className="w-10 h-10 rounded-full object-cover"
                                 />

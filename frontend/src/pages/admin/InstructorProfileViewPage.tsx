@@ -4,6 +4,7 @@ import { adminService } from '../../services/admin.service';
 import { Loader2, ArrowLeft, Mail, Phone, Globe, Linkedin, Twitter, Github, Calendar, Award, BookOpen, Users, Star, Briefcase } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../lib/utils';
 
 export const InstructorProfileViewPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -63,7 +64,7 @@ export const InstructorProfileViewPage = () => {
             <div className="relative h-80 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
                 {instructor.banner_image ? (
                     <img
-                        src={instructor.banner_image}
+                        src={getImageUrl(instructor.banner_image)}
                         alt="Banner"
                         className="w-full h-full object-cover"
                     />
@@ -88,7 +89,7 @@ export const InstructorProfileViewPage = () => {
                             <div className="relative">
                                 {instructor.photo ? (
                                     <img
-                                        src={instructor.photo}
+                                        src={getImageUrl(instructor.photo)}
                                         alt={instructor.full_name}
                                         className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                     />

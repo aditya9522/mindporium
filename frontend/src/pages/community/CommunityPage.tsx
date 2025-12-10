@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { getImageUrl } from '../../lib/utils';
 import { Link } from 'react-router-dom';
 import { communityService } from '../../services/community.service';
 import type { Community } from '../../types/community';
 import { Users, MessageSquare, Plus, Search, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { ImageUpload } from '../../components/common/ImageUpload';
 
 export const CommunityPage = () => {
     const [communities, setCommunities] = useState<Community[]>([]);
@@ -14,6 +16,8 @@ export const CommunityPage = () => {
     // Create Modal State
     const [newCommunityName, setNewCommunityName] = useState('');
     const [newCommunityDesc, setNewCommunityDesc] = useState('');
+    const [newCommunityIcon, setNewCommunityIcon] = useState('');
+    const [newCommunityBanner, setNewCommunityBanner] = useState('');
     const [creating, setCreating] = useState(false);
 
     useEffect(() => {
@@ -46,12 +50,16 @@ export const CommunityPage = () => {
             setCreating(true);
             await communityService.createCommunity({
                 name: newCommunityName,
-                description: newCommunityDesc
+                description: newCommunityDesc,
+                icon: newCommunityIcon,
+                banner: newCommunityBanner,
             });
             toast.success('Community created successfully!');
             setShowCreateModal(false);
             setNewCommunityName('');
             setNewCommunityDesc('');
+            setNewCommunityIcon('');
+            setNewCommunityBanner('');
             loadCommunities();
         } catch (error) {
             console.error('Failed to create community:', error);
@@ -113,8 +121,16 @@ export const CommunityPage = () => {
                                 className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all p-6 group"
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                        <Users className="w-6 h-6" />
+                                    <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors overflow-hidden">
+                                        {community.icon ? (
+                                            <img
+                                                src={getImageUrl(community.icon)}
+                                                alt={community.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <Users className="w-6 h-6" />
+                                        )}
                                     </div>
                                     <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
                                         {community.member_count} members
@@ -164,6 +180,23 @@ export const CommunityPage = () => {
                                         onChange={(e) => setNewCommunityDesc(e.target.value)}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none h-32 resize-none"
                                         placeholder="What is this community about?"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="flex justify-center">
+                                        <ImageUpload
+                                            value={newCommunityIcon}
+                                            onChange={setNewCommunityIcon}
+                                            label="Icon"
+                                            variant="avatar"
+                                        />
+                                    </div>
+                                    <ImageUpload
+                                        value={newCommunityBanner}
+                                        onChange={setNewCommunityBanner}
+                                        label="Banner"
+                                        variant="banner"
+                                        placeholder="Upload Banner"
                                     />
                                 </div>
                             </div>

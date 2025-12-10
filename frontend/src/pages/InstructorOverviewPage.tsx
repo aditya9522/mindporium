@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button';
 import { FeedbackModal } from '../components/feedback/FeedbackModal';
 import api from '../lib/axios';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../lib/utils';
 
 interface InstructorStats {
     total_courses: number;
@@ -106,7 +107,7 @@ export const InstructorOverviewPage = () => {
             <div className="h-48 bg-gray-900 relative overflow-hidden">
                 {instructor.banner_image ? (
                     <img
-                        src={instructor.banner_image}
+                        src={getImageUrl(instructor.banner_image)}
                         alt="Cover"
                         className="w-full h-full object-cover opacity-60"
                     />
@@ -134,7 +135,7 @@ export const InstructorOverviewPage = () => {
                                     <div className="w-32 h-32 rounded-full border-4 border-white shadow-md overflow-hidden bg-gray-100 mx-auto">
                                         {instructor.photo ? (
                                             <img
-                                                src={instructor.photo}
+                                                src={getImageUrl(instructor.photo)}
                                                 alt={instructor.full_name}
                                                 className="w-full h-full object-cover"
                                             />
@@ -261,7 +262,7 @@ export const InstructorOverviewPage = () => {
                                         <div key={course.id} className="p-6 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row gap-6 group">
                                             <div className="w-full sm:w-48 aspect-video rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 relative">
                                                 {course.thumbnail ? (
-                                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                                                    <img src={getImageUrl(course.thumbnail)} alt={course.title} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-gray-400">
                                                         <BookOpen className="w-8 h-8" />

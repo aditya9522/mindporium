@@ -5,11 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { User, Mail, Shield, Loader2, Save, Camera, Image as ImageIcon } from 'lucide-react';
+import { User, Mail, Shield, Loader2, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../lib/axios';
-
-const API_URL = 'http://localhost:8000';
+import { ImageUpload } from '../components/common/ImageUpload';
 
 const profileSchema = z.object({
     full_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -29,7 +28,7 @@ export const ProfilePage = () => {
     const { user, setUser } = useAuthStore();
     const [isLoading, setIsLoading] = useState(false);
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<ProfileFormValues>({
+    const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<ProfileFormValues>({
         resolver: zodResolver(profileSchema),
         defaultValues: {
             full_name: user?.full_name || '',
@@ -73,37 +72,7 @@ export const ProfilePage = () => {
         }
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'photo' | 'banner_image') => {
-        const file = e.target.files?.[0];
-        if (!file) return;
 
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const toastId = toast.loading('Uploading...');
-        try {
-            const response = await api.post('/upload/', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            // Update the form value
-            const url = `${API_URL}${response.data.url}`;
-
-            // Update user profile
-            await api.put('/users/me', { [field]: url });
-
-            // Refresh user
-            const userResponse = await api.get('/users/me');
-            setUser(userResponse.data);
-
-            toast.success('Uploaded successfully', { id: toastId });
-        } catch (error) {
-            console.error('Upload failed:', error);
-            toast.error('Upload failed', { id: toastId });
-        }
-    };
 
     const getRoleBadge = (role?: string) => {
         switch (role) {
@@ -130,16 +99,13 @@ export const ProfilePage = () => {
                     <div className="lg:col-span-1">
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                             <div className="text-center">
-                                <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-3xl mx-auto mb-4 overflow-hidden relative group">
-                                    {user?.photo ? (
-                                        <img src={user.photo} alt={user.full_name} className="w-full h-full object-cover" />
-                                    ) : (
-                                        user?.full_name?.charAt(0).toUpperCase()
-                                    )}
-                                    <label className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                                        <Camera className="w-6 h-6 text-white" />
-                                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'photo')} />
-                                    </label>
+                                <div className="mb-4 flex justify-center">
+                                    <ImageUpload
+                                        value={watch('photo')}
+                                        onChange={(url) => setValue('photo', url, { shouldDirty: true })}
+                                        label=""
+                                        variant="avatar"
+                                    />
                                 </div>
                                 <h2 className="text-xl font-bold text-gray-900">{user?.full_name}</h2>
                                 <div className="flex items-center justify-center gap-2 mt-2 text-gray-600">
@@ -168,28 +134,19 @@ export const ProfilePage = () => {
                     </div>
 
                     {/* Edit Form */}
+                    {/* Edit Form */}
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                             <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>
 
                             <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Banner Image</label>
-                                <div className="relative h-32 bg-gray-100 rounded-lg overflow-hidden group">
-                                    {user?.banner_image ? (
-                                        <img src={user.banner_image} alt="Banner" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="flex items-center justify-center h-full text-gray-400">
-                                            <ImageIcon className="w-8 h-8" />
-                                        </div>
-                                    )}
-                                    <label className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                                        <span className="text-white font-medium flex items-center gap-2">
-                                            <Camera className="w-5 h-5" />
-                                            Change Banner
-                                        </span>
-                                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'banner_image')} />
-                                    </label>
-                                </div>
+                                <ImageUpload
+                                    value={watch('banner_image')}
+                                    onChange={(url) => setValue('banner_image', url, { shouldDirty: true })}
+                                    label="Banner Image"
+                                    variant="banner"
+                                    placeholder="Change Banner"
+                                />
                             </div>
 
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

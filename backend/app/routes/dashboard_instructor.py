@@ -1,5 +1,5 @@
 from typing import Any
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
@@ -63,8 +63,11 @@ async def get_my_course_analytics(
     course_query = await db.execute(select(Course).where(Course.id == course_id))
     course = course_query.scalars().first()
     
-    if not course or course.created_by != current_user.id:
-        return {"error": "Course not found or access denied"}
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+        
+    if course.created_by != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
     
     analytics = await classroom_analytics_service.get_course_classroom_analytics(db, course_id)
     return analytics
@@ -94,7 +97,7 @@ async def get_classroom_detailed_stats(
     classroom = classroom_query.scalars().first()
     
     if not classroom:
-        return {"error": "Classroom not found"}
+        raise HTTPException(status_code=404, detail="Classroom not found")
     
     # Check if instructor owns the course
     if classroom.subject_id:
@@ -104,7 +107,7 @@ async def get_classroom_detailed_stats(
             course_query = await db.execute(select(Course).where(Course.id == subject.course_id))
             course = course_query.scalars().first()
             if not course or course.created_by != current_user.id:
-                return {"error": "Access denied"}
+                raise HTTPException(status_code=403, detail="Access denied")
     
     stats = await classroom_analytics_service.get_classroom_detailed_stats(db, classroom_id)
     
@@ -153,8 +156,11 @@ async def get_course_overview(
     )
     course = course_result.scalar()
     
-    if not course or course.created_by != current_user.id:
-        return {"error": "Course not found or access denied"}
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+        
+    if course.created_by != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
     
     # Basic course info
     course_info = {

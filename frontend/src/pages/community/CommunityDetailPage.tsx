@@ -4,6 +4,8 @@ import { communityService } from '../../services/community.service';
 import type { Community, Post } from '../../types/community';
 import { PostCard } from '../../components/community/PostCard';
 import { Users, MessageSquare, Plus, ArrowLeft, Loader2, Lock, Edit, Trash2 } from 'lucide-react';
+import { ImageUpload } from '../../components/common/ImageUpload';
+import { getImageUrl } from '../../lib/utils';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
 
@@ -26,6 +28,8 @@ export const CommunityDetailPage = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [editName, setEditName] = useState('');
     const [editDesc, setEditDesc] = useState('');
+    const [editIcon, setEditIcon] = useState('');
+    const [editBanner, setEditBanner] = useState('');
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     useEffect(() => {
@@ -42,6 +46,8 @@ export const CommunityDetailPage = () => {
             setCommunity(communityData);
             setEditName(communityData.name);
             setEditDesc(communityData.description || '');
+            setEditIcon(communityData.icon || '');
+            setEditBanner(communityData.banner || '');
 
             // Only load posts if public or member (backend handles auth check but good to know)
             // For now, try to load posts and handle error if private
@@ -133,7 +139,9 @@ export const CommunityDetailPage = () => {
         try {
             const updated = await communityService.updateCommunity(community.id, {
                 name: editName,
-                description: editDesc
+                description: editDesc,
+                icon: editIcon,
+                banner: editBanner,
             });
             setCommunity(updated);
             setShowEditModal(false);
@@ -182,12 +190,28 @@ export const CommunityDetailPage = () => {
 
                 {/* Community Header */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-                    <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+                    <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600 relative">
+                        {community.banner && (
+                            <img
+                                src={getImageUrl(community.banner)}
+                                alt="Banner"
+                                className="w-full h-full object-cover opacity-60"
+                            />
+                        )}
+                    </div>
                     <div className="px-8 pb-8">
                         <div className="relative flex justify-between items-end -mt-12 mb-6">
                             <div className="bg-white p-1.5 rounded-xl shadow-sm">
-                                <div className="w-24 h-24 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
-                                    <Users className="w-10 h-10" />
+                                <div className="w-24 h-24 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 overflow-hidden">
+                                    {community.icon ? (
+                                        <img
+                                            src={getImageUrl(community.icon)}
+                                            alt={community.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <Users className="w-10 h-10" />
+                                    )}
                                 </div>
                             </div>
                             <div className="flex gap-3 mb-2">
@@ -372,6 +396,23 @@ export const CommunityDetailPage = () => {
                                         value={editDesc}
                                         onChange={(e) => setEditDesc(e.target.value)}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none h-32 resize-none"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="flex justify-center">
+                                        <ImageUpload
+                                            value={editIcon}
+                                            onChange={setEditIcon}
+                                            label="Icon"
+                                            variant="avatar"
+                                        />
+                                    </div>
+                                    <ImageUpload
+                                        value={editBanner}
+                                        onChange={setEditBanner}
+                                        label="Banner"
+                                        variant="banner"
+                                        placeholder="Upload Banner"
                                     />
                                 </div>
                             </div>

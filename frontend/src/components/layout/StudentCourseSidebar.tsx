@@ -10,7 +10,7 @@ import {
     HelpCircle,
     PlusCircle
 } from 'lucide-react';
-import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../modals/DeleteConfirmationModal';
 import { useAuthStore } from '../../store/auth.store';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
@@ -189,9 +189,9 @@ export const StudentCourseSidebar = () => {
                 onClose={() => setShowUnenrollModal(false)}
                 onConfirm={handleUnenroll}
                 title="Unenroll from Course"
-                description="Are you sure you want to unenroll? You will lose access to all course progress and materials."
+                message="Are you sure you want to unenroll? You will lose access to all course progress and materials."
                 confirmText="Unenroll"
-                isDeleting={isUnenrolling}
+                loading={isUnenrolling}
             />
         </>
     );

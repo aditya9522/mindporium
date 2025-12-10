@@ -6,6 +6,7 @@ import type { Course, CourseUpdate, LevelEnum, CategoryEnum } from '../../types/
 import type { Subject, SubjectCreate } from '../../types/enrollment';
 import { ArrowLeft, Save, Loader2, Plus, Trash2, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { ImageUpload } from '../../components/common/ImageUpload';
 
 export const EditCoursePage = () => {
     const { id } = useParams<{ id: string }>();
@@ -310,12 +311,10 @@ export const EditCoursePage = () => {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Thumbnail URL
                             </label>
-                            <input
-                                type="url"
+                            <ImageUpload
                                 value={formData.thumbnail}
-                                onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                placeholder="https://example.com/image.jpg"
+                                onChange={(url) => setFormData({ ...formData, thumbnail: url })}
+                                label="Course Thumbnail"
                             />
                         </div>
 

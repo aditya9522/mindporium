@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { BookOpen, Eye, EyeOff } from 'lucide-react';
+import { BookOpen, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
@@ -93,8 +93,15 @@ export const LoginPage = () => {
                         {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                        {isSubmitting ? "Signing in..." : "Sign in"}
+                    <Button type="submit" className="w-full flex items-center justify-center gap-2" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                <span>Signing in...</span>
+                            </>
+                        ) : (
+                            "Sign in"
+                        )}
                     </Button>
                 </form>
 

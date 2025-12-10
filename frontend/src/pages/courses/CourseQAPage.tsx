@@ -4,6 +4,7 @@ import { Loader2, MessageSquare, ThumbsUp, MessageCircle, Plus, ChevronDown, Che
 import api from '../../lib/axios';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../lib/utils';
 
 interface User {
     id: number;
@@ -235,7 +236,7 @@ export const CourseQAPage = () => {
                                 <div className="flex-shrink-0 flex flex-col items-center gap-1 text-gray-500">
                                     <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                                         {question.user?.photo ? (
-                                            <img src={question.user.photo} className="w-full h-full rounded-full object-cover" />
+                                            <img src={getImageUrl(question.user.photo)} className="w-full h-full rounded-full object-cover" />
                                         ) : (
                                             <span className="font-bold text-gray-500">
                                                 {question.user?.full_name?.charAt(0) || 'U'}

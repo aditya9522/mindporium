@@ -12,6 +12,7 @@ export const UserManagementPage = () => {
 
     const [editingUser, setEditingUser] = useState<any | null>(null);
     const [editForm, setEditForm] = useState({ role: '', is_active: true });
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [newUser, setNewUser] = useState({
@@ -50,6 +51,7 @@ export const UserManagementPage = () => {
     const handleUpdateUser = async () => {
         if (!editingUser) return;
 
+        setIsUpdating(true);
         try {
             const updated = await adminService.updateUser(editingUser.id, editForm);
             setUsers(users.map(u => u.id === updated.id ? updated : u));
@@ -58,6 +60,8 @@ export const UserManagementPage = () => {
         } catch (error) {
             console.error('Failed to update user:', error);
             toast.error('Failed to update user');
+        } finally {
+            setIsUpdating(false);
         }
     };
 
@@ -245,9 +249,17 @@ export const UserManagementPage = () => {
                                 </button>
                                 <button
                                     onClick={handleUpdateUser}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                                    disabled={isUpdating}
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
                                 >
-                                    Save Changes
+                                    {isUpdating ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Editing...
+                                        </>
+                                    ) : (
+                                        "Save Changes"
+                                    )}
                                 </button>
                             </div>
                         </div>

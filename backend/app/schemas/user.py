@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 from app.models.enums import RoleEnum
+from datetime import datetime
 
 
 class UserBase(BaseModel):
@@ -41,6 +42,7 @@ class UserUpdate(BaseModel):
     photo: Optional[str] = None
     banner_image: Optional[str] = None
     is_active: Optional[bool] = None
+    role: Optional[RoleEnum] = None
 
 
 class UserResponse(UserBase):
@@ -50,6 +52,8 @@ class UserResponse(UserBase):
     photo: Optional[str] = None
     banner_image: Optional[str] = None
     bio: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

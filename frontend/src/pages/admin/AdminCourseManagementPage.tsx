@@ -4,6 +4,7 @@ import { courseService } from '../../services/course.service';
 import { Loader2, Search, BookOpen, Eye, BarChart3, Activity, TrendingUp, Users, Star, DollarSign, Delete, Plus } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
 
@@ -107,7 +108,7 @@ export const AdminCourseManagementPage = () => {
                             <div className="relative h-48 bg-gradient-to-br from-indigo-500 to-purple-600 overflow-hidden">
                                 {course.thumbnail ? (
                                     <img
-                                        src={course.thumbnail}
+                                        src={getImageUrl(course.thumbnail)}
                                         alt={course.title}
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                     />

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
 
@@ -109,8 +109,15 @@ export const RegisterPage = () => {
                         {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                        {isSubmitting ? "Creating account..." : "Create account"}
+                    <Button type="submit" className="w-full flex items-center justify-center gap-2" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                <span>Creating account...</span>
+                            </>
+                        ) : (
+                            "Create account"
+                        )}
                     </Button>
                 </form>
 

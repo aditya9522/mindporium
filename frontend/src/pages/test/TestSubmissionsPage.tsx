@@ -6,6 +6,7 @@ import { Loader2, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../lib/utils';
 
 export const TestSubmissionsPage = () => {
     const { id } = useParams();
@@ -92,7 +93,7 @@ export const TestSubmissionsPage = () => {
                                             <div className="flex items-center">
                                                 <div className="h-10 w-10 flex-shrink-0">
                                                     {submission.user?.photo ? (
-                                                        <img className="h-10 w-10 rounded-full object-cover" src={submission.user.photo} alt="" />
+                                                        <img className="h-10 w-10 rounded-full object-cover" src={getImageUrl(submission.user.photo)} alt="" />
                                                     ) : (
                                                         <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
                                                             {submission.user?.full_name?.charAt(0).toUpperCase() || 'U'}

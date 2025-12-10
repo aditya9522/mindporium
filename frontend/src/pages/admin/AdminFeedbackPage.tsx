@@ -246,7 +246,7 @@ export const AdminFeedbackPage = () => {
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3 flex-1">
-                                            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
+                                            <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
                                                 {feedback.user?.full_name?.charAt(0).toUpperCase() || <User className="w-5 h-5" />}
                                             </div>
                                             <div className="flex-1">
@@ -292,8 +292,8 @@ export const AdminFeedbackPage = () => {
                         {/* Content */}
                         <div className="p-6 space-y-6">
                             {/* User Info */}
-                            <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl">
-                                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+                            <div className="flex items-center gap-4 p-4 bg-linear-to-br from-indigo-50 to-purple-50 rounded-xl">
+                                <div className="w-16 h-16 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
                                     {selectedFeedback.user?.full_name?.charAt(0).toUpperCase() || <User className="w-8 h-8" />}
                                 </div>
                                 <div className="flex-1">

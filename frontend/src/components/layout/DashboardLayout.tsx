@@ -5,6 +5,7 @@ import { useSidebarStore } from '../../store/sidebar.store';
 import { Navbar } from '../layout/Navbar';
 import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { getImageUrl } from '../../lib/utils';
 
 export const DashboardLayout = () => {
     const { isAuthenticated, checkAuth, isLoading, user } = useAuthStore();
@@ -101,7 +102,7 @@ export const DashboardLayout = () => {
                                 <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg">
                                     {user?.photo ? (
                                         <img
-                                            src={user.photo}
+                                            src={getImageUrl(user.photo)}
                                             alt={user.full_name}
                                             className="w-10 h-10 rounded-full object-cover"
                                         />

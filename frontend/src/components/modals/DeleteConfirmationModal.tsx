@@ -1,4 +1,4 @@
-import { X, AlertTriangle } from 'lucide-react';
+import { X, AlertTriangle, Loader2 } from 'lucide-react';
 
 interface DeleteConfirmationModalProps {
     isOpen: boolean;
@@ -8,6 +8,7 @@ interface DeleteConfirmationModalProps {
     message: string;
     itemName?: string;
     loading?: boolean;
+    confirmText?: string;
 }
 
 export const DeleteConfirmationModal = ({
@@ -17,7 +18,8 @@ export const DeleteConfirmationModal = ({
     title,
     message,
     itemName,
-    loading = false
+    loading = false,
+    confirmText = 'Delete'
 }: DeleteConfirmationModalProps) => {
     if (!isOpen) return null;
 
@@ -25,7 +27,7 @@ export const DeleteConfirmationModal = ({
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-red-500 to-red-600 p-6 text-white">
+                <div className="bg-linear-to-br from-red-500 to-red-600 p-6 text-white">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-white/20 rounded-lg">
@@ -76,11 +78,11 @@ export const DeleteConfirmationModal = ({
                     >
                         {loading ? (
                             <>
-                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                Deleting...
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Processing...
                             </>
                         ) : (
-                            'Delete'
+                            confirmText
                         )}
                     </button>
                 </div>

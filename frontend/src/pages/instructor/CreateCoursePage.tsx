@@ -6,6 +6,7 @@ import type { CourseCreate, LevelEnum, CategoryEnum } from '../../types/course';
 import type { SubjectCreate } from '../../types/enrollment';
 import { ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { ImageUpload } from '../../components/common/ImageUpload';
 
 export const CreateCoursePage = () => {
     const navigate = useNavigate();
@@ -288,12 +289,10 @@ export const CreateCoursePage = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Thumbnail URL (optional)
                                 </label>
-                                <input
-                                    type="url"
+                                <ImageUpload
                                     value={basicInfo.thumbnail}
-                                    onChange={(e) => setBasicInfo({ ...basicInfo, thumbnail: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="https://example.com/image.jpg"
+                                    onChange={(url) => setBasicInfo({ ...basicInfo, thumbnail: url })}
+                                    label="Course Thumbnail"
                                 />
                             </div>
                         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Loader2, Users, ArrowRight } from 'lucide-react';
 import api from '../../lib/axios';
+import { getImageUrl } from '../../lib/utils';
 
 interface Instructor {
     id: number;
@@ -85,7 +86,7 @@ export const CourseInstructorsPage = () => {
                                 <div className="flex-shrink-0">
                                     {instructor.photo ? (
                                         <img
-                                            src={instructor.photo}
+                                            src={getImageUrl(instructor.photo)}
                                             alt={instructor.full_name}
                                             className="w-24 h-24 rounded-full object-cover border-4 border-indigo-50"
                                         />
