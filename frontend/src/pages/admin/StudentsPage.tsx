@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, Search, Filter, Mail, BookOpen, Award, Loader2, TrendingUp } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import api from '../lib/axios';
+import { Button } from '../../components/ui/Button';
+import api from '../../lib/axios';
 import toast from 'react-hot-toast';
-import { useAuthStore } from '../store/auth.store';
+import { useAuthStore } from '../../store/auth.store';
 
 interface Student {
     id: number;

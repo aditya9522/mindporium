@@ -4,11 +4,11 @@ import {
     Star, BookOpen, Users, ArrowLeft, Loader2,
     Mail, Globe, Twitter, Linkedin, ExternalLink
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { FeedbackModal } from '../components/feedback/FeedbackModal';
-import api from '../lib/axios';
+import { Button } from '../../components/ui/Button';
+import { FeedbackModal } from '../../components/feedback/FeedbackModal';
+import api from '../../lib/axios';
 import toast from 'react-hot-toast';
-import { getImageUrl } from '../lib/utils';
+import { getImageUrl } from '../../lib/utils';
 
 interface InstructorStats {
     total_courses: number;

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button } from '../components/ui/Button';
+import { Button } from '../../components/ui/Button';
 import { ArrowRight, CheckCircle, PlayCircle, Users } from 'lucide-react';
 
 export const LandingPage = () => {

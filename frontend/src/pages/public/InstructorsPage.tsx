@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { userService } from '../services/user.service';
+import { userService } from '../../services/user.service';
 import { Loader2, GraduationCap, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getImageUrl } from '../lib/utils';
+import { getImageUrl } from '../../lib/utils';
 
 export const InstructorsPage = () => {
     const [instructors, setInstructors] = useState<any[]>([]);

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useAuthStore } from '../store/auth.store';
+import { useAuthStore } from '../../store/auth.store';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
 import { User, Mail, Shield, Loader2, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '../lib/axios';
-import { ImageUpload } from '../components/common/ImageUpload';
+import api from '../../lib/axios';
+import { ImageUpload } from '../../components/common/ImageUpload';
 
 const profileSchema = z.object({
     full_name: z.string().min(2, "Name must be at least 2 characters"),

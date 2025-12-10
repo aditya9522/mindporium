@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MessageSquare, Send, Star, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import api from '../lib/axios';
+import { Button } from '../../components/ui/Button';
+import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 
