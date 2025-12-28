@@ -315,6 +315,9 @@ export const EditCoursePage = () => {
                                 value={formData.thumbnail}
                                 onChange={(url) => setFormData({ ...formData, thumbnail: url })}
                                 label="Course Thumbnail"
+                                entityType="courses"
+                                entityId={id}
+                                category="thumbnail"
                             />
                         </div>
 

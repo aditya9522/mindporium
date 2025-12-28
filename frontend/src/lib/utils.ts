@@ -10,5 +10,6 @@ export function getImageUrl(path: string | undefined | null) {
     if (path.startsWith('http') || path.startsWith('blob:')) {
         return path;
     }
-    return `http://localhost:8000${path}`;
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+    return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
 }

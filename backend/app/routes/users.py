@@ -252,6 +252,9 @@ async def delete_user(
     if user.id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot delete your own account")
 
+    from app.services.storage_service import storage_service
+    await storage_service.delete_folder(f"users/{user.id}")
+
     await db.delete(user)
     await db.commit()
     return {"message": "User deleted successfully"}

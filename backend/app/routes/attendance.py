@@ -16,7 +16,7 @@ from app.models.enums import RoleEnum
 router = APIRouter()
 
 
-@router.post("/", response_model=AttendanceResponse)
+@router.post("", response_model=AttendanceResponse)
 async def mark_attendance(
     *,
     db: AsyncSession = Depends(deps.get_db),

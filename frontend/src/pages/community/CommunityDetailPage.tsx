@@ -405,6 +405,9 @@ export const CommunityDetailPage = () => {
                                             onChange={setEditIcon}
                                             label="Icon"
                                             variant="avatar"
+                                            entityType="communities"
+                                            entityId={community.id}
+                                            category="icon"
                                         />
                                     </div>
                                     <ImageUpload
@@ -413,6 +416,9 @@ export const CommunityDetailPage = () => {
                                         label="Banner"
                                         variant="banner"
                                         placeholder="Upload Banner"
+                                        entityType="communities"
+                                        entityId={community.id}
+                                        category="banner"
                                     />
                                 </div>
                             </div>

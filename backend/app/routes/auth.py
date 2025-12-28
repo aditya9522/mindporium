@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -36,18 +36,18 @@ async def login_access_token(
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    # 1. Fetch user by email
+
     result = await db.execute(select(User).where(User.email == form_data.username))
     user = result.scalars().first()
 
-    # 2. Authenticate
+
     if not user or not security.verify_password(form_data.password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
 
-    # 3. Create tokens
+
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": security.create_access_token(
@@ -67,7 +67,7 @@ async def register_user(
     """
     Create new user without the need to be logged in
     """
-    # 1. Check if user exists
+
     result = await db.execute(select(User).where(User.email == user_in.email))
     existing_user = result.scalars().first()
     if existing_user:
@@ -76,7 +76,7 @@ async def register_user(
             detail="The user with this username already exists in the system",
         )
     
-    # 2. Create user
+
     user = User(
         email=user_in.email,
         full_name=user_in.full_name,
@@ -122,12 +122,13 @@ async def setup_password(
 async def forgot_password(
     *,
     db: AsyncSession = Depends(deps.get_db),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     request: ForgotPasswordRequest,
 ) -> Any:
     """
     Request password reset - sends OTP to user's email
     """
-    # 1. Find user by email
+
     result = await db.execute(select(User).where(User.email == request.email))
     user = result.scalars().first()
     
@@ -144,26 +145,23 @@ async def forgot_password(
             detail="Account is inactive"
         )
     
-    # 2. Generate OTP
+
     otp = security.generate_otp()
     
-    # 3. Save OTP to database
+
     user.password_reset_otp = otp
     user.otp_created_at = datetime.utcnow()
-    user.otp_attempts = 0  # Reset attempts counter
+    user.otp_attempts = 0
     
     await db.commit()
     
-    # 4. Send OTP via email
-    try:
-        await email_service.send_password_reset_otp_email(
-            email_to=user.email,
-            full_name=user.full_name,
-            otp=otp
-        )
-    except Exception as e:
-        # Log error but don't reveal to user
-        print(f"Failed to send OTP email: {e}")
+
+    background_tasks.add_task(
+        email_service.send_password_reset_otp_email,
+        email_to=user.email,
+        full_name=user.full_name,
+        otp=otp
+    )
     
     return PasswordResetResponse(
         message="If an account with that email exists, an OTP has been sent.",
@@ -245,27 +243,32 @@ async def reset_password(
             detail="Invalid or expired OTP"
         )
     
-    if not user.is_verified:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Please verify OTP first"
-        )
-    
     if not security.is_otp_valid(user.otp_created_at, settings.OTP_EXPIRY_MINUTES):
         user.password_reset_otp = None
         user.otp_created_at = None
         user.otp_attempts = 0
-        user.is_verified = False
         await db.commit()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="OTP has expired. Please request a new one."
         )
+
+    if user.otp_attempts >= settings.OTP_MAX_ATTEMPTS:
+        user.password_reset_otp = None
+        user.otp_created_at = None
+        user.otp_attempts = 0
+        await db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many failed attempts. Please request a new OTP."
+        )
     
     if user.password_reset_otp != request.otp:
+        user.otp_attempts += 1
+        await db.commit()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid OTP"
+            detail=f"Invalid OTP. {settings.OTP_MAX_ATTEMPTS - user.otp_attempts} attempts remaining."
         )
     
     user.password = security.get_password_hash(request.new_password)

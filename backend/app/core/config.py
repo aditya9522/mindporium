@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     # AI
     GEMINI_API_KEY: Optional[str] = Field(None, env="GEMINI_API_KEY")
 
+    # Storage (Supabase)
+    SUPABASE_URL: Optional[str] = Field(None, env="SUPABASE_URL")
+    SUPABASE_SERVICE_ROLE_KEY: Optional[str] = Field(None, env="SUPABASE_SERVICE_ROLE_KEY")
+    SUPABASE_BUCKET: str = Field("mindporium-assets", env="SUPABASE_BUCKET")
+
     SECRET_KEY: str = Field(..., env="SECRET_KEY")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day by default

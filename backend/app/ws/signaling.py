@@ -59,10 +59,10 @@ async def websocket_endpoint(
             
             # Chat or System Events
             elif message_type == "chat":
-                await manager.broadcast_to_room(classroom_id, data)
+                await manager.broadcast_to_room(classroom_id, data, exclude_user=user_id)
                 
             elif message_type == "hand_raise":
-                await manager.broadcast_to_room(classroom_id, data)
+                await manager.broadcast_to_room(classroom_id, data, exclude_user=user_id)
 
     except WebSocketDisconnect:
         if user_id:

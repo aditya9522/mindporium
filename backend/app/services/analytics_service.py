@@ -23,13 +23,13 @@ class AnalyticsService:
         """
         Comprehensive admin dashboard with platform overview.
         """
-        # Total counts
+
         total_users = await db.execute(select(func.count()).select_from(User))
         total_courses = await db.execute(select(func.count()).select_from(Course))
         total_classrooms = await db.execute(select(func.count()).select_from(Classroom))
         total_enrollments = await db.execute(select(func.count()).select_from(Enrollment))
         
-        # Active stats
+
         active_students = await db.execute(
             select(func.count()).select_from(User).where(
                 User.role == "student", User.is_active == True
@@ -41,14 +41,13 @@ class AnalyticsService:
             )
         )
         
-        # Live classes
+
         live_classes = await db.execute(
             select(func.count()).select_from(Classroom).where(
                 Classroom.status == ClassroomStatusEnum.live.value
             )
         )
         
-        # Recent enrollments (last 7 days)
         week_ago = datetime.utcnow() - timedelta(days=7)
         recent_enrollments = await db.execute(
             select(func.count()).select_from(Enrollment).where(
@@ -56,7 +55,7 @@ class AnalyticsService:
             )
         )
         
-        # Top courses by enrollment
+
         top_courses_query = await db.execute(
             select(
                 Course.id,
@@ -73,7 +72,6 @@ class AnalyticsService:
             for row in top_courses_query.all()
         ]
         
-        # Revenue (if paid courses)
         revenue_query = await db.execute(
             select(func.sum(Course.price))
             .select_from(Enrollment)
@@ -102,7 +100,7 @@ class AnalyticsService:
         """
         Detailed instructor performance analytics with AI insights.
         """
-        # Get instructor courses
+
         courses_query = await db.execute(
             select(Course).where(
                 or_(
@@ -117,27 +115,23 @@ class AnalyticsService:
         if not course_ids:
             return {"error": "No courses found for this instructor"}
         
-        # Total students across all courses
         total_students = await db.execute(
             select(func.count(func.distinct(Enrollment.user_id)))
             .select_from(Enrollment)
             .where(Enrollment.course_id.in_(course_ids))
         )
         
-        # Total classes conducted
         total_classes = await db.execute(
             select(func.count()).select_from(Classroom)
             .join(Subject, Classroom.subject_id == Subject.id)
             .where(Subject.course_id.in_(course_ids))
         )
         
-        # Average rating from feedback
         avg_rating = await db.execute(
             select(func.avg(InstructorFeedback.rating))
             .where(InstructorFeedback.instructor_id == instructor_id)
         )
         
-        # Get all feedback for AI analysis
         feedback_query = await db.execute(
             select(InstructorFeedback.comments)
             .where(
@@ -148,7 +142,6 @@ class AnalyticsService:
         )
         feedback_comments = [row[0] for row in feedback_query.all() if row[0]]
         
-        # AI-powered sentiment analysis
         sentiment_analysis = None
         if feedback_comments:
             combined_feedback = "\n".join(feedback_comments[:20])  # Limit for API
@@ -165,7 +158,6 @@ class AnalyticsService:
             
             sentiment_analysis = await llm_service.generate_response(prompt)
         
-        # Course-wise enrollment
         course_stats = []
         for course in courses:
             enrollment_count = await db.execute(
@@ -195,7 +187,7 @@ class AnalyticsService:
         """
         Comprehensive instructor dashboard with detailed analytics.
         """
-        # Get instructor's courses
+
         courses_query = await db.execute(
             select(Course).where(
                 or_(
@@ -218,14 +210,12 @@ class AnalyticsService:
                 "course_stats": []
             }
         
-        # Total students across all courses
         total_students = await db.execute(
             select(func.count(func.distinct(Enrollment.user_id)))
             .select_from(Enrollment)
             .where(Enrollment.course_id.in_(course_ids))
         )
         
-        # Total revenue
         revenue_query = await db.execute(
             select(func.sum(Course.price))
             .select_from(Enrollment)
@@ -234,10 +224,8 @@ class AnalyticsService:
         )
         total_revenue = revenue_query.scalar() or 0
         
-        # Active courses (published)
         active_courses = sum(1 for c in courses if c.is_published)
         
-        # Recent enrollments (last 10)
         recent_enrollments_query = await db.execute(
             select(
                 Enrollment.id,
@@ -264,7 +252,6 @@ class AnalyticsService:
             for row in recent_enrollments_query.all()
         ]
         
-        # Upcoming classes
         upcoming_classes_query = await db.execute(
             select(
                 Classroom.id,
@@ -293,7 +280,6 @@ class AnalyticsService:
             for row in upcoming_classes_query.all()
         ]
         
-        # Course stats
         course_stats = []
         for course in courses:
             enrollment_count = await db.execute(
@@ -342,7 +328,7 @@ class AnalyticsService:
         """
         Get all students enrolled in instructor's courses with progress.
         """
-        # Get instructor's courses
+
         courses_query = await db.execute(
             select(Course).where(
                 or_(
@@ -357,7 +343,6 @@ class AnalyticsService:
         if not course_ids:
             return []
             
-        # Get students and their enrollments
         students_query = await db.execute(
             select(
                 User.id,
@@ -377,7 +362,6 @@ class AnalyticsService:
         
         results = students_query.all()
         
-        # Group by student
         students_map = {}
         for row in results:
             user_id = row[0]

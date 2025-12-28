@@ -19,6 +19,7 @@ export const CommunityPage = () => {
     const [newCommunityIcon, setNewCommunityIcon] = useState('');
     const [newCommunityBanner, setNewCommunityBanner] = useState('');
     const [creating, setCreating] = useState(false);
+    const [draftId] = useState(() => `draft_${Date.now()}`);
 
     useEffect(() => {
         loadCommunities();
@@ -189,6 +190,9 @@ export const CommunityPage = () => {
                                             onChange={setNewCommunityIcon}
                                             label="Icon"
                                             variant="avatar"
+                                            entityType="communities"
+                                            entityId={draftId}
+                                            category="icon"
                                         />
                                     </div>
                                     <ImageUpload
@@ -197,6 +201,9 @@ export const CommunityPage = () => {
                                         label="Banner"
                                         variant="banner"
                                         placeholder="Upload Banner"
+                                        entityType="communities"
+                                        entityId={draftId}
+                                        category="banner"
                                     />
                                 </div>
                             </div>

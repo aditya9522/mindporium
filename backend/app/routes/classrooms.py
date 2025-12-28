@@ -16,7 +16,7 @@ from app.models.enums import RoleEnum, ClassroomProviderEnum
 router = APIRouter()
 
 
-@router.post("/", response_model=ClassroomResponse)
+@router.post("", response_model=ClassroomResponse)
 async def create_classroom(
     *,
     db: AsyncSession = Depends(deps.get_db),
@@ -40,7 +40,7 @@ async def create_classroom(
     return classroom
 
 
-@router.get("/", response_model=List[ClassroomResponse])
+@router.get("", response_model=List[ClassroomResponse])
 async def read_classrooms(
     db: AsyncSession = Depends(deps.get_db),
     skip: int = 0,
@@ -50,8 +50,7 @@ async def read_classrooms(
     """
     List classrooms.
     """
-    # If student, maybe show only enrolled courses' classes? 
-    # For now, show all public/active classes for simplicity or filter by instructor
+
     query = select(Classroom).where(Classroom.is_active == True).options(selectinload(Classroom.instructor))
     query = query.offset(skip).limit(limit).order_by(desc(Classroom.start_time))
     result = await db.execute(query)
@@ -112,13 +111,13 @@ async def assign_instructor(
     """
     Assign an instructor to a classroom. Admin only.
     """
-    # Check classroom
+
     result = await db.execute(select(Classroom).where(Classroom.id == classroom_id))
     classroom = result.scalars().first()
     if not classroom:
         raise HTTPException(status_code=404, detail="Classroom not found")
         
-    # Check instructor
+
     result_user = await db.execute(select(User).where(User.id == instructor_id))
     instructor = result_user.scalars().first()
     if not instructor:
@@ -215,7 +214,6 @@ async def start_classroom(
         raise HTTPException(status_code=403, detail="Not enough permissions")
         
     classroom.status = "live"
-    # classroom.start_time = datetime.utcnow() # Optional: update actual start time
     db.add(classroom)
     await db.commit()
     await db.refresh(classroom)
@@ -240,7 +238,6 @@ async def end_classroom(
         raise HTTPException(status_code=403, detail="Not enough permissions")
         
     classroom.status = "completed"
-    # classroom.end_time = datetime.utcnow()
     db.add(classroom)
     await db.commit()
     await db.refresh(classroom)
@@ -266,7 +263,7 @@ async def update_classroom(
     if not classroom:
         raise HTTPException(status_code=404, detail="Classroom not found")
         
-    # Check permissions
+
     if current_user.role != RoleEnum.admin and classroom.instructor_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
@@ -298,7 +295,7 @@ async def delete_classroom(
     if not classroom:
         raise HTTPException(status_code=404, detail="Classroom not found")
 
-    # Check permissions
+
     if current_user.role != RoleEnum.admin and classroom.instructor_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 

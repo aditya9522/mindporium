@@ -23,13 +23,13 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Register exception handlers
+
 app.add_exception_handler(MindporiumException, mindporium_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(SQLAlchemyError, sqlalchemy_exception_handler)
 app.add_exception_handler(Exception, generic_exception_handler)
 
-# CORS Middleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
@@ -38,15 +38,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Custom Middleware
+
 app.add_middleware(LoggingMiddleware)
 app.add_middleware(RateLimitMiddleware, max_requests=100, window_seconds=60)
 
-# Ensure static directory exists
-os.makedirs("static", exist_ok=True)
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 from app.routes import (
     auth, users, courses, enrollments, classrooms, community, posts, admin, 
@@ -75,7 +71,7 @@ app.include_router(feedback.router, prefix="/feedback", tags=["Feedback"])
 app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
 app.include_router(upload.router, prefix="/upload", tags=["Upload"])
 
-# Dashboard routes
+
 app.include_router(dashboard_admin.router, prefix="/dashboard/admin", tags=["Dashboard - Admin"])
 app.include_router(dashboard_instructor.router, prefix="/dashboard/instructor", tags=["Dashboard - Instructor"])
 app.include_router(dashboard_student.router, prefix="/dashboard/student", tags=["Dashboard - Student"])

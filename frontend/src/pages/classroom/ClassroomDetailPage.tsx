@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { classroomService, type Classroom, type ClassMessage } from '../../services/classroom.service';
+import { PageLoader } from '../../components/common/PageLoader';
 import { useAuthStore } from '../../store/auth.store';
-import { Loader2, Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Users, Send, Hand, Monitor, X } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Users, Send, Hand, Monitor, X } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -59,14 +60,11 @@ export const ClassroomDetailPage = () => {
         localStreamRef.current = localStream;
     }, [localStream]);
 
-    // Chat Polling
+    // Chat Load
     useEffect(() => {
-        let interval: any;
         if (joined && id) {
             loadMessages();
-            interval = setInterval(loadMessages, 3000);
         }
-        return () => clearInterval(interval);
     }, [joined, id]);
 
     // Auto-scroll chat
@@ -127,9 +125,16 @@ export const ClassroomDetailPage = () => {
         e.preventDefault();
         if (!newMessage.trim() || !id) return;
         try {
-            await classroomService.sendMessage(parseInt(id), newMessage);
+            const savedMsg = await classroomService.sendMessage(parseInt(id), newMessage);
             setNewMessage('');
-            loadMessages();
+            setMessages(prev => [...prev, savedMsg]);
+
+            if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                wsRef.current.send(JSON.stringify({
+                    type: 'chat',
+                    payload: savedMsg
+                }));
+            }
         } catch (error) {
             toast.error('Failed to send message');
         }
@@ -238,7 +243,10 @@ export const ClassroomDetailPage = () => {
             }
 
             // Connect WS
-            const wsUrl = `ws://localhost:8000/${response.websocket_url}`;
+            const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const wsProto = apiBase.startsWith('https') ? 'wss' : 'ws';
+            const hostUrl = apiBase.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            const wsUrl = `${wsProto}://${hostUrl}/${response.websocket_url}`;
             wsRef.current = new WebSocket(wsUrl);
 
             wsRef.current.onopen = async () => {
@@ -299,6 +307,14 @@ export const ClassroomDetailPage = () => {
                 break;
             case 'candidate':
                 await handleCandidate(data);
+                break;
+            case 'chat':
+                if (data.payload) {
+                    setMessages(prev => {
+                        if (prev.some(m => m.id === data.payload.id)) return prev;
+                        return [...prev, data.payload];
+                    });
+                }
                 break;
             case 'hand_raise':
                 if (data.user_id !== user?.id) toast(`${data.user_name} raised hand!`);
@@ -405,7 +421,7 @@ export const ClassroomDetailPage = () => {
     };
 
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-900"><Loader2 className="w-8 h-8 animate-spin text-indigo-500" /></div>;
+    if (loading) return <PageLoader />;
     if (!classroom) return null;
 
     // Remote participants (exclude instructor from this list if we are student, showing them in main)

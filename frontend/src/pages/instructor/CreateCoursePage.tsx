@@ -4,7 +4,7 @@ import { courseService } from '../../services/course.service';
 import { subjectService } from '../../services/subject.service';
 import type { CourseCreate, LevelEnum, CategoryEnum } from '../../types/course';
 import type { SubjectCreate } from '../../types/enrollment';
-import { ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Loader2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ImageUpload } from '../../components/common/ImageUpload';
 
@@ -12,6 +12,7 @@ export const CreateCoursePage = () => {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [draftId] = useState(() => `draft_${Date.now()}`);
 
     // Step 1: Basic Info
     const [basicInfo, setBasicInfo] = useState({
@@ -278,7 +279,7 @@ export const CreateCoursePage = () => {
                                                 onClick={() => handleRemoveTag(tag)}
                                                 className="ml-2 text-indigo-600 hover:text-indigo-800"
                                             >
-                                                ×
+                                                <X className="w-4 h-4" />
                                             </button>
                                         </span>
                                     ))}
@@ -293,6 +294,9 @@ export const CreateCoursePage = () => {
                                     value={basicInfo.thumbnail}
                                     onChange={(url) => setBasicInfo({ ...basicInfo, thumbnail: url })}
                                     label="Course Thumbnail"
+                                    entityType="courses"
+                                    entityId={draftId}
+                                    category="thumbnail"
                                 />
                             </div>
                         </div>

@@ -1,4 +1,3 @@
-
 import { useState, useRef } from 'react';
 import { Image as ImageIcon, Loader2, Camera } from 'lucide-react';
 import api from '../../lib/axios';
@@ -12,6 +11,9 @@ interface ImageUploadProps {
     className?: string;
     variant?: 'standard' | 'avatar' | 'banner';
     placeholder?: string;
+    entityType?: string; // e.g. 'users', 'courses'
+    entityId?: string | number;
+    category?: string; // e.g. 'photo', 'thumbnail'
 }
 
 export const ImageUpload = ({
@@ -20,7 +22,10 @@ export const ImageUpload = ({
     label,
     className = "",
     variant = 'standard',
-    placeholder = "Upload Image"
+    placeholder = "Upload Image",
+    entityType,
+    entityId,
+    category
 }: ImageUploadProps) => {
     const [isUploading, setIsUploading] = useState(false);
     const [preview, setPreview] = useState(value);
@@ -44,6 +49,15 @@ export const ImageUpload = ({
         setIsUploading(true);
         const formData = new FormData();
         formData.append('file', file);
+        if (entityType) formData.append('entity_type', entityType);
+        if (entityId) formData.append('entity_id', String(entityId));
+        if (category) {
+            formData.append('category', category);
+        } else if (variant === 'avatar') {
+            formData.append('category', 'photo');
+        } else if (variant === 'banner') {
+            formData.append('category', 'banner');
+        }
 
         try {
             const response = await api.post('/upload/', formData, {
@@ -122,7 +136,8 @@ export const ImageUpload = ({
                             alt="Preview"
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=Error';
+                                // Simple gray placeholder with an 'X' icon
+                                (e.target as HTMLImageElement).src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%20fill%3D%22none%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%23F3F4F6%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2214%22%20fill%3D%22%239CA3AF%22%3EImage%20Error%3C%2Ftext%3E%3C%2Fsvg%3E';
                             }}
                         />
                         {/* Overlay */}

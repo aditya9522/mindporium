@@ -6,7 +6,8 @@ import type { Course } from '../../types/course';
 import type { Subject, Resource } from '../../types/enrollment';
 import { CoursePlayerSidebar } from '../../components/student/CoursePlayerSidebar';
 import { CoursePlayerContent } from '../../components/student/CoursePlayerContent';
-import { Loader2, ArrowLeft, MessageSquare, CheckCircle } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
+import { ArrowLeft, MessageSquare, CheckCircle } from 'lucide-react';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 
@@ -103,11 +104,7 @@ export const CoursePlayerPage = () => {
     const progressPercentage = totalResources > 0 ? Math.round((completedResources.length / totalResources) * 100) : 0;
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900">
-                <Loader2 className="w-8 h-8 animate-spin text-white" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!course) return null;

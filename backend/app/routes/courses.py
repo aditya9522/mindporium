@@ -1,6 +1,6 @@
 from typing import Any, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, or_
 from sqlalchemy.orm import selectinload
@@ -11,6 +11,8 @@ from app.models.user import User
 from app.schemas.course import CourseCreate, CourseResponse, CourseUpdate, CourseDetailResponse
 from app.models.enums import RoleEnum
 from app.services.notification_service import notification_service
+from app.core.redis import redis_manager
+import json
 
 router = APIRouter()
 
@@ -25,6 +27,12 @@ async def read_courses(
     """
     Retrieve courses. Public endpoint.
     """
+    # 1. Try cache
+    cache_key = f"courses:public:{skip}:{limit}:{search or ''}"
+    cached_data = await redis_manager.get(cache_key)
+    if cached_data:
+        return json.loads(cached_data)
+
     query = select(Course).where(Course.is_published == True)
     
     if search:
@@ -32,7 +40,14 @@ async def read_courses(
         
     query = query.offset(skip).limit(limit).order_by(desc(Course.created_at))
     result = await db.execute(query)
-    return result.scalars().all()
+    courses = result.scalars().all()
+    
+    # 2. Store in cache (60 seconds)
+    # Serialize to compatible JSON
+    data_to_cache = [CourseResponse.model_validate(c).model_dump(mode='json') for c in courses]
+    await redis_manager.set(cache_key, json.dumps(data_to_cache), expire=60)
+    
+    return courses
 
 
 @router.post("/", response_model=CourseResponse)
@@ -40,6 +55,7 @@ async def create_course(
     *,
     db: AsyncSession = Depends(deps.get_db),
     course_in: CourseCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -58,7 +74,8 @@ async def create_course(
         students_result = await db.execute(select(User).where(User.role == RoleEnum.student))
         students = students_result.scalars().all()
         if students:
-            await notification_service.notify_course_created(
+            background_tasks.add_task(
+                notification_service.notify_course_created,
                 user_ids=[s.id for s in students],
                 course_title=course.title,
                 instructor_name=current_user.full_name
@@ -161,6 +178,9 @@ async def delete_course(
     if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
+    from app.services.storage_service import storage_service
+    await storage_service.delete_folder(f"courses/{course.id}")
+    
     await db.delete(course)
     await db.commit()
     return course

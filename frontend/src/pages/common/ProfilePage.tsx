@@ -105,6 +105,8 @@ export const ProfilePage = () => {
                                         onChange={(url) => setValue('photo', url, { shouldDirty: true })}
                                         label=""
                                         variant="avatar"
+                                        entityType="users"
+                                        entityId={user?.id}
                                     />
                                 </div>
                                 <h2 className="text-xl font-bold text-gray-900">{user?.full_name}</h2>
@@ -146,6 +148,8 @@ export const ProfilePage = () => {
                                     label="Banner Image"
                                     variant="banner"
                                     placeholder="Change Banner"
+                                    entityType="users"
+                                    entityId={user?.id}
                                 />
                             </div>
 

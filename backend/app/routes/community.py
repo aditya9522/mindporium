@@ -10,6 +10,8 @@ from app.models.community import Community, CommunitySubscription, CommunityPost
 from app.models.user import User
 from app.schemas.community import CommunityCreate, CommunityResponse, CommunityUpdate, PostResponse
 from app.models.enums import RoleEnum
+from app.core.redis import redis_manager
+import json
 
 router = APIRouter()
 
@@ -58,6 +60,11 @@ async def read_communities(
     """
     List communities.
     """
+    cache_key = f"communities:public:{skip}:{limit}:{search or ''}"
+    cached_data = await redis_manager.get(cache_key)
+    if cached_data:
+        return json.loads(cached_data)
+
     query = select(Community).where(Community.is_active == True)
     
     if search:
@@ -65,7 +72,12 @@ async def read_communities(
         
     query = query.offset(skip).limit(limit).order_by(desc(Community.member_count))
     result = await db.execute(query)
-    return result.scalars().all()
+    communities = result.scalars().all()
+
+    data_to_cache = [CommunityResponse.model_validate(c).model_dump(mode='json') for c in communities]
+    await redis_manager.set(cache_key, json.dumps(data_to_cache), expire=60)
+
+    return communities
 
 
 @router.get("/{community_id}", response_model=CommunityResponse)
@@ -224,6 +236,9 @@ async def delete_community(
         
     if current_user.role != RoleEnum.admin and community.created_by != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
+
+    from app.services.storage_service import storage_service
+    await storage_service.delete_folder(f"communities/{community.id}")
 
     await db.delete(community)
     await db.commit()

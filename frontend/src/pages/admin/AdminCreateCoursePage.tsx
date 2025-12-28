@@ -12,6 +12,7 @@ export const AdminCreateCoursePage = () => {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [draftId] = useState(() => `draft_${Date.now()}`);
 
     // Step 1: Basic Info
     const [basicInfo, setBasicInfo] = useState({
@@ -293,6 +294,9 @@ export const AdminCreateCoursePage = () => {
                                     value={basicInfo.thumbnail}
                                     onChange={(url) => setBasicInfo({ ...basicInfo, thumbnail: url })}
                                     label="Course Thumbnail"
+                                    entityType="courses"
+                                    entityId={draftId}
+                                    category="thumbnail"
                                 />
                             </div>
                         </div>

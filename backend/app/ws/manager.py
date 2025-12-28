@@ -13,7 +13,7 @@ class ConnectionManager:
         self.active_connections: Dict[str, Dict[str, WebSocket]] = {}
 
     async def connect(self, websocket: WebSocket, classroom_id: str, user_id: str):
-        await websocket.accept()
+        # WebSocket is already accepted by the endpoint
         if classroom_id not in self.active_connections:
             self.active_connections[classroom_id] = {}
         self.active_connections[classroom_id][user_id] = websocket

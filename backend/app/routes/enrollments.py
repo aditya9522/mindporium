@@ -1,7 +1,7 @@
 from typing import Any, List
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -129,6 +129,7 @@ async def get_course_enrollments(
 async def complete_resource(
     resource_id: int,
     db: AsyncSession = Depends(deps.get_db),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -164,7 +165,7 @@ async def complete_resource(
     subject = result.scalars().first()
     
     if subject:
-        await progress_service.calculate_course_progress(db, current_user.id, subject.course_id)
+        background_tasks.add_task(progress_service.calculate_course_progress, db, current_user.id, subject.course_id)
 
     return {"message": "Resource marked as complete"}
 

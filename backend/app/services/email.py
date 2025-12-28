@@ -49,7 +49,6 @@ class EmailService:
         subject = "Welcome to Mindporium - Setup your Instructor Account"
         setup_link = f"{settings.FRONTEND_URL}/auth/setup-password?token={token}"
         
-        # Simple HTML Template
         html_content = f"""
         <html>
             <body>
@@ -64,8 +63,6 @@ class EmailService:
         </html>
         """
         
-        # In a real async app, you might want to run this in a threadpool or use aiosmtplib
-        # For now, we'll run it synchronously or assume it's fast enough/background task
         self._send_smtp_email(email_to, subject, html_content)
 
     async def send_welcome_admin_email(self, email_to: str, full_name: str, token: str):
@@ -75,7 +72,6 @@ class EmailService:
         subject = "Welcome to Mindporium - Setup your Admin Account"
         setup_link = f"{settings.FRONTEND_URL}/auth/setup-password?token={token}"
         
-        # Simple HTML Template
         html_content = f"""
         <html>
             <body>
@@ -98,7 +94,6 @@ class EmailService:
         """
         subject = "Password Reset OTP - Mindporium"
         
-        # Professional HTML Template for OTP
         html_content = f"""
         <html>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
