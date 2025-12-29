@@ -1,15 +1,17 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth.store';
+
 import { useSidebarStore } from '../../store/sidebar.store';
+import { PageLoader } from '../common/PageLoader';
 import { Navbar } from '../layout/Navbar';
-import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar } from 'lucide-react';
+import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
 
 export const DashboardLayout = () => {
     const { isAuthenticated, checkAuth, isLoading, user } = useAuthStore();
-    const { isOpen: isSidebarOpen } = useSidebarStore();
+    const { isOpen: isSidebarOpen, toggleSidebar } = useSidebarStore();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -24,14 +26,7 @@ export const DashboardLayout = () => {
     }, [isLoading, isAuthenticated, navigate]);
 
     if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-50">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading...</p>
-                </div>
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!isAuthenticated) {
@@ -90,58 +85,75 @@ export const DashboardLayout = () => {
 
     const menuItems = getMenuItems();
 
+    const SidebarContent = () => (
+        <div className="p-6 h-full overflow-y-auto">
+            <div className="mb-6">
+                <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg">
+                    {user?.photo ? (
+                        <img
+                            src={getImageUrl(user.photo)}
+                            alt={user.full_name}
+                            className="w-10 h-10 rounded-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                            <span className="text-primary-600 font-semibold">
+                                {user?.full_name?.charAt(0).toUpperCase()}
+                            </span>
+                        </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                            {user?.full_name}
+                        </p>
+                        <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav className="space-y-1">
+                {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            onClick={() => window.innerWidth < 1024 && toggleSidebar()}
+                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive
+                                ? 'bg-primary-50 text-primary-600'
+                                : 'text-gray-700 hover:bg-gray-50'
+                                }`}
+                        >
+                            <Icon className="h-5 w-5" />
+                            <span className="text-sm font-medium">{item.label}</span>
+                        </Link>
+                    );
+                })}
+            </nav>
+        </div>
+    );
+
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
             <Navbar />
-            <div className="flex flex-1">
-                {/* Sidebar */}
+            <div className="flex flex-1 relative">
+                {/* Mobile Sidebar Overlay */}
                 {isSidebarOpen && (
-                    <aside className="hidden lg:block w-64 bg-white border-r border-gray-200 transition-all duration-300">
-                        <div className="p-6">
-                            <div className="mb-6">
-                                <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg">
-                                    {user?.photo ? (
-                                        <img
-                                            src={getImageUrl(user.photo)}
-                                            alt={user.full_name}
-                                            className="w-10 h-10 rounded-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                                            <span className="text-primary-600 font-semibold">
-                                                {user?.full_name?.charAt(0).toUpperCase()}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-gray-900 truncate">
-                                            {user?.full_name}
-                                        </p>
-                                        <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
-                                    </div>
-                                </div>
+                    <div className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={toggleSidebar}>
+                        <aside className="fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out" onClick={e => e.stopPropagation()}>
+                            <div className="flex justify-end p-2 lg:hidden">
+                                <button onClick={toggleSidebar} className="p-2 text-gray-500 hover:text-gray-700"><X className="w-5 h-5" /></button>
                             </div>
+                            <SidebarContent />
+                        </aside>
+                    </div>
+                )}
 
-                            <nav className="space-y-1">
-                                {menuItems.map((item) => {
-                                    const Icon = item.icon;
-                                    const isActive = location.pathname === item.path;
-                                    return (
-                                        <Link
-                                            key={item.path}
-                                            to={item.path}
-                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive
-                                                ? 'bg-primary-50 text-primary-600'
-                                                : 'text-gray-700 hover:bg-gray-50'
-                                                }`}
-                                        >
-                                            <Icon className="h-5 w-5" />
-                                            <span className="text-sm font-medium">{item.label}</span>
-                                        </Link>
-                                    );
-                                })}
-                            </nav>
-                        </div>
+                {/* Desktop Sidebar (Sticky) */}
+                {isSidebarOpen && (
+                    <aside className="hidden lg:block w-64 bg-white border-r border-gray-200 sticky top-16 h-[calc(100vh-4rem)] overflow-hidden">
+                        <SidebarContent />
                     </aside>
                 )}
 

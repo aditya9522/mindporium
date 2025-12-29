@@ -6,6 +6,7 @@ import { subjectService } from '../../services/subject.service';
 import { ArrowLeft, Plus, Trash2, Save, Loader2, FileText, Video, Link as LinkIcon, File } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const ManageResourcesPage = () => {
     const { courseId, subjectId } = useParams<{ courseId: string; subjectId: string }>();
@@ -120,11 +121,7 @@ export const ManageResourcesPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!subject) {

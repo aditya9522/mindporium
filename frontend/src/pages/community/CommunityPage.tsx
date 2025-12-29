@@ -6,6 +6,7 @@ import type { Community } from '../../types/community';
 import { Users, MessageSquare, Plus, Search, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ImageUpload } from '../../components/common/ImageUpload';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const CommunityPage = () => {
     const [communities, setCommunities] = useState<Community[]>([]);
@@ -104,9 +105,7 @@ export const CommunityPage = () => {
 
                 {/* Grid */}
                 {loading ? (
-                    <div className="flex justify-center py-12">
-                        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-                    </div>
+                    <PageLoader />
                 ) : communities.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
                         <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
@@ -158,7 +157,7 @@ export const CommunityPage = () => {
             {/* Create Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-xl animate-in fade-in zoom-in duration-200">
                         <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Community</h2>
                         <form onSubmit={handleCreateCommunity}>
                             <div className="space-y-4">
@@ -183,8 +182,8 @@ export const CommunityPage = () => {
                                         placeholder="What is this community about?"
                                     />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="flex justify-center">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="md:col-span-1">
                                         <ImageUpload
                                             value={newCommunityIcon}
                                             onChange={setNewCommunityIcon}
@@ -195,16 +194,18 @@ export const CommunityPage = () => {
                                             category="icon"
                                         />
                                     </div>
-                                    <ImageUpload
-                                        value={newCommunityBanner}
-                                        onChange={setNewCommunityBanner}
-                                        label="Banner"
-                                        variant="banner"
-                                        placeholder="Upload Banner"
-                                        entityType="communities"
-                                        entityId={draftId}
-                                        category="banner"
-                                    />
+                                    <div className="md:col-span-2">
+                                        <ImageUpload
+                                            value={newCommunityBanner}
+                                            onChange={setNewCommunityBanner}
+                                            label="Banner"
+                                            variant="banner"
+                                            placeholder="Upload Banner"
+                                            entityType="communities"
+                                            entityId={draftId}
+                                            category="banner"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex justify-end gap-3 mt-8">

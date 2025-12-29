@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/auth.store';
 import { studentService } from '../../services/student.service';
-import { BookOpen, Award, TrendingUp, Clock, Loader2, Calendar } from 'lucide-react';
+import { BookOpen, Award, TrendingUp, Clock, Calendar } from 'lucide-react';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { Link } from 'react-router-dom';
+import { PageLoader } from '../../components/common/PageLoader';
 
 const COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'];
 
@@ -30,11 +31,7 @@ export const DashboardPage = () => {
     }, []);
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     const stats = [
@@ -72,7 +69,7 @@ export const DashboardPage = () => {
     ].filter(item => item.value > 0) : [];
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 px-8">
             {/* Welcome Section */}
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white shadow-lg">
                 <h1 className="text-3xl font-bold mb-2">

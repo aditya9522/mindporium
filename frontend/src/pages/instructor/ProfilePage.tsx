@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/auth.store';
 import { instructorService } from '../../services/instructor.service';
-import { Loader2, Mail, Phone, Globe, Linkedin, Twitter, Github, Award, BookOpen, Users, Star, Briefcase, Edit } from 'lucide-react';
+import { Mail, Phone, Globe, Linkedin, Twitter, Github, Award, BookOpen, Users, Star, Briefcase, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const ProfilePage = () => {
     const { user } = useAuthStore();
@@ -28,11 +29,7 @@ export const ProfilePage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!user) return null;

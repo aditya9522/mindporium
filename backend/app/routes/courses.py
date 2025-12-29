@@ -2,11 +2,14 @@ from typing import Any, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, or_
+from sqlalchemy import select, desc, or_, func, distinct
 from sqlalchemy.orm import selectinload
 
 from app.api import deps
 from app.models.course import Course
+from app.models.enrollment import Enrollment
+from app.models.subject import Subject
+from app.models.feedback import CourseFeedback
 from app.models.user import User
 from app.schemas.course import CourseCreate, CourseResponse, CourseUpdate, CourseDetailResponse
 from app.models.enums import RoleEnum
@@ -223,11 +226,28 @@ async def read_all_courses_admin(
     """
     Retrieve all courses (including drafts) for admin.
     """
-    query = select(Course)
+    query = select(
+        Course,
+        func.count(distinct(Enrollment.id)).label("enrollments_count"),
+        func.count(distinct(Subject.id)).label("subjects_count"),
+        func.avg(CourseFeedback.rating).label("rating")
+    ).outerjoin(Enrollment, Course.id == Enrollment.course_id) \
+     .outerjoin(Subject, Course.id == Subject.course_id) \
+     .outerjoin(CourseFeedback, Course.id == CourseFeedback.course_id)
     
     if search:
         query = query.where(Course.title.ilike(f"%{search}%"))
         
-    query = query.offset(skip).limit(limit).order_by(desc(Course.created_at))
+    query = query.group_by(Course.id).offset(skip).limit(limit).order_by(desc(Course.created_at))
+    
     result = await db.execute(query)
-    return result.scalars().all()
+    rows = result.all()
+    
+    courses_with_stats = []
+    for course, enroll_count, subj_count, rating in rows:
+        setattr(course, "enrollments_count", enroll_count)
+        setattr(course, "subjects_count", subj_count)
+        setattr(course, "rating", round(float(rating or 0.0), 1))
+        courses_with_stats.append(course)
+        
+    return courses_with_stats

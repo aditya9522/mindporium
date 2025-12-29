@@ -26,6 +26,8 @@ export interface Course {
     created_at?: string;
     updated_at?: string;
     enrollments_count?: number;
+    rating?: number;
+    subjects_count?: number;
 }
 
 export interface CourseCreate {

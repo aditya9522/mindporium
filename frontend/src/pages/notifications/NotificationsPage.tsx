@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Bell, Check, CheckCheck, Loader2 } from 'lucide-react';
+import { Bell, Check, CheckCheck } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
+import { PageLoader } from '../../components/common/PageLoader';
 
 interface Notification {
     id: number;
@@ -87,11 +88,7 @@ export const NotificationsPage = () => {
     const unreadCount = notifications.filter(n => !n.is_read).length;
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -129,8 +126,8 @@ export const NotificationsPage = () => {
                         <button
                             onClick={() => setFilter('all')}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'all'
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                 }`}
                         >
                             All ({notifications.length})
@@ -138,8 +135,8 @@ export const NotificationsPage = () => {
                         <button
                             onClick={() => setFilter('unread')}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'unread'
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                 }`}
                         >
                             Unread ({unreadCount})
@@ -162,8 +159,8 @@ export const NotificationsPage = () => {
                             <div
                                 key={notification.id}
                                 className={`bg-white rounded-xl shadow-sm border transition-all hover:shadow-md ${notification.is_read
-                                        ? 'border-gray-200'
-                                        : 'border-indigo-200 bg-indigo-50/30'
+                                    ? 'border-gray-200'
+                                    : 'border-indigo-200 bg-indigo-50/30'
                                     }`}
                             >
                                 <div className="p-4 flex gap-4">

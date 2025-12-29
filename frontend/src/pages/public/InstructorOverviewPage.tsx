@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
-    Star, BookOpen, Users, ArrowLeft, Loader2,
+    Star, BookOpen, Users, ArrowLeft,
     Mail, Globe, Twitter, Linkedin, ExternalLink
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
@@ -9,6 +9,7 @@ import { FeedbackModal } from '../../components/feedback/FeedbackModal';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
+import { PageLoader } from '../../components/common/PageLoader';
 
 interface InstructorStats {
     total_courses: number;
@@ -75,11 +76,7 @@ export const InstructorOverviewPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-20 bg-gray-50 min-h-screen">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!instructor) {

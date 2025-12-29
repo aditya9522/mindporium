@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../../services/user.service';
-import { Loader2, GraduationCap, Star } from 'lucide-react';
+import { GraduationCap, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const InstructorsPage = () => {
     const [instructors, setInstructors] = useState<any[]>([]);
@@ -24,11 +25,7 @@ export const InstructorsPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -77,14 +74,20 @@ export const InstructorsPage = () => {
                                     <p className="text-indigo-600 font-medium text-sm mb-4">Instructor</p>
 
                                     <p className="text-gray-600 text-sm line-clamp-3 mb-6 min-h-[60px]">
-                                        {instructor.bio || 'Experienced educator passionate about teaching and student success.'}
+                                        {instructor.bio || 'No biography provided.'}
                                     </p>
 
                                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                                         <div className="flex items-center gap-1 text-amber-500">
-                                            <Star className="w-4 h-4 fill-current" />
-                                            <span className="text-sm font-medium text-gray-900">{instructor.rating || '4.8'}</span>
-                                            <span className="text-xs text-gray-400">({instructor.total_reviews || '120'} reviews)</span>
+                                            <Star className={`w-4 h-4 ${instructor.rating > 0 ? 'fill-current' : 'text-gray-300'}`} />
+                                            {instructor.rating > 0 ? (
+                                                <>
+                                                    <span className="text-sm font-medium text-gray-900">{instructor.rating.toFixed(1)}</span>
+                                                    <span className="text-xs text-gray-400">({instructor.total_reviews} reviews)</span>
+                                                </>
+                                            ) : (
+                                                <span className="text-sm font-medium text-gray-500">New Instructor</span>
+                                            )}
                                         </div>
                                         <span className="text-indigo-600 font-medium text-sm group-hover:text-indigo-700 flex items-center gap-1">
                                             View Profile

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { classroomService, type Classroom, type ClassMessage } from '../../services/classroom.service';
 import { PageLoader } from '../../components/common/PageLoader';
 import { useAuthStore } from '../../store/auth.store';
-import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Users, Send, Hand, Monitor, X } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Send, Hand, Monitor, X } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -34,6 +34,9 @@ export const ClassroomDetailPage = () => {
     const [cameraOn, setCameraOn] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [handRaised, setHandRaised] = useState(false);
+    const [showChat, setShowChat] = useState(false); // Default hidden for full screen
+    const [sendingMsg, setSendingMsg] = useState(false);
+    const [actionLoading, setActionLoading] = useState(false); // For Start/Join/End
 
     // WebRTC / WS Refs
     const wsRef = useRef<WebSocket | null>(null);
@@ -75,7 +78,7 @@ export const ClassroomDetailPage = () => {
     }, [messages]);
 
     // View Logic - compute main stream
-    const isInstructor = user?.role === 'instructor';
+    const isInstructor = user?.id === classroom?.instructor_id;
     const instructorId = String(classroom?.instructor_id || '');
     const mainStream = isInstructor ? localStream : remotePeers.get(instructorId)?.stream;
 
@@ -124,6 +127,7 @@ export const ClassroomDetailPage = () => {
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newMessage.trim() || !id) return;
+        setSendingMsg(true);
         try {
             const savedMsg = await classroomService.sendMessage(parseInt(id), newMessage);
             setNewMessage('');
@@ -137,6 +141,8 @@ export const ClassroomDetailPage = () => {
             }
         } catch (error) {
             toast.error('Failed to send message');
+        } finally {
+            setSendingMsg(false);
         }
     };
 
@@ -148,6 +154,7 @@ export const ClassroomDetailPage = () => {
                 audio: true
             });
             setLocalStream(stream);
+            localStreamRef.current = stream; // Immediate update for race conditions
             setCameraOn(true);
             setMicOn(true);
 
@@ -228,7 +235,7 @@ export const ClassroomDetailPage = () => {
     // --- Signaling ---
     const handleJoinSession = async () => {
         if (!id || !user) return;
-
+        setActionLoading(true);
         try {
             const response = await classroomService.joinClassroom(parseInt(id));
 
@@ -251,15 +258,17 @@ export const ClassroomDetailPage = () => {
 
             wsRef.current.onopen = async () => {
                 console.log('WS Connected');
+
+                // Start Camera FIRST before verifying presence to avoid answering without tracks
+                await startCamera();
+                setJoined(true);
+
                 wsRef.current?.send(JSON.stringify({
                     type: 'join',
                     user_id: user.id,
                     user_info: { id: user.id, name: user.full_name, photo: user.photo }
                 }));
 
-                // Start Camera
-                await startCamera();
-                setJoined(true);
                 toast.success('Joined session');
                 classroomService.markAttendance(parseInt(id)).catch(err => console.error('Failed to mark attendance', err));
             };
@@ -272,6 +281,8 @@ export const ClassroomDetailPage = () => {
         } catch (error) {
             console.error(error);
             toast.error('Failed to join');
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -399,12 +410,15 @@ export const ClassroomDetailPage = () => {
 
     const handleStartClass = async () => {
         if (!id) return;
+        setActionLoading(true);
         try {
             await classroomService.startClassroom(parseInt(id));
             toast.success('Class started');
             fetchClassroom(parseInt(id));
         } catch (error) {
             toast.error('Failed to start class');
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -500,30 +514,32 @@ export const ClassroomDetailPage = () => {
                     </div>
 
                     {/* Chat Sidebar */}
-                    <div className="w-80 bg-gray-800 rounded-xl flex flex-col border border-gray-700">
-                        <div className="p-4 border-b border-gray-700 flex justify-between items-center">
-                            <h3 className="text-white font-medium flex gap-2"><MessageSquare className="w-4 h-4" /> Chat</h3>
-                            <span className="text-gray-400 text-xs flex gap-1"><Users className="w-3 h-3" /> {remotePeers.size + 1}</span>
-                        </div>
-                        <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-800/50 scrollbar-thin">
-                            {messages.length === 0 ? <p className="text-center text-gray-500 text-sm mt-10">No messages</p> :
-                                messages.map(msg => (
-                                    <div key={msg.id} className={`flex gap-3 ${msg.user_id === user?.id ? 'flex-row-reverse' : ''}`}>
-                                        <div className={`px-3 py-2 rounded-2xl text-sm break-words max-w-[85%] ${msg.user_id === user?.id ? 'bg-indigo-600' : 'bg-gray-700'} text-white`}>
-                                            <div className="text-[10px] opacity-75 mb-1">{msg.user?.full_name}</div>
-                                            {msg.message_text}
+                    {showChat && (
+                        <div className="w-80 bg-gray-800 rounded-xl flex flex-col border border-gray-700 transition-all duration-300">
+                            <div className="p-4 border-b border-gray-700 flex justify-between items-center">
+                                <h3 className="text-white font-medium flex gap-2"><MessageSquare className="w-4 h-4" /> Chat</h3>
+                                <button onClick={() => setShowChat(false)} className="text-gray-400 hover:text-white"><X className="w-4 h-4" /></button>
+                            </div>
+                            <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-800/50 scrollbar-thin">
+                                {messages.length === 0 ? <p className="text-center text-gray-500 text-sm mt-10">No messages</p> :
+                                    messages.map(msg => (
+                                        <div key={msg.id} className={`flex gap-3 ${msg.user_id === user?.id ? 'flex-row-reverse' : ''}`}>
+                                            <div className={`px-3 py-2 rounded-2xl text-sm break-words max-w-[85%] ${msg.user_id === user?.id ? 'bg-indigo-600' : 'bg-gray-700'} text-white`}>
+                                                <div className="text-[10px] opacity-75 mb-1">{msg.user?.full_name}</div>
+                                                {msg.message_text}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))
-                            }
+                                    ))
+                                }
+                            </div>
+                            <div className="p-4 border-t border-gray-700">
+                                <form onSubmit={handleSendMessage} className="flex gap-2">
+                                    <input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)} className="flex-1 bg-gray-700 text-white rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Type..." />
+                                    <Button type="submit" isLoading={sendingMsg} disabled={!newMessage.trim()} className="bg-indigo-600 p-2 rounded text-white hover:bg-indigo-700 disabled:opacity-50"><Send className="w-4 h-4" /></Button>
+                                </form>
+                            </div>
                         </div>
-                        <div className="p-4 border-t border-gray-700">
-                            <form onSubmit={handleSendMessage} className="flex gap-2">
-                                <input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)} className="flex-1 bg-gray-700 text-white rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Type..." />
-                                <button type="submit" disabled={!newMessage.trim()} className="bg-indigo-600 p-2 rounded text-white hover:bg-indigo-700 disabled:opacity-50"><Send className="w-4 h-4" /></button>
-                            </form>
-                        </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Controls */}
@@ -555,13 +571,16 @@ export const ClassroomDetailPage = () => {
                         <Button onClick={toggleHandRaise} variant={handRaised ? 'default' : 'secondary'} className={`rounded-full w-12 h-12 p-0 ${handRaised ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-600' : ''}`}>
                             <Hand />
                         </Button>
+                        <Button onClick={() => setShowChat(!showChat)} variant={showChat ? 'default' : 'secondary'} className="rounded-full w-12 h-12 p-0">
+                            <MessageSquare />
+                        </Button>
                         <div className="w-px h-8 bg-gray-600 mx-2 self-center"></div>
                         <Button onClick={handleLeave} variant="destructive" className="rounded-full w-12 h-12 p-0">
                             <PhoneOff />
                         </Button>
                     </div>
                     <div>
-                        {user?.role === 'instructor' && <Button variant="destructive" size="sm" onClick={handleEndClass}>End Class</Button>}
+                        {user?.role === 'instructor' && isInstructor && <Button variant="destructive" size="sm" onClick={handleEndClass} isLoading={actionLoading}>End Class</Button>}
                     </div>
                 </div>
             </div>
@@ -575,11 +594,11 @@ export const ClassroomDetailPage = () => {
                 <div className="p-8 space-y-4">
                     <div className="text-center"><span className="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium">{classroom.status.toUpperCase()}</span></div>
                     {classroom.status === 'live' ? (
-                        <Button className="w-full h-12 text-lg" onClick={handleJoinSession}><Video className="mr-2" /> Join Class Now</Button>
+                        <Button className="w-full h-12 text-lg" onClick={handleJoinSession} isLoading={actionLoading}><Video className="mr-2" /> Join Class Now</Button>
                     ) : (
                         <div className="text-center p-6 bg-gray-50 rounded-xl">
                             <p>Waiting for instructor...</p>
-                            {user?.role === 'instructor' && <Button className="mt-4 w-full" onClick={handleStartClass}>Start Class</Button>}
+                            {user?.role === 'instructor' && isInstructor && <Button className="mt-4 w-full" onClick={handleStartClass} isLoading={actionLoading}>Start Class</Button>}
                         </div>
                     )}
                     <Button variant="ghost" className="w-full" onClick={() => navigate('/classrooms')}>Back to List</Button>

@@ -7,8 +7,10 @@ import type { Subject, SubjectCreate } from '../../types/enrollment';
 import { ArrowLeft, Save, Loader2, Plus, Trash2, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ImageUpload } from '../../components/common/ImageUpload';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const EditCoursePage = () => {
+    // ... (state)
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -148,11 +150,7 @@ export const EditCoursePage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!course) {
@@ -308,9 +306,6 @@ export const EditCoursePage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Thumbnail URL
-                            </label>
                             <ImageUpload
                                 value={formData.thumbnail}
                                 onChange={(url) => setFormData({ ...formData, thumbnail: url })}
@@ -318,6 +313,7 @@ export const EditCoursePage = () => {
                                 entityType="courses"
                                 entityId={id}
                                 category="thumbnail"
+                                className="max-w-2xl"
                             />
                         </div>
 

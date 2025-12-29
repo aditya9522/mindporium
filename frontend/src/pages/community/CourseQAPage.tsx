@@ -6,9 +6,10 @@ import { courseService } from '../../services/course.service';
 import type { QAQuestion, QuestionCreate } from '../../types/qa';
 import type { Subject } from '../../types/enrollment';
 import type { Course } from '../../types/course';
-import { ArrowLeft, Plus, MessageSquare, CheckCircle, User, Clock, Send, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, MessageSquare, CheckCircle, User, Clock, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const CourseQAPage = () => {
     const { courseId } = useParams<{ courseId: string }>();
@@ -20,6 +21,8 @@ export const CourseQAPage = () => {
     const [questions, setQuestions] = useState<QAQuestion[]>([]);
     const [showAskForm, setShowAskForm] = useState(false);
     const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isReplying, setIsReplying] = useState(false);
 
     // Ask question form
     const [newQuestion, setNewQuestion] = useState<QuestionCreate>({
@@ -78,6 +81,9 @@ export const CourseQAPage = () => {
             return;
         }
 
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         try {
             const created = await qaService.askQuestion({
                 ...newQuestion,
@@ -90,6 +96,8 @@ export const CourseQAPage = () => {
         } catch (error) {
             console.error('Failed to ask question:', error);
             toast.error('Failed to post question');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -100,6 +108,9 @@ export const CourseQAPage = () => {
             return;
         }
 
+        if (isReplying) return;
+
+        setIsReplying(true);
         try {
             const answer = await qaService.answerQuestion({
                 question_id: questionId,
@@ -122,15 +133,13 @@ export const CourseQAPage = () => {
         } catch (error) {
             console.error('Failed to answer question:', error);
             toast.error('Failed to post answer');
+        } finally {
+            setIsReplying(false);
         }
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!course) {
@@ -218,9 +227,10 @@ export const CourseQAPage = () => {
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={handleAskQuestion}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                    disabled={isSubmitting}
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
                                 >
-                                    Post Question
+                                    {isSubmitting ? 'Posting...' : 'Post Question'}
                                 </button>
                                 <button
                                     onClick={() => setShowAskForm(false)}
@@ -314,7 +324,8 @@ export const CourseQAPage = () => {
                                             />
                                             <button
                                                 onClick={() => handleAnswerQuestion(question.id)}
-                                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                                disabled={isReplying}
+                                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
                                             >
                                                 <Send className="w-4 h-4" />
                                             </button>

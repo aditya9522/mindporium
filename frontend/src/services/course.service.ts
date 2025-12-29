@@ -5,6 +5,8 @@ export const courseService = {
     getCourses: async (filters?: CourseFilters): Promise<Course[]> => {
         const params = new URLSearchParams();
         if (filters?.search) params.append('search', filters.search);
+        if (filters?.category) params.append('category', filters.category);
+        if (filters?.level) params.append('level', filters.level);
         if (filters?.skip) params.append('skip', filters.skip.toString());
         if (filters?.limit) params.append('limit', filters.limit.toString());
 

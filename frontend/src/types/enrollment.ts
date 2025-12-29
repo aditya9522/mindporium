@@ -37,6 +37,7 @@ export interface Subject {
     updated_at?: string;
     resources?: Resource[];
     course_title?: string;
+    classrooms?: any[];
 }
 
 export interface SubjectCreate {

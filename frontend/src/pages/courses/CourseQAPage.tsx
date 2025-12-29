@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loader2, MessageSquare, ThumbsUp, MessageCircle, Plus, ChevronDown, ChevronUp, Send } from 'lucide-react';
+import { MessageSquare, ThumbsUp, MessageCircle, Plus, ChevronDown, ChevronUp, Send } from 'lucide-react';
 import api from '../../lib/axios';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
+import { PageLoader } from '../../components/common/PageLoader';
 
 interface User {
     id: number;
@@ -48,11 +49,13 @@ export const CourseQAPage = () => {
     const [newQuestion, setNewQuestion] = useState('');
     const [selectedSubjectId, setSelectedSubjectId] = useState<number | ''>('');
     const [activeFilter, setActiveFilter] = useState<number | 'all'>('all');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Reply State
     const [expandedQuestions, setExpandedQuestions] = useState<number[]>([]);
     const [replyingTo, setReplyingTo] = useState<number | null>(null);
     const [replyText, setReplyText] = useState('');
+    const [isReplying, setIsReplying] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -78,6 +81,9 @@ export const CourseQAPage = () => {
 
     const handleAskQuestion = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         try {
             await api.post('/qa/questions', {
                 title: newTitle,
@@ -91,6 +97,8 @@ export const CourseQAPage = () => {
             loadData();
         } catch (error) {
             toast.error('Failed to post question');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -101,7 +109,9 @@ export const CourseQAPage = () => {
     };
 
     const handlePostReply = async (questionId: number) => {
-        if (!replyText.trim()) return;
+        if (!replyText.trim() || isReplying) return;
+
+        setIsReplying(true);
         try {
             await api.post('/qa/answers', {
                 question_id: questionId,
@@ -116,6 +126,8 @@ export const CourseQAPage = () => {
             }
         } catch (error) {
             toast.error('Failed to post reply');
+        } finally {
+            setIsReplying(false);
         }
     };
 
@@ -124,11 +136,7 @@ export const CourseQAPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -214,7 +222,7 @@ export const CourseQAPage = () => {
                         </div>
                         <div className="flex justify-end gap-3">
                             <Button type="button" variant="ghost" onClick={() => setIsAsking(false)}>Cancel</Button>
-                            <Button type="submit">Post Question</Button>
+                            <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Posting...' : 'Post Question'}</Button>
                         </div>
                     </form>
                 </div>
@@ -338,7 +346,7 @@ export const CourseQAPage = () => {
                                                         }
                                                     }}
                                                 />
-                                                <Button size="sm" onClick={() => handlePostReply(question.id)} className="rounded-lg h-8 w-8 p-0 flex items-center justify-center">
+                                                <Button size="sm" onClick={() => handlePostReply(question.id)} disabled={isReplying} className="rounded-lg h-8 w-8 p-0 flex items-center justify-center">
                                                     <Send className="w-4 h-4" />
                                                 </Button>
                                             </div>

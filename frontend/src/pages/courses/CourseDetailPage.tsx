@@ -10,10 +10,11 @@ import { Button } from '../../components/ui/Button';
 import {
     Clock, Users, DollarSign, CheckCircle,
     PlayCircle, FileText, ArrowLeft, Star,
-    Settings, BarChart, Edit
+    Settings, BarChart, Edit, Plus
 } from 'lucide-react';
 import { AnnouncementsList } from '../../components/course/AnnouncementsList';
 import toast from 'react-hot-toast';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const CourseDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -73,11 +74,9 @@ export const CourseDetailPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            </div>
-        );
+        if (loading) {
+            return <PageLoader />;
+        }
     }
 
     if (!course) {
@@ -187,14 +186,22 @@ export const CourseDetailPage = () => {
                                             </Link>
                                         </div>
                                     ) : (
-                                        <Button
-                                            className="w-full"
-                                            size="lg"
-                                            onClick={handleEnroll}
-                                            disabled={enrolling}
-                                        >
-                                            {enrolling ? 'Enrolling...' : 'Enroll Now'}
-                                        </Button>
+
+                                        user?.role === 'instructor' ? (
+                                            <div className="w-full text-center p-3 bg-gray-100 rounded-lg text-gray-600 border border-gray-200">
+                                                Instructors cannot enroll in courses.
+                                            </div>
+                                        ) : (
+                                            <Button
+                                                className="w-full"
+                                                size="lg"
+                                                onClick={handleEnroll}
+                                                isLoading={enrolling}
+                                                disabled={enrolling}
+                                            >
+                                                {enrolling ? 'Enrolling...' : 'Enroll Now'}
+                                            </Button>
+                                        )
                                     )}
 
                                     <div className="mt-6 pt-6 border-t border-gray-200 space-y-3 text-sm text-gray-600">
@@ -247,21 +254,61 @@ export const CourseDetailPage = () => {
                         ) : (
                             <div className="space-y-2">
                                 {subjects.map((subject, index) => (
-                                    <div
-                                        key={subject.id}
-                                        className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors"
-                                    >
-                                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 font-semibold text-sm">
-                                            {index + 1}
+                                    <>
+                                        <div
+                                            key={subject.id}
+                                            className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors"
+                                        >
+                                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 font-semibold text-sm">
+                                                {index + 1}
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <h3 className="font-semibold text-gray-900">{subject.title}</h3>
+                                                        {subject.description && (
+                                                            <p className="text-sm text-gray-600 mt-1">{subject.description}</p>
+                                                        )}
+                                                    </div>
+                                                    {(user?.role === 'instructor' && user.id === course.created_by) && (
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 h-8"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                navigate(`/instructor/tests/create?subject_id=${subject.id}`);
+                                                            }}
+                                                        >
+                                                            <Plus className="w-4 h-4 mr-1" />
+                                                            Add Test
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <FileText className="h-5 w-5 text-gray-400" />
                                         </div>
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-gray-900">{subject.title}</h3>
-                                            {subject.description && (
-                                                <p className="text-sm text-gray-600 mt-1">{subject.description}</p>
-                                            )}
-                                        </div>
-                                        <FileText className="h-5 w-5 text-gray-400" />
-                                    </div>
+                                        {/* Render Classrooms */}
+                                        {
+                                            subject.classrooms && subject.classrooms.length > 0 && (
+                                                <div className="ml-12 mt-2 space-y-2">
+                                                    {subject.classrooms.map((cls: any) => (
+                                                        <div key={cls.id} className="flex items-center justify-between p-3 bg-indigo-50/50 rounded-lg border border-indigo-100">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`w-2 h-2 rounded-full ${cls.status === 'live' ? 'bg-red-500 animate-pulse' : 'bg-gray-400'}`}></div>
+                                                                <span className="text-sm font-medium text-gray-700">{cls.title}</span>
+                                                            </div>
+                                                            <Link to={`/classrooms/${cls.id}`}>
+                                                                <Button size="sm" variant={cls.status === 'live' ? 'default' : 'outline'} className="h-8">
+                                                                    {cls.status === 'live' ? 'Join Live' : 'View'}
+                                                                </Button>
+                                                            </Link>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )
+                                        }
+                                    </>
                                 ))}
                             </div>
                         )}
@@ -292,6 +339,6 @@ export const CourseDetailPage = () => {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };

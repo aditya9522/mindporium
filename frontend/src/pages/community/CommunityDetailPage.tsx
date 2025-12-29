@@ -8,6 +8,7 @@ import { ImageUpload } from '../../components/common/ImageUpload';
 import { getImageUrl } from '../../lib/utils';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const CommunityDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -167,11 +168,7 @@ export const CommunityDetailPage = () => {
     const canManage = user?.role === 'admin' || (community && user?.id === community.created_by);
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!community) return null;

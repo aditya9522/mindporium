@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-// import { useAuthStore } from '../../store/auth.store';
-import { Loader2, Search, Users, BookOpen, TrendingUp, Mail } from 'lucide-react';
+import { Search, Users, BookOpen, TrendingUp, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
+import { PageLoader } from '../../components/common/PageLoader';
 
 interface StudentData {
     user_id: number;
@@ -58,11 +58,7 @@ export const InstructorStudentsPage = () => {
     });
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (

@@ -157,17 +157,17 @@ export const AdminCourseManagementPage = () => {
                                     <div className="text-center p-2 bg-gray-50 rounded-lg">
                                         <Users className="w-4 h-4 mx-auto text-gray-400 mb-1" />
                                         <p className="text-xs text-gray-500">Students</p>
-                                        <p className="text-sm font-bold text-gray-900">-</p>
+                                        <p className="text-sm font-bold text-gray-900">{course.enrollments_count || 0}</p>
                                     </div>
                                     <div className="text-center p-2 bg-gray-50 rounded-lg">
                                         <Star className="w-4 h-4 mx-auto text-yellow-400 mb-1" />
                                         <p className="text-xs text-gray-500">Rating</p>
-                                        <p className="text-sm font-bold text-gray-900">-</p>
+                                        <p className="text-sm font-bold text-gray-900">{course.rating || 0}</p>
                                     </div>
                                     <div className="text-center p-2 bg-gray-50 rounded-lg">
                                         <BookOpen className="w-4 h-4 mx-auto text-gray-400 mb-1" />
                                         <p className="text-xs text-gray-500">Subjects</p>
-                                        <p className="text-sm font-bold text-gray-900">-</p>
+                                        <p className="text-sm font-bold text-gray-900">{course.subjects_count || 0}</p>
                                     </div>
                                 </div>
 

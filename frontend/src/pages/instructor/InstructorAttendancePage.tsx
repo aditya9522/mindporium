@@ -3,6 +3,7 @@ import { Loader2, Calendar, Clock } from 'lucide-react';
 import api from '../../lib/axios';
 import { classroomService } from '../../services/classroom.service';
 import { format } from 'date-fns';
+import { PageLoader } from '../../components/common/PageLoader';
 
 interface Classroom {
     id: number;
@@ -66,11 +67,7 @@ export const InstructorAttendancePage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (

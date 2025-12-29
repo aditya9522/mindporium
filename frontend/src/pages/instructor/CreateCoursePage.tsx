@@ -287,9 +287,6 @@ export const CreateCoursePage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Thumbnail URL (optional)
-                                </label>
                                 <ImageUpload
                                     value={basicInfo.thumbnail}
                                     onChange={(url) => setBasicInfo({ ...basicInfo, thumbnail: url })}
@@ -297,6 +294,7 @@ export const CreateCoursePage = () => {
                                     entityType="courses"
                                     entityId={draftId}
                                     category="thumbnail"
+                                    className="max-w-2xl"
                                 />
                             </div>
                         </div>

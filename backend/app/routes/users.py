@@ -2,7 +2,8 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func, distinct, case
+from app.models.submission import Submission
 
 from app.api import deps
 from app.models.user import User
@@ -105,14 +106,18 @@ async def read_students(
         )
     
     from app.models.enrollment import Enrollment
-    from sqlalchemy import func
     
-    # Get students with enrollment count
+    # Get students with detailed statistics
     query = select(
         User,
-        func.count(Enrollment.id).label('enrolled_courses')
+        func.count(distinct(Enrollment.id)).label('enrolled_courses'),
+        func.sum(case((Enrollment.progress_percent >= 100, 1), else_=0)).label('completed_courses'),
+        func.avg(Submission.obtained_marks).label('average_grade'),
+        func.max(Enrollment.last_accessed_at).label('last_active')
     ).outerjoin(
         Enrollment, User.id == Enrollment.user_id
+    ).outerjoin(
+        Submission, User.id == Submission.user_id
     ).where(
         User.role == RoleEnum.student,
         User.is_active == True
@@ -122,16 +127,17 @@ async def read_students(
     rows = result.all()
     
     students = []
-    for user, enrolled_courses in rows:
+    for user, enrolled_courses, completed_courses, average_grade, last_active in rows:
         students.append({
             "id": user.id,
             "full_name": user.full_name,
             "email": user.email,
             "photo": user.photo,
             "enrolled_courses": enrolled_courses,
-            "completed_courses": 0,  # TODO: Calculate from resource_completion
-            "average_grade": 0,  # TODO: Calculate from submissions
-            "created_at": user.created_at.isoformat() if user.created_at else None
+            "completed_courses": completed_courses or 0,
+            "average_grade": round(float(average_grade or 0.0), 1),
+            "created_at": user.created_at.isoformat() if user.created_at else None,
+            "last_active": last_active.isoformat() if last_active else None
         })
     
     return students

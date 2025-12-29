@@ -3,10 +3,11 @@ import { courseService } from '../../services/course.service';
 import type { Course } from '../../types/course';
 import { CourseManagementCard } from '../../components/instructor/CourseManagementCard';
 import { StatsCard } from '../../components/instructor/StatsCard';
-import { Plus, Search, Filter, Loader2, BookOpen, BarChart2, TrendingUp, Users } from 'lucide-react';
+import { Plus, Search, Filter, BookOpen, BarChart2, TrendingUp, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const MyCoursesPage = () => {
     // const navigate = useNavigate();
@@ -59,11 +60,13 @@ export const MyCoursesPage = () => {
 
     const filteredCourses = courses.filter(course => {
         const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            course.description?.toLowerCase().includes(searchQuery.toLowerCase());
+            (course.description?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+
+        const isPublished = !!course.is_published;
 
         const matchesStatus = filterStatus === 'all' ||
-            (filterStatus === 'published' && course.is_published) ||
-            (filterStatus === 'draft' && !course.is_published);
+            (filterStatus === 'published' && isPublished) ||
+            (filterStatus === 'draft' && !isPublished);
 
         return matchesSearch && matchesStatus;
     });
@@ -71,11 +74,7 @@ export const MyCoursesPage = () => {
     const totalStudents = courses.reduce((acc, course) => acc + (course.enrollments_count || 0), 0); // Assuming enrollments_count exists or 0
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (

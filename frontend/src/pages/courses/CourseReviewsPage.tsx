@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Star, MessageSquare, ThumbsUp, User as UserIcon, Loader2 } from 'lucide-react';
+import { Star, MessageSquare, ThumbsUp, User as UserIcon } from 'lucide-react';
 import api from '../../lib/axios';
 import { getImageUrl } from '../../lib/utils';
+import { PageLoader } from '../../components/common/PageLoader';
 
 interface Review {
     id: number;
@@ -60,11 +61,7 @@ export const CourseReviewsPage = () => {
     });
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (

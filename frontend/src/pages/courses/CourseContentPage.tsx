@@ -6,11 +6,11 @@ import {
     PlayCircle,
     FileText,
     HelpCircle,
-    Loader2,
     CheckCircle,
     Circle
 } from 'lucide-react';
 import api from '../../lib/axios';
+import { PageLoader } from '../../components/common/PageLoader';
 
 import type { Subject, Resource } from '../../types/enrollment';
 
@@ -81,11 +81,7 @@ export const CourseContentPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (subjects.length === 0) {

@@ -15,6 +15,7 @@ interface Student {
     completed_courses?: number;
     average_grade?: number;
     created_at: string;
+    last_active?: string;
 }
 
 export const StudentsPage = () => {
@@ -69,6 +70,13 @@ export const StudentsPage = () => {
             }
         });
 
+    // Calculate active students (active in last 30 days)
+    const activeThreshold = new Date();
+    activeThreshold.setMonth(activeThreshold.getMonth() - 1);
+    const activeStudentsCount = students.filter(s =>
+        s.last_active && new Date(s.last_active) > activeThreshold
+    ).length;
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -107,7 +115,7 @@ export const StudentsPage = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-gray-600">Active This Month</p>
-                                    <p className="text-2xl font-bold text-gray-900">{Math.floor(students.length * 0.75)}</p>
+                                    <p className="text-2xl font-bold text-gray-900">{activeStudentsCount}</p>
                                 </div>
                                 <TrendingUp className="w-8 h-8 text-green-600 opacity-20" />
                             </div>

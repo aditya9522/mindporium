@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { testService } from '../../services/test.service';
 import { subjectService } from '../../services/subject.service';
-import { Plus, Trash2, ArrowLeft, Loader2, Save } from 'lucide-react';
+import { Plus, Trash2, ArrowLeft, Loader2, Save, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Question {
@@ -19,6 +19,7 @@ export const CreateTestPage = () => {
     const [loading, setLoading] = useState(false);
     const [subjects, setSubjects] = useState<any[]>([]);
     const [loadingSubjects, setLoadingSubjects] = useState(true);
+    const [expandedQuestions, setExpandedQuestions] = useState<{ [key: number]: boolean }>({ 0: true });
 
     const [formData, setFormData] = useState({
         title: '',
@@ -41,9 +42,22 @@ export const CreateTestPage = () => {
         },
     ]);
 
+    const toggleQuestion = (index: number) => {
+        setExpandedQuestions(prev => ({
+            ...prev,
+            [index]: !prev[index]
+        }));
+    };
+
+    const [searchParams] = useSearchParams();
+
     useEffect(() => {
+        const subjectIdParam = searchParams.get('subject_id');
+        if (subjectIdParam) {
+            setFormData(prev => ({ ...prev, subject_id: subjectIdParam }));
+        }
         fetchSubjects();
-    }, []);
+    }, [searchParams]);
 
     useEffect(() => {
         // Auto-calculate total marks
@@ -65,6 +79,7 @@ export const CreateTestPage = () => {
     };
 
     const addQuestion = () => {
+        const newIndex = questions.length;
         setQuestions([
             ...questions,
             {
@@ -73,9 +88,10 @@ export const CreateTestPage = () => {
                 options: ['', '', '', ''],
                 correct_answer: '',
                 marks: 1,
-                order_index: questions.length,
+                order_index: newIndex,
             },
         ]);
+        setExpandedQuestions(prev => ({ ...prev, [newIndex]: true }));
     };
 
     const removeQuestion = (index: number) => {
@@ -282,99 +298,121 @@ export const CreateTestPage = () => {
 
                             <div className="space-y-6">
                                 {questions.map((question, qIndex) => (
-                                    <div key={qIndex} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <h3 className="font-medium text-gray-900">Question {qIndex + 1}</h3>
-                                            {questions.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeQuestion(qIndex)}
-                                                    className="text-red-600 hover:text-red-700"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            )}
+                                    <div key={qIndex} className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                                        <div
+                                            className="flex justify-between items-center p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                                            onClick={() => toggleQuestion(qIndex)}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold">
+                                                    {qIndex + 1}
+                                                </span>
+                                                <h3 className="font-medium text-gray-900">
+                                                    {question.question_text ? (question.question_text.length > 50 ? question.question_text.substring(0, 50) + '...' : question.question_text) : 'New Question'}
+                                                </h3>
+                                                <span className="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">
+                                                    {question.question_type === 'mcq' ? 'MCQ' : question.question_type === 'short_answer' ? 'Short Answer' : 'Essay'}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                {expandedQuestions[qIndex] ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                                                {questions.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            removeQuestion(qIndex);
+                                                        }}
+                                                        className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ml-2"
+                                                        title="Delete Question"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        <div className="space-y-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                    Question Text *
-                                                </label>
-                                                <textarea
-                                                    value={question.question_text}
-                                                    onChange={(e) => updateQuestion(qIndex, 'question_text', e.target.value)}
-                                                    rows={2}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
-                                                    placeholder="Enter your question"
-                                                    required
-                                                />
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-4">
+                                        {expandedQuestions[qIndex] && (
+                                            <div className="p-4 border-t border-gray-200 space-y-4 animate-in slide-in-from-top-2 duration-200">
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Question Type
+                                                        Question Text *
                                                     </label>
-                                                    <select
-                                                        value={question.question_type}
-                                                        onChange={(e) => updateQuestion(qIndex, 'question_type', e.target.value)}
+                                                    <textarea
+                                                        value={question.question_text}
+                                                        onChange={(e) => updateQuestion(qIndex, 'question_text', e.target.value)}
+                                                        rows={2}
                                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
-                                                    >
-                                                        <option value="mcq">Multiple Choice</option>
-                                                        <option value="short_answer">Short Answer</option>
-                                                        <option value="essay">Essay</option>
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Marks *
-                                                    </label>
-                                                    <input
-                                                        type="number"
-                                                        value={question.marks}
-                                                        onChange={(e) => updateQuestion(qIndex, 'marks', parseFloat(e.target.value))}
-                                                        min="0.5"
-                                                        step="0.5"
-                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                                                        placeholder="Enter your question"
                                                         required
                                                     />
                                                 </div>
-                                            </div>
 
-                                            {question.question_type === 'mcq' && (
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Options
-                                                    </label>
-                                                    <div className="space-y-2">
-                                                        {question.options?.map((option, optIndex) => (
-                                                            <div key={optIndex} className="flex items-center gap-2">
-                                                                <input
-                                                                    type="radio"
-                                                                    name={`correct-${qIndex}`}
-                                                                    checked={question.correct_answer === option}
-                                                                    onChange={() => updateQuestion(qIndex, 'correct_answer', option)}
-                                                                    className="w-4 h-4 text-indigo-600"
-                                                                />
-                                                                <input
-                                                                    type="text"
-                                                                    value={option}
-                                                                    onChange={(e) => updateOption(qIndex, optIndex, e.target.value)}
-                                                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
-                                                                    placeholder={`Option ${optIndex + 1}`}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                        ))}
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                            Question Type
+                                                        </label>
+                                                        <select
+                                                            value={question.question_type}
+                                                            onChange={(e) => updateQuestion(qIndex, 'question_type', e.target.value)}
+                                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                                                        >
+                                                            <option value="mcq">Multiple Choice</option>
+                                                            <option value="short_answer">Short Answer</option>
+                                                            <option value="essay">Essay</option>
+                                                        </select>
                                                     </div>
-                                                    <p className="text-xs text-gray-500 mt-2">
-                                                        Select the radio button for the correct answer
-                                                    </p>
+
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                            Marks *
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            value={question.marks}
+                                                            onChange={(e) => updateQuestion(qIndex, 'marks', parseFloat(e.target.value))}
+                                                            min="0.5"
+                                                            step="0.5"
+                                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                                                            required
+                                                        />
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
+
+                                                {question.question_type === 'mcq' && (
+                                                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                            Options
+                                                        </label>
+                                                        <div className="space-y-2">
+                                                            {question.options?.map((option, optIndex) => (
+                                                                <div key={optIndex} className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={`correct-${qIndex}`}
+                                                                        checked={question.correct_answer === option && option !== ''}
+                                                                        onChange={() => updateQuestion(qIndex, 'correct_answer', option)}
+                                                                        className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                                                    />
+                                                                    <input
+                                                                        type="text"
+                                                                        value={option}
+                                                                        onChange={(e) => updateOption(qIndex, optIndex, e.target.value)}
+                                                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-sm"
+                                                                        placeholder={`Option ${optIndex + 1}`}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                                                            <CheckCircle className="w-3 h-3" /> Select the radio button for the correct answer
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

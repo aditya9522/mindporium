@@ -30,6 +30,9 @@ async def enroll_course(
     """
     Enroll current user in a course.
     """
+    if current_user.role == "instructor":
+        raise HTTPException(status_code=403, detail="Instructors cannot enroll in courses.")
+
     # 1. Check if course exists
     result = await db.execute(select(Course).where(Course.id == enrollment_in.course_id))
     course = result.scalars().first()

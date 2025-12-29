@@ -3,7 +3,6 @@ import logging
 from typing import Dict, Set
 
 from fastapi import WebSocket, WebSocketDisconnect
-from app.core.redis import redis_manager
 
 logger = logging.getLogger("app.ws")
 

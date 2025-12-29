@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loader2, Bell, Pin, Calendar, User } from 'lucide-react';
+import { Bell, Pin, Calendar, User } from 'lucide-react';
 import api from '../../lib/axios';
+import { PageLoader } from '../../components/common/PageLoader';
 
 interface Announcement {
     id: number;
@@ -52,11 +53,7 @@ export const CourseAnnouncementsPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (

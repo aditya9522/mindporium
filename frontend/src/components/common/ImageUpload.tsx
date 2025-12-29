@@ -92,7 +92,7 @@ export const ImageUpload = ({
             case 'banner':
                 return "w-full h-48 rounded-xl";
             default: // standard
-                return "w-full h-48 rounded-xl max-w-md"; // Limit width for standard to look like thumbnail
+                return "w-full h-48 rounded-xl bg-white";
         }
     };
 
@@ -123,11 +123,13 @@ export const ImageUpload = ({
             <div
                 onClick={handleContainerClick}
                 className={`
-                    relative overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300 
-                    flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors group
+                    relative overflow-hidden bg-gray-50 border-2 border-dashed border-gray-300 
+                    text-gray-400 hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-200 cursor-pointer group
+                    flex items-center justify-center
                     ${getContainerStyles()}
                     ${isUploading ? 'opacity-50 pointer-events-none' : ''}
                 `}
+                title="Click to upload image"
             >
                 {preview ? (
                     <>
@@ -160,11 +162,13 @@ export const ImageUpload = ({
                     onChange={handleFileChange}
                 />
             </div>
-            {variant === 'standard' && (
-                <p className="text-xs text-gray-500">
-                    Recommended: 1280x720px (16:9). Max 5MB.
-                </p>
-            )}
-        </div>
+            {
+                variant === 'standard' && (
+                    <p className="text-xs text-gray-500">
+                        Recommended: 1280x720px (16:9). Max 5MB.
+                    </p>
+                )
+            }
+        </div >
     );
 };

@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { testService } from '../../services/test.service';
 import type { Submission, Test } from '../../types/test';
-import { Loader2, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const TestSubmissionsPage = () => {
     const { id } = useParams();
@@ -39,11 +40,7 @@ export const TestSubmissionsPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!test) return null;

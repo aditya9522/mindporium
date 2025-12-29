@@ -37,6 +37,11 @@ class CourseResponse(CourseBase):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    # Computed fields
+    enrollments_count: Optional[int] = 0
+    subjects_count: Optional[int] = 0
+    rating: Optional[float] = 0.0
+
     class Config:
         from_attributes = True
 

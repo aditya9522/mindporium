@@ -76,7 +76,7 @@ async def read_subjects(
     """
     Get all subjects for a course.
     """
-    query = select(Subject).where(Subject.course_id == course_id).order_by(Subject.order_index).options(selectinload(Subject.resources))
+    query = select(Subject).where(Subject.course_id == course_id).order_by(Subject.order_index).options(selectinload(Subject.resources), selectinload(Subject.classrooms))
     result = await db.execute(query)
     return result.scalars().all()
 

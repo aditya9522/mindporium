@@ -5,8 +5,10 @@ import type { Test } from '../../types/test';
 import { Loader2, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const TakeTestPage = () => {
+    // ... (state and effects)
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -84,11 +86,7 @@ export const TakeTestPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!test) return null;
@@ -146,7 +144,7 @@ export const TakeTestPage = () => {
                                 </div>
                             ) : (
                                 <textarea
-                                    className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-h-[100px]"
+                                    className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-h-[100px] bg-white"
                                     placeholder="Type your answer here..."
                                     value={answers[question.id!.toString()] || ''}
                                     onChange={(e) => handleAnswerChange(question.id!, e.target.value)}

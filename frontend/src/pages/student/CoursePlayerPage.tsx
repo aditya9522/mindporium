@@ -21,6 +21,7 @@ export const CoursePlayerPage = () => {
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [activeResource, setActiveResource] = useState<Resource | null>(null);
     const [loading, setLoading] = useState(true);
+    const [markingComplete, setMarkingComplete] = useState(false);
     const [completedResources, setCompletedResources] = useState<number[]>([]);
 
     // Fetch course data
@@ -87,7 +88,8 @@ export const CoursePlayerPage = () => {
     };
 
     const handleMarkComplete = async () => {
-        if (!activeResource) return;
+        if (!activeResource || markingComplete) return;
+        setMarkingComplete(true);
         try {
             await api.post(`/enrollments/resource/${activeResource.id}/complete`);
             setCompletedResources(prev => [...prev, activeResource.id]);
@@ -95,6 +97,8 @@ export const CoursePlayerPage = () => {
             // Optional: Auto-advance to next lesson?
         } catch (error) {
             toast.error('Failed to mark complete');
+        } finally {
+            setMarkingComplete(false);
         }
     };
 

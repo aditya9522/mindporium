@@ -92,15 +92,45 @@ export const CourseCatalogPage = () => {
 
                 {/* Filter Tags */}
                 <div className="flex flex-wrap gap-2 mt-4">
-                    <Button variant="outline" size="sm">
+                    <Button
+                        variant={!filters.level && !filters.category ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setFilters({ ...filters, level: undefined, category: undefined, skip: 0 })}
+                    >
                         <Filter className="h-4 w-4 mr-2" />
-                        All Levels
+                        All
                     </Button>
-                    <Button variant="outline" size="sm">Free</Button>
-                    <Button variant="outline" size="sm">Paid</Button>
-                    <Button variant="outline" size="sm">Beginner</Button>
-                    <Button variant="outline" size="sm">Intermediate</Button>
-                    <Button variant="outline" size="sm">Advanced</Button>
+
+                    <div className="h-6 w-px bg-gray-200 mx-2"></div>
+
+                    <Button
+                        variant={filters.category === 'free' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setFilters({ ...filters, category: filters.category === 'free' ? undefined : 'free', skip: 0 })}
+                    >
+                        Free
+                    </Button>
+                    <Button
+                        variant={filters.category === 'paid' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setFilters({ ...filters, category: filters.category === 'paid' ? undefined : 'paid', skip: 0 })}
+                    >
+                        Paid
+                    </Button>
+
+                    <div className="h-6 w-px bg-gray-200 mx-2"></div>
+
+                    {(['beginner', 'intermediate', 'advanced'] as const).map((level) => (
+                        <Button
+                            key={level}
+                            variant={filters.level === level ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setFilters({ ...filters, level: filters.level === level ? undefined : level, skip: 0 })}
+                            className="capitalize"
+                        >
+                            {level}
+                        </Button>
+                    ))}
                 </div>
             </div>
 

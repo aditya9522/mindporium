@@ -5,6 +5,7 @@ import { StatsCard } from '../../components/instructor/StatsCard';
 import { BookOpen, Users, DollarSign, TrendingUp, Plus, Calendar, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const InstructorDashboardPage = () => {
     const [dashboard, setDashboard] = useState<InstructorDashboard | null>(null);
@@ -25,11 +26,7 @@ export const InstructorDashboardPage = () => {
     }, []);
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!dashboard) {

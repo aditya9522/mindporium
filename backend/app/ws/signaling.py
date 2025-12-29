@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
 from app.ws.manager import manager
-from app.core.redis import redis_manager
 from app.services.attendance_service import attendance_service
 
 router = APIRouter()
