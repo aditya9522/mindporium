@@ -54,7 +54,7 @@ async def websocket_endpoint(
                 target_user_id = data.get("target_user_id")
                 if target_user_id:
                     # Relay to specific user
-                    await manager.send_personal_message(data, classroom_id, target_user_id)
+                    await manager.send_personal_message(data, classroom_id, str(target_user_id))
             
             # Chat or System Events
             elif message_type == "chat":

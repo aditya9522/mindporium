@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { instructorService } from '../../services/instructor.service';
 import type { InstructorDashboard } from '../../types/instructor';
 import { StatsCard } from '../../components/instructor/StatsCard';
-import { BookOpen, Users, DollarSign, TrendingUp, Plus, Calendar, Loader2 } from 'lucide-react';
+import { BookOpen, Users, DollarSign, TrendingUp, Plus, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { PageLoader } from '../../components/common/PageLoader';
@@ -120,13 +120,13 @@ export const InstructorDashboardPage = () => {
                                             <p className="font-medium text-gray-900">{classroom.title}</p>
                                             <p className="text-sm text-gray-600">{classroom.subject_title}</p>
                                             <p className="text-xs text-gray-500 mt-1">
-                                                {classroom.scheduled_at && !isNaN(new Date(classroom.scheduled_at).getTime())
-                                                    ? format(new Date(classroom.scheduled_at), 'MMM d, h:mm a')
-                                                    : 'N/A'}
+                                                {(classroom.scheduled_at || (classroom as any).start_time) && !isNaN(new Date(classroom.scheduled_at || (classroom as any).start_time).getTime())
+                                                    ? format(new Date(classroom.scheduled_at || (classroom as any).start_time), 'MMM d, h:mm a')
+                                                    : 'Date not set'}
                                             </p>
                                         </div>
-                                        <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded">
-                                            {classroom.type}
+                                        <span className={`text-xs px-2 py-1 rounded capitalize ${(classroom as any).status === 'live' ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-indigo-100 text-indigo-700'}`}>
+                                            {(classroom as any).status === 'live' ? 'Live' : classroom.type}
                                         </span>
                                     </div>
                                 ))}

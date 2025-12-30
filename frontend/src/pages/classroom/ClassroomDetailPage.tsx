@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { classroomService, type Classroom, type ClassMessage } from '../../services/classroom.service';
 import { PageLoader } from '../../components/common/PageLoader';
 import { useAuthStore } from '../../store/auth.store';
-import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Send, Hand, Monitor, X } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Send, Hand, Monitor, X, Calendar, Clock, User as UserIcon, Maximize, Minimize } from 'lucide-react';
+import { format } from 'date-fns';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -77,6 +78,34 @@ export const ClassroomDetailPage = () => {
         }
     }, [messages]);
 
+    // --- UI State ---
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // --- Helper Functions ---
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            containerRef.current?.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    };
+
+    // Listen for fullscreen change events (esc key, etc)
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    // --- View Logic / Hooks must be before returns ---
+
     // View Logic - compute main stream
     const isInstructor = user?.id === classroom?.instructor_id;
     const instructorId = String(classroom?.instructor_id || '');
@@ -113,6 +142,10 @@ export const ClassroomDetailPage = () => {
             setLoading(false);
         }
     };
+
+    // ... (Other functions loadMessages, handleSendMessage, startCamera etc are defined below in original, but hooks must be top)
+    // Actually the easiest way is to just keep functions where they are and only move the hooks up.
+    // But I will just output the hooks block at the top and remove them from the bottom.
 
     const loadMessages = async () => {
         if (!id) return;
@@ -162,8 +195,12 @@ export const ClassroomDetailPage = () => {
             Object.values(pcsRef.current).forEach(pc => {
                 stream.getTracks().forEach(track => {
                     const senders = pc.getSenders();
-                    const hasTrack = senders.some(s => s.track?.kind === track.kind);
-                    if (!hasTrack) pc.addTrack(track, stream);
+                    const sender = senders.find(s => s.track?.kind === track.kind);
+                    if (sender) {
+                        sender.replaceTrack(track);
+                    } else {
+                        pc.addTrack(track, stream);
+                    }
                 });
             });
             return stream;
@@ -250,7 +287,7 @@ export const ClassroomDetailPage = () => {
             }
 
             // Connect WS
-            const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const apiBase = import.meta.env.VITE_API_URL;
             const wsProto = apiBase.startsWith('https') ? 'wss' : 'ws';
             const hostUrl = apiBase.replace(/^https?:\/\//, '').replace(/\/$/, '');
             const wsUrl = `${wsProto}://${hostUrl}/${response.websocket_url}`;
@@ -297,7 +334,7 @@ export const ClassroomDetailPage = () => {
         switch (data.type) {
             case 'user_joined':
                 toast.success(`${data.payload?.name} joined`);
-                createPeerConnection(data.user_id, true, currentIceServers, data.payload);
+                createPeerConnection(String(data.user_id), true, currentIceServers, data.payload);
                 break;
             case 'user_left':
                 if (pcsRef.current[data.user_id]) {
@@ -384,7 +421,7 @@ export const ClassroomDetailPage = () => {
     };
 
     const handleOffer = async (data: any, iceServers: RTCIceServer[]) => {
-        const senderId = data.sender_user_id;
+        const senderId = String(data.sender_user_id);
         const pc = createPeerConnection(senderId, false, iceServers);
         await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
         const answer = await pc.createAnswer();
@@ -398,12 +435,12 @@ export const ClassroomDetailPage = () => {
     };
 
     const handleAnswer = async (data: any) => {
-        const pc = pcsRef.current[data.sender_user_id];
+        const pc = pcsRef.current[String(data.sender_user_id)];
         if (pc) await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
     };
 
     const handleCandidate = async (data: any) => {
-        const pc = pcsRef.current[data.sender_user_id];
+        const pc = pcsRef.current[String(data.sender_user_id)];
         if (pc) await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
     };
 
@@ -434,7 +471,6 @@ export const ClassroomDetailPage = () => {
         }
     };
 
-
     if (loading) return <PageLoader />;
     if (!classroom) return null;
 
@@ -446,8 +482,17 @@ export const ClassroomDetailPage = () => {
 
     if (joined) {
         return (
-            <div className="min-h-screen bg-gray-900 flex flex-col">
-                <div className="flex-1 p-4 flex gap-4 overflow-hidden">
+            <div ref={containerRef} className="min-h-screen bg-gray-900 flex flex-col">
+                <div className="flex-1 p-4 flex gap-4 overflow-hidden relative">
+                    {/* Full Screen Toggle (Top Right Overlay) */}
+                    <button
+                        onClick={toggleFullscreen}
+                        className="absolute top-6 right-6 z-50 p-2 bg-black/50 text-white rounded-lg hover:bg-black/70 transition-colors backdrop-blur-sm"
+                        title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
+                    >
+                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+                    </button>
+
                     {/* Main Video Area */}
                     <div className="flex-1 flex flex-col gap-4">
                         <div className="flex-1 bg-gray-800 rounded-xl overflow-hidden relative border border-gray-700">
@@ -515,7 +560,7 @@ export const ClassroomDetailPage = () => {
 
                     {/* Chat Sidebar */}
                     {showChat && (
-                        <div className="w-80 bg-gray-800 rounded-xl flex flex-col border border-gray-700 transition-all duration-300">
+                        <div className="w-80 bg-gray-800 rounded-xl flex flex-col border border-gray-700 transition-all duration-300 z-40">
                             <div className="p-4 border-b border-gray-700 flex justify-between items-center">
                                 <h3 className="text-white font-medium flex gap-2"><MessageSquare className="w-4 h-4" /> Chat</h3>
                                 <button onClick={() => setShowChat(false)} className="text-gray-400 hover:text-white"><X className="w-4 h-4" /></button>
@@ -559,28 +604,28 @@ export const ClassroomDetailPage = () => {
                         </div>
                     </div>
                     <div className="flex gap-4">
-                        <Button onClick={toggleMic} variant={micOn ? 'secondary' : 'destructive'} className="rounded-full w-12 h-12 p-0">
+                        <Button onClick={toggleMic} variant={micOn ? 'secondary' : 'destructive'} className="rounded-full w-12 h-12 p-0 shadow-lg">
                             {micOn ? <Mic /> : <MicOff />}
                         </Button>
-                        <Button onClick={toggleCamera} variant={cameraOn ? 'secondary' : 'destructive'} className="rounded-full w-12 h-12 p-0">
+                        <Button onClick={toggleCamera} variant={cameraOn ? 'secondary' : 'destructive'} className="rounded-full w-12 h-12 p-0 shadow-lg">
                             {cameraOn ? <Video /> : <VideoOff />}
                         </Button>
-                        <Button onClick={isScreenSharing ? stopScreenShare : startScreenShare} variant={isScreenSharing ? 'default' : 'secondary'} className="rounded-full w-12 h-12 p-0">
+                        <Button onClick={isScreenSharing ? stopScreenShare : startScreenShare} variant={isScreenSharing ? 'default' : 'secondary'} className="rounded-full w-12 h-12 p-0 shadow-lg">
                             {isScreenSharing ? <X /> : <Monitor />}
                         </Button>
-                        <Button onClick={toggleHandRaise} variant={handRaised ? 'default' : 'secondary'} className={`rounded-full w-12 h-12 p-0 ${handRaised ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-600' : ''}`}>
+                        <Button onClick={toggleHandRaise} variant={handRaised ? 'default' : 'secondary'} className={`rounded-full w-12 h-12 p-0 shadow-lg ${handRaised ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-600' : ''}`}>
                             <Hand />
                         </Button>
-                        <Button onClick={() => setShowChat(!showChat)} variant={showChat ? 'default' : 'secondary'} className="rounded-full w-12 h-12 p-0">
+                        <Button onClick={() => setShowChat(!showChat)} variant={showChat ? 'default' : 'secondary'} className="rounded-full w-12 h-12 p-0 shadow-lg">
                             <MessageSquare />
                         </Button>
                         <div className="w-px h-8 bg-gray-600 mx-2 self-center"></div>
-                        <Button onClick={handleLeave} variant="destructive" className="rounded-full w-12 h-12 p-0">
+                        <Button onClick={handleLeave} variant="destructive" className="rounded-full w-12 h-12 p-0 shadow-lg hover:brightness-110">
                             <PhoneOff />
                         </Button>
                     </div>
-                    <div>
-                        {user?.role === 'instructor' && isInstructor && <Button variant="destructive" size="sm" onClick={handleEndClass} isLoading={actionLoading}>End Class</Button>}
+                    <div className="flex items-center gap-4">
+                        {user?.role === 'instructor' && isInstructor && <Button variant="destructive" size="sm" onClick={handleEndClass} isLoading={actionLoading} className="shadow-lg hover:brightness-110">End Class</Button>}
                     </div>
                 </div>
             </div>
@@ -588,20 +633,108 @@ export const ClassroomDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div className="bg-indigo-600 p-8 text-center"><h1 className="text-2xl font-bold text-white">{classroom.title}</h1><p className="text-indigo-100">{classroom.description}</p></div>
-                <div className="p-8 space-y-4">
-                    <div className="text-center"><span className="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium">{classroom.status.toUpperCase()}</span></div>
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-600/30 rounded-full blur-[100px]"></div>
+                <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-[100px]"></div>
+            </div>
+
+            <div className="w-full max-w-4xl bg-gray-800/50 backdrop-blur-xl border border-gray-700 rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col md:flex-row">
+
+                {/* Left Side: Info */}
+                <div className="p-8 md:p-12 flex-1 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-700 bg-gray-800/50">
+                    <div className="mb-8">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase mb-4 ${classroom.status === 'live' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                            classroom.status === 'completed' ? 'bg-gray-700 text-gray-400 border border-gray-600' :
+                                'bg-green-500/10 text-green-400 border border-green-500/20'
+                            }`}>
+                            {classroom.status === 'live' && <span className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>}
+                            {classroom.status.replace('_', ' ')}
+                        </span>
+                        <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{classroom.title}</h1>
+                        <p className="text-gray-400 text-lg leading-relaxed">{classroom.description || 'No description provided.'}</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex items-center text-gray-300">
+                            <div className="w-10 h-10 rounded-lg bg-gray-700/50 flex items-center justify-center mr-4 border border-gray-600">
+                                <Calendar className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Date</p>
+                                <p className="font-medium">{format(new Date(classroom.start_time), 'EEEE, MMMM do, yyyy')}</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center text-gray-300">
+                            <div className="w-10 h-10 rounded-lg bg-gray-700/50 flex items-center justify-center mr-4 border border-gray-600">
+                                <Clock className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Time</p>
+                                <p className="font-medium">
+                                    {format(new Date(classroom.start_time), 'h:mm a')}
+                                    {classroom.end_time && ` - ${format(new Date(classroom.end_time), 'h:mm a')}`}
+                                </p>
+                            </div>
+                        </div>
+                        {classroom.instructor && (
+                            <div className="flex items-center text-gray-300">
+                                <div className="w-10 h-10 rounded-lg bg-gray-700/50 flex items-center justify-center mr-4 border border-gray-600">
+                                    <UserIcon className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Host</p>
+                                    <p className="font-medium">{classroom.instructor.full_name}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Right Side: Action */}
+                <div className="p-8 md:p-12 w-full md:w-[380px] bg-gray-900/50 flex flex-col justify-center items-center text-center">
+
+                    <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20 transform rotate-3">
+                        <Video className="w-10 h-10 text-white" />
+                    </div>
+
                     {classroom.status === 'live' ? (
-                        <Button className="w-full h-12 text-lg" onClick={handleJoinSession} isLoading={actionLoading}><Video className="mr-2" /> Join Class Now</Button>
+                        <div className="w-full space-y-4">
+                            <h3 className="text-xl font-bold text-white">Class is Live!</h3>
+                            <p className="text-gray-400 text-sm mb-6">The session has started. You can join now.</p>
+                            <Button className="w-full py-6 text-lg bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg shadow-indigo-600/20 transition-all hover:scale-105" onClick={handleJoinSession} isLoading={actionLoading}>
+                                Join Class Now
+                            </Button>
+                        </div>
                     ) : (
-                        <div className="text-center p-6 bg-gray-50 rounded-xl">
-                            <p>Waiting for instructor...</p>
-                            {user?.role === 'instructor' && isInstructor && <Button className="mt-4 w-full" onClick={handleStartClass} isLoading={actionLoading}>Start Class</Button>}
+                        <div className="w-full space-y-4">
+                            <h3 className="text-xl font-bold text-white">
+                                {classroom.status === 'completed' ? 'Class Ended' : 'Waiting for Host'}
+                            </h3>
+                            <p className="text-gray-400 text-sm mb-6">
+                                {classroom.status === 'completed'
+                                    ? 'This session has already finished.'
+                                    : 'The class hasn\'t started yet. Please wait.'}
+                            </p>
+
+                            {user?.role === 'instructor' && isInstructor && classroom.status !== 'completed' && (
+                                <Button className="w-full py-6 text-lg bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg shadow-indigo-600/20 transition-all hover:scale-105" onClick={handleStartClass} isLoading={actionLoading}>
+                                    Start Class
+                                </Button>
+                            )}
+
+                            {classroom.status === 'scheduled' && !isInstructor && (
+                                <Button className="w-full py-6 text-lg bg-gray-700 text-gray-400 cursor-not-allowed rounded-xl" disabled>
+                                    Not Started Yet
+                                </Button>
+                            )}
                         </div>
                     )}
-                    <Button variant="ghost" className="w-full" onClick={() => navigate('/classrooms')}>Back to List</Button>
+
+                    <Button variant="ghost" className="mt-6 text-gray-400 hover:text-white" onClick={() => navigate('/classrooms')}>
+                        Back to Classrooms
+                    </Button>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
-import { BookOpen, MessageSquare, Menu, Search, Clock, ChevronDown, LayoutDashboard, LogOut } from 'lucide-react';
+import { BookOpen, MessageSquare, Menu, Search, Clock, ChevronDown, LayoutDashboard, LogOut, Settings, Video } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import { useSidebarStore } from '../../store/sidebar.store';
 import { NotificationDropdown } from '../notifications/NotificationDropdown';
@@ -89,6 +89,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                 <Link to="/courses" className="text-gray-600 hover:text-indigo-600 transition-colors font-medium text-sm">Courses</Link>
                                 <Link to="/instructors" className="text-gray-600 hover:text-indigo-600 transition-colors font-medium text-sm">Instructors</Link>
                                 <Link to="/community" className="text-gray-600 hover:text-indigo-600 transition-colors font-medium text-sm">Community</Link>
+                                <Link to="/news" className="text-gray-600 hover:text-indigo-600 transition-colors font-medium text-sm">News</Link>
                             </div>
                         </div>
 
@@ -137,13 +138,50 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                         {showUserMenu && (
                                             <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 animate-in fade-in slide-in-from-top-2">
                                                 <Link
-                                                    to={user.role === 'admin' ? '/admin' : user.role === 'instructor' ? '/instructor' : '/dashboard'}
+                                                    to={user.role === 'admin' ? '/admin/dashboard' : user.role === 'instructor' ? '/instructor/dashboard' : '/dashboard'}
                                                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                                     onClick={() => setShowUserMenu(false)}
                                                 >
                                                     <LayoutDashboard className="w-4 h-4 mr-2 text-gray-400" />
                                                     Dashboard
                                                 </Link>
+                                                <Link
+                                                    to="/settings"
+                                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                >
+                                                    <Settings className="w-4 h-4 mr-2 text-gray-400" />
+                                                    Settings
+                                                </Link>
+                                                {user.role === 'student' && (
+                                                    <Link
+                                                        to="/my-learning"
+                                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                                        onClick={() => setShowUserMenu(false)}
+                                                    >
+                                                        <BookOpen className="w-4 h-4 mr-2 text-gray-400" />
+                                                        My Learning
+                                                    </Link>
+                                                )}
+                                                {user.role === 'instructor' && (
+                                                    <Link
+                                                        to="/instructor/courses"
+                                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                                        onClick={() => setShowUserMenu(false)}
+                                                    >
+                                                        <BookOpen className="w-4 h-4 mr-2 text-gray-400" />
+                                                        My Courses
+                                                    </Link>
+                                                )}
+                                                <Link
+                                                    to="/classrooms"
+                                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                >
+                                                    <Video className="w-4 h-4 mr-2 text-gray-400" />
+                                                    Classrooms
+                                                </Link>
+                                                <div className="h-px bg-gray-100 my-1"></div>
                                                 <button
                                                     onClick={() => {
                                                         setShowUserMenu(false);

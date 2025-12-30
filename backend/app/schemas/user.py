@@ -43,6 +43,8 @@ class UserUpdate(BaseModel):
     banner_image: Optional[str] = None
     is_active: Optional[bool] = None
     role: Optional[RoleEnum] = None
+    timezone: Optional[str] = None
+    language: Optional[str] = None
 
 
 class UserResponse(UserBase):
@@ -52,6 +54,11 @@ class UserResponse(UserBase):
     photo: Optional[str] = None
     banner_image: Optional[str] = None
     bio: Optional[str] = None
+    phone_number: Optional[str] = None
+    experience: Optional[str] = None
+    social_links: Optional[dict] = None
+    timezone: str = "UTC"
+    language: str = "en"
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

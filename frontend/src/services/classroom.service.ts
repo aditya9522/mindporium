@@ -16,7 +16,9 @@ export interface Classroom {
         photo?: string;
     };
     subject?: {
+        id: number;
         title: string;
+        course_id?: number;
         course?: {
             title: string;
         };
@@ -93,8 +95,27 @@ export const classroomService = {
     sendMessage: async (id: number, text: string) => {
         const response = await api.post<ClassMessage>(`/classrooms/${id}/messages`, { message_text: text, message_type: 'normal' });
         return response.data;
+    },
+
+    getClassroomsByCourse: async (courseId: number) => {
+        const response = await api.get<Classroom[]>(`/classrooms/course/${courseId}`);
+        return response.data;
     }
 };
+
+export interface ClassMessage {
+    id: number;
+    classroom_id: number;
+    user_id: number;
+    message_text: string;
+    message_type: 'normal' | 'system';
+    created_at: string;
+    user: {
+        id: number;
+        full_name: string;
+        photo?: string;
+    };
+}
 
 export interface ClassMessage {
     id: number;

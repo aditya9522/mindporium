@@ -42,8 +42,16 @@ export const LoginPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[80vh]">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <div className="relative min-h-[90vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="absolute inset-0 z-0">
+                <img
+                    src="https://images.unsplash.com/photo-1497294815431-9365093b7331?auto=format&fit=crop&q=80"
+                    alt="Background"
+                    className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px]" />
+            </div>
+            <div className="w-full max-w-md p-8 space-y-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 relative z-10">
                 <div className="text-center">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100 mb-4">
                         <BookOpen className="h-6 w-6 text-primary-600" />

@@ -9,16 +9,36 @@ export const AdminDashboardPage = () => {
     const [loading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState<any>(null);
 
+    const [systemHealth, setSystemHealth] = useState({
+        status: 'checking',
+        dbStatus: 'unknown',
+        responseTime: 0,
+        lastUpdated: new Date()
+    });
+
     useEffect(() => {
         fetchDashboardData();
     }, []);
 
     const fetchDashboardData = async () => {
+        const startTime = performance.now();
         try {
             const data = await adminService.getDashboardOverview();
             setDashboardData(data);
+            setSystemHealth({
+                status: 'operational',
+                dbStatus: 'healthy',
+                responseTime: Math.round(performance.now() - startTime),
+                lastUpdated: new Date()
+            });
         } catch (error) {
             console.error('Failed to fetch dashboard data:', error);
+            setSystemHealth({
+                status: 'degraded',
+                dbStatus: 'unknown',
+                responseTime: Math.round(performance.now() - startTime),
+                lastUpdated: new Date()
+            });
         } finally {
             setLoading(false);
         }
@@ -194,26 +214,39 @@ export const AdminDashboardPage = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h2 className="text-lg font-bold text-gray-900 mb-4">System Health</h2>
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-100">
+                        <div className={`flex items-center justify-between p-4 rounded-lg border ${systemHealth.status === 'operational' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'
+                            }`}>
                             <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                <span className="font-medium text-green-900">All Systems Operational</span>
+                                <div className={`w-2 h-2 rounded-full ${systemHealth.status === 'operational' ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+                                    }`}></div>
+                                <span className={`font-medium ${systemHealth.status === 'operational' ? 'text-green-900' : 'text-red-900'
+                                    }`}>
+                                    {systemHealth.status === 'operational' ? 'All Systems Operational' : 'System Issues Detected'}
+                                </span>
                             </div>
-                            <span className="text-sm text-green-700">Updated just now</span>
+                            <span className={`text-sm ${systemHealth.status === 'operational' ? 'text-green-700' : 'text-red-700'
+                                }`}>
+                                Updated {systemHealth.lastUpdated.toLocaleTimeString()}
+                            </span>
                         </div>
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
                             <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <div className={`w-2 h-2 rounded-full ${systemHealth.dbStatus === 'healthy' ? 'bg-blue-500' : 'bg-yellow-500'
+                                    }`}></div>
                                 <span className="font-medium text-gray-900">Database Status</span>
                             </div>
-                            <span className="text-sm text-gray-600">Healthy</span>
+                            <span className="text-sm text-gray-600">
+                                {systemHealth.dbStatus === 'healthy' ? 'Healthy' : 'Unknown'}
+                            </span>
                         </div>
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                                 <span className="font-medium text-gray-900">API Response Time</span>
                             </div>
-                            <span className="text-sm text-gray-600">45ms avg</span>
+                            <span className="text-sm text-gray-600">
+                                {systemHealth.responseTime > 0 ? `${systemHealth.responseTime}ms` : 'Measuring...'}
+                            </span>
                         </div>
                     </div>
                 </div>

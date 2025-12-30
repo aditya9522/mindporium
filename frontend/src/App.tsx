@@ -43,6 +43,7 @@ import { FeedbackPage } from './pages/instructor/FeedbackPage';
 import { ProfilePage as InstructorProfilePage } from './pages/instructor/ProfilePage';
 import { CommunityPage } from './pages/community/CommunityPage';
 import { CommunityDetailPage } from './pages/community/CommunityDetailPage';
+import { NewsPage } from './pages/common/NewsPage';
 import { ClassroomListPage } from './pages/classroom/ClassroomListPage';
 import { ClassroomDetailPage } from './pages/classroom/ClassroomDetailPage';
 import { TakeTestPage } from './pages/test/TakeTestPage';
@@ -153,6 +154,7 @@ function App() {
 
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/community/:id" element={<CommunityDetailPage />} />
+            <Route path="/news" element={<NewsPage />} />
             <Route path="/classrooms" element={<ClassroomListPage />} />
             <Route path="/classroom/:id" element={<ClassroomDetailPage />} />
             <Route path="/test/:id/take" element={<TakeTestPage />} />

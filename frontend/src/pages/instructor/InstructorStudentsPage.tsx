@@ -168,7 +168,15 @@ export const InstructorStudentsPage = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-700">{student.enrolled_courses}</td>
+                                        <td className="px-6 py-4 text-gray-700">
+                                            <div className="flex flex-col gap-1">
+                                                {student.courses.map(c => (
+                                                    <span key={c.course_id} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                        {c.course_title}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <div className="flex-1 bg-gray-200 rounded-full h-2 max-w-[100px]">

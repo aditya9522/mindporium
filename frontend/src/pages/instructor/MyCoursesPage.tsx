@@ -135,14 +135,13 @@ export const MyCoursesPage = () => {
                 {/* Sub-navigation / additional links placeholder */}
                 <div className="border-b border-gray-200 mb-6">
                     <nav className="-mb-px flex space-x-8">
-                        <Link to="#" className="border-indigo-500 text-indigo-600 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm">
+                        <Link to="/instructor/courses" className="border-indigo-500 text-indigo-600 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm">
                             Courses
                         </Link>
-                        {/* These are placeholders for future pages as requested */}
-                        <Link to="#" className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm">
+                        <Link to="/instructor/performance" className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm">
                             Performance
                         </Link>
-                        <Link to="#" className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm">
+                        <Link to="/instructor/progress" className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm">
                             Progress
                         </Link>
                     </nav>
