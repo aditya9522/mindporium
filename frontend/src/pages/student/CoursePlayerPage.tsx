@@ -127,14 +127,14 @@ export const CoursePlayerPage = () => {
                     </button>
                     <h2 className="font-bold text-lg line-clamp-2 mb-3">{course.title}</h2>
 
-                    <div className="mb-4">
-                        <div className="flex justify-between text-xs text-gray-400 mb-1">
+                    <div className="mb-6">
+                        <div className="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">
                             <span>{progressPercentage}% Complete</span>
                             <span>{completedResources.length}/{totalResources} Lessons</span>
                         </div>
-                        <div className="w-full bg-gray-800 rounded-full h-2">
+                        <div className="w-full bg-gray-800 rounded-full h-2.5 shadow-inner">
                             <div
-                                className="bg-green-500 h-2 rounded-full transition-all duration-300 ease-out"
+                                className="bg-gradient-to-r from-green-400 to-emerald-600 h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(16,185,129,0.3)]"
                                 style={{ width: `${progressPercentage}%` }}
                             />
                         </div>
@@ -143,7 +143,7 @@ export const CoursePlayerPage = () => {
                         href={`/community/course/${course.id}/qa`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-lg transition-colors text-sm"
+                        className="flex items-center justify-center w-full px-4 py-3 bg-gray-800 hover:bg-gray-700 text-indigo-300 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] text-sm font-semibold border border-gray-700 hover:border-indigo-500/30"
                     >
                         <MessageSquare className="w-4 h-4 mr-2" />
                         Course Community
@@ -170,12 +170,12 @@ export const CoursePlayerPage = () => {
                                 <button
                                     onClick={handleMarkComplete}
                                     disabled={isCompleted || false}
-                                    className={`flex items-center px-6 py-3 rounded-lg font-medium transition-colors ${isCompleted
-                                        ? 'bg-green-600 text-white cursor-default'
-                                        : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                                    className={`flex items-center px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${isCompleted
+                                        ? 'bg-emerald-500/20 text-emerald-400 cursor-default border border-emerald-500/30'
+                                        : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-indigo-500/20 hover:shadow-indigo-500/30 ring-1 ring-white/10'
                                         }`}
                                 >
-                                    <CheckCircle className="w-5 h-5 mr-2" />
+                                    <CheckCircle className="w-6 h-6 mr-3" />
                                     {isCompleted ? 'Completed' : 'Mark as Complete'}
                                 </button>
                             </div>

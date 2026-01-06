@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from sqlalchemy.orm import selectinload
+from app.models.subject import Subject
 from datetime import datetime
 
 from app.api import deps
@@ -40,7 +41,9 @@ async def mark_attendance(
         user_id=current_user.id,
         joined_at=datetime.utcnow(),
         is_present=True,
-        status="present"
+        status="present",
+        device_info=attendance_in.device_info,
+        ip_address=attendance_in.ip_address
     )
     db.add(attendance)
     await db.commit()
@@ -102,7 +105,10 @@ async def get_classroom_attendance(
     result = await db.execute(
         select(Attendance)
         .where(Attendance.classroom_id == classroom_id)
-        .options(selectinload(Attendance.user), selectinload(Attendance.classroom))
+        .options(
+            selectinload(Attendance.user),
+            selectinload(Attendance.classroom).selectinload(Classroom.subject).selectinload("course")
+        )
         .order_by(desc(Attendance.joined_at))
     )
     attendances = result.scalars().all()

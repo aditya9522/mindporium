@@ -3,7 +3,8 @@ import { feedbackService } from '../../services/feedback.service';
 import { courseService } from '../../services/course.service';
 import type { FeedbackResponse } from '../../types/feedback';
 import type { Course } from '../../types/course';
-import { Loader2, Star, User as UserIcon, MessageSquare } from 'lucide-react';
+import { Star, User as UserIcon, MessageSquare } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import toast from 'react-hot-toast';
 
 export const FeedbackPage = () => {
@@ -146,9 +147,7 @@ export const FeedbackPage = () => {
                 )}
 
                 {loading ? (
-                    <div className="flex items-center justify-center py-12">
-                        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-                    </div>
+                    <PageLoader />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {activeTab === 'instructor' ? (

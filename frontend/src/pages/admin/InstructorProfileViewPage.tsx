@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { adminService } from '../../services/admin.service';
-import { Loader2, ArrowLeft, Mail, Phone, Globe, Linkedin, Twitter, Github, Calendar, Award, BookOpen, Users, Star, Briefcase } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Globe, Linkedin, Twitter, Github, Calendar, Award, BookOpen, Users, Star, Briefcase } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
@@ -37,11 +38,7 @@ export const InstructorProfileViewPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!instructor) {

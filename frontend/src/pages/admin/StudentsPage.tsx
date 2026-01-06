@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, Filter, Mail, BookOpen, Award, Loader2, TrendingUp } from 'lucide-react';
+import { Users, Search, Filter, Mail, BookOpen, Award, TrendingUp } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { Button } from '../../components/ui/Button';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
@@ -78,11 +79,7 @@ export const StudentsPage = () => {
     ).length;
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { adminService } from '../../services/admin.service';
-import { Loader2, ArrowLeft, Activity, Users, Clock, CheckCircle, TrendingUp, Calendar } from 'lucide-react';
+import { ArrowLeft, Activity, Users, Clock, CheckCircle, TrendingUp, Calendar } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 
@@ -30,11 +31,7 @@ export const CourseMonitoringPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!monitoringData) {

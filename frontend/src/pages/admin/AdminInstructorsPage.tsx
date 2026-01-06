@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
-import { Loader2, Search, UserPlus, Mail, GraduationCap, BarChart3, X, Trash2, Activity } from 'lucide-react';
+import { Loader2, Search, UserPlus, Mail, GraduationCap, BarChart3, X, Trash2, Activity, MapPin } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 
 export const AdminInstructorsPage = () => {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export const AdminInstructorsPage = () => {
         instructor: null
     });
     const [deleting, setDeleting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     // Add Instructor Form State
     const [formData, setFormData] = useState({
@@ -43,6 +45,7 @@ export const AdminInstructorsPage = () => {
 
     const handleCreateInstructor = async (e: React.FormEvent) => {
         e.preventDefault();
+        setSubmitting(true);
         try {
             await adminService.createInstructor(formData);
             toast.success('Instructor created successfully! Welcome email sent.');
@@ -52,6 +55,8 @@ export const AdminInstructorsPage = () => {
         } catch (error: any) {
             console.error('Failed to create instructor:', error);
             toast.error(error.response?.data?.detail || 'Failed to create instructor');
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -78,11 +83,7 @@ export const AdminInstructorsPage = () => {
     );
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -118,63 +119,134 @@ export const AdminInstructorsPage = () => {
                 {/* Instructors Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredInstructors.map((instructor) => (
-                        <div key={instructor.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
-                            <Link to={`/admin/instructors/${instructor.id}`}>
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-lg">
-                                            {instructor.full_name?.charAt(0).toUpperCase()}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900">{instructor.full_name}</h3>
-                                            <div className="flex items-center gap-1 text-sm text-gray-500">
-                                                <Mail className="w-3 h-3" />
-                                                {instructor.email}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${instructor.is_active
-                                        ? 'bg-green-100 text-green-700'
-                                        : 'bg-red-100 text-red-700'
+                        <div key={instructor.id} className="group bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 hover:shadow-lg hover:border-indigo-100 transition-all duration-300 overflow-hidden flex flex-col pt-0">
+                            {/* Banner Section */}
+                            <div className="h-24 bg-gradient-to-r from-gray-100 to-gray-200 relative">
+                                {instructor.banner_image && (
+                                    <img
+                                        src={instructor.banner_image}
+                                        alt="Cover"
+                                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                                    />
+                                )}
+                                <div className="absolute top-2 right-2">
+                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-md ${instructor.is_active
+                                        ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
+                                        : 'bg-red-500/10 text-red-800 border border-red-500/20'
                                         }`}>
+                                        <span className={`flex w-1.5 h-1.5 rounded-full ${instructor.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
                                         {instructor.is_active ? 'Active' : 'Inactive'}
                                     </span>
                                 </div>
-                            </Link>
-                            <div className="border-t border-gray-100 pt-4 mt-4">
-                                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                                    <span>Joined</span>
-                                    <span>{instructor.created_at ? formatDistanceToNow(new Date(instructor.created_at), { addSuffix: true }) : 'N/A'}</span>
+                            </div>
+
+                            <div className="px-6 relative flex-1 pb-4">
+                                {/* Avatar */}
+                                <div className="-mt-10 mb-3 flex justify-between items-end">
+                                    <div className="relative">
+                                        <div className="w-20 h-20 rounded-full bg-white p-1 shadow-md ring-1 ring-gray-100">
+                                            <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-2xl overflow-hidden relative">
+                                                {instructor.photo ? (
+                                                    <img
+                                                        src={instructor.photo}
+                                                        alt={instructor.full_name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    instructor.full_name?.charAt(0).toUpperCase()
+                                                )}
+                                            </div>
+                                        </div>
+                                        {instructor.is_verified && (
+                                            <div className="absolute bottom-1 right-1 bg-blue-500 text-white p-1 rounded-full shadow-sm border-2 border-white" title="Verified Instructor">
+                                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="text-right mb-1">
+                                        <p className="text-xs text-gray-400 font-medium">Joined {instructor.created_at ? formatDistanceToNow(new Date(instructor.created_at)) : ''} ago</p>
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button
-                                        onClick={() => navigate(`/admin/instructors/${instructor.id}`)}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors text-sm"
-                                    >
-                                        <Activity className="w-4 h-4" /> Monitoring
-                                    </button>
-                                    <button
-                                        onClick={() => navigate(`/admin/instructors/${instructor.id}/analytics`)}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors text-sm"
-                                    >
-                                        <BarChart3 className="w-4 h-4" /> Performance
-                                    </button>
-                                    <button
-                                        onClick={() => navigate(`/admin/instructors/${instructor.id}/profile`)}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
-                                    >
-                                        <GraduationCap className="w-4 h-4" /> Profile
-                                    </button>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setDeleteModal({ isOpen: true, instructor });
-                                        }}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm"
-                                    >
-                                        <Trash2 className="w-4 h-4" /> Delete
-                                    </button>
+
+                                {/* Main Info */}
+                                <div className="mb-4">
+                                    <Link to={`/admin/instructors/${instructor.id}`} className="group/link">
+                                        <h3 className="font-bold text-gray-900 text-lg group-hover/link:text-indigo-600 transition-colors flex items-center gap-2">
+                                            {instructor.full_name}
+                                        </h3>
+                                    </Link>
+                                    <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                                        <Mail className="w-3.5 h-3.5" />
+                                        <span className="truncate opacity-80">{instructor.email}</span>
+                                    </div>
                                 </div>
+
+                                {/* Bio & Stats */}
+                                <div className="space-y-3">
+                                    {instructor.bio && (
+                                        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed h-[2.5rem]">
+                                            {instructor.bio}
+                                        </p>
+                                    )}
+
+                                    <div className="flex flex-wrap gap-2 pt-2">
+                                        {instructor.location && (
+                                            <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md border border-gray-200">
+                                                <MapPin className="w-3 h-3 mr-1" />
+                                                {instructor.location}
+                                            </span>
+                                        )}
+                                        {instructor.language && (
+                                            <span className="inline-flex items-center px-2 py-1 bg-orange-50 text-orange-700 text-xs rounded-md border border-orange-100 uppercase">
+                                                {instructor.language}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Actions Toolbar */}
+                            <div className="grid grid-cols-4 border-t border-gray-100 divide-x divide-gray-100 bg-gray-50/50 mt-auto">
+                                <button
+                                    onClick={() => navigate(`/admin/instructors/${instructor.id}/profile`)}
+                                    className="flex flex-col items-center justify-center py-3 hover:bg-white hover:text-indigo-600 transition-all group/btn"
+                                    title="View Profile"
+                                >
+                                    <GraduationCap className="w-4 h-4 text-gray-400 group-hover/btn:text-indigo-600 mb-1 transition-colors" />
+                                    <span className="text-[10px] font-medium opacity-70 group-hover/btn:opacity-100">Profile</span>
+                                </button>
+
+                                <button
+                                    onClick={() => navigate(`/admin/instructors/${instructor.id}/analytics`)}
+                                    className="flex flex-col items-center justify-center py-3 hover:bg-white hover:text-purple-600 transition-all group/btn"
+                                    title="View Analytics"
+                                >
+                                    <BarChart3 className="w-4 h-4 text-gray-400 group-hover/btn:text-purple-600 mb-1 transition-colors" />
+                                    <span className="text-[10px] font-medium opacity-70 group-hover/btn:opacity-100">Stats</span>
+                                </button>
+
+                                <button
+                                    onClick={() => navigate(`/admin/instructors/${instructor.id}`)}
+                                    className="flex flex-col items-center justify-center py-3 hover:bg-white hover:text-blue-600 transition-all group/btn"
+                                    title="Monitor Activity"
+                                >
+                                    <Activity className="w-4 h-4 text-gray-400 group-hover/btn:text-blue-600 mb-1 transition-colors" />
+                                    <span className="text-[10px] font-medium opacity-70 group-hover/btn:opacity-100">Monitor</span>
+                                </button>
+
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setDeleteModal({ isOpen: true, instructor });
+                                    }}
+                                    className="flex flex-col items-center justify-center py-3 hover:bg-red-50 hover:text-red-600 transition-all group/btn"
+                                    title="Delete Instructor"
+                                >
+                                    <Trash2 className="w-4 h-4 text-gray-400 group-hover/btn:text-red-500 mb-1 transition-colors" />
+                                    <span className="text-[10px] font-medium opacity-70 group-hover/btn:opacity-100">Delete</span>
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -248,9 +320,17 @@ export const AdminInstructorsPage = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                    disabled={submitting}
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Create Instructor
+                                    {submitting ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Creating...
+                                        </>
+                                    ) : (
+                                        'Create Instructor'
+                                    )}
                                 </button>
                             </div>
                         </form>

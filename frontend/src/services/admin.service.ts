@@ -1,5 +1,5 @@
 import api from '../lib/axios';
-import type { SystemStats, SystemSetting, SystemSettingUpdate } from '../types/admin';
+import type { SystemStats } from '../types/admin';
 
 export const adminService = {
     getSystemStats: async (): Promise<SystemStats> => {
@@ -12,20 +12,7 @@ export const adminService = {
         return response.data;
     },
 
-    getSettings: async (): Promise<SystemSetting[]> => {
-        const response = await api.get<SystemSetting[]>('/admin/settings');
-        return response.data;
-    },
 
-    updateSetting: async (key: string, data: SystemSettingUpdate): Promise<SystemSetting> => {
-        const response = await api.put<SystemSetting>(`/admin/settings/${key}`, data);
-        return response.data;
-    },
-
-    createSetting: async (data: any): Promise<SystemSetting> => {
-        const response = await api.post<SystemSetting>('/admin/settings', data);
-        return response.data;
-    },
 
     getUsers: async (): Promise<any[]> => {
         const response = await api.get('/users/');

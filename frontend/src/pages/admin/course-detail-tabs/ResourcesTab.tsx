@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { FileText, Video, Link as LinkIcon, Download, Plus, ExternalLink, File, Trash2, Edit, X } from 'lucide-react';
+import { FileText, Video, Link as LinkIcon, Download, Plus, ExternalLink, File, Trash2, Edit, X, Loader2 } from 'lucide-react';
 import { resourceService } from '../../../services/resource.service';
 import { subjectService } from '../../../services/subject.service';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 import { format } from 'date-fns';
 
 interface ResourcesTabProps {
@@ -154,8 +154,8 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
             </div>
         );
     }

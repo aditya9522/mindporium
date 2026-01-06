@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Video, Calendar, Clock, CheckCircle, Users, Plus, Edit, Trash2, X } from 'lucide-react';
+import { Video, Calendar, Clock, CheckCircle, Users, Plus, Edit, Trash2, X, Loader2 } from 'lucide-react';
 import api from '../../../lib/axios';
 import { classroomService } from '../../../services/classroom.service';
 import { subjectService } from '../../../services/subject.service';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 import { format } from 'date-fns';
 
 interface ClassroomsTabProps {
@@ -174,8 +174,8 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
             </div>
         );
     }
@@ -341,7 +341,7 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
             {/* Classroom Modal */}
             {classroomModal.isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white rounded-xl shadow-xl max-w-xl w-full p-6 animate-in fade-in zoom-in duration-200">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-lg font-bold text-gray-900">
                                 {classroomModal.isEditing ? 'Edit Class' : 'Schedule New Class'}

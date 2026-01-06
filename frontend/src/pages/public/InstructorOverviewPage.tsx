@@ -122,7 +122,7 @@ export const InstructorOverviewPage = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Left Sidebar - Profile Card */}
                     <div className="lg:col-span-4 space-y-6">

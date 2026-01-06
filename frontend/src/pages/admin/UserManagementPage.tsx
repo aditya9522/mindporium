@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { Loader2, Search, User, Shield, GraduationCap, MoreVertical, Plus, Trash2, X } from 'lucide-react';
-import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { PageLoader } from '../../components/common/PageLoader';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 
@@ -21,6 +22,7 @@ export const UserManagementPage = () => {
         password: '',
         role: 'admin',
     });
+    const [isCreating, setIsCreating] = useState(false);
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ isOpen: boolean; user: any | null }>({
         isOpen: false,
@@ -67,6 +69,7 @@ export const UserManagementPage = () => {
 
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsCreating(true);
         try {
             await adminService.createAdmin(newUser);
             toast.success('User created successfully');
@@ -76,6 +79,8 @@ export const UserManagementPage = () => {
         } catch (error: any) {
             console.error('Failed to create user:', error);
             toast.error(error.response?.data?.detail || 'Failed to create user');
+        } finally {
+            setIsCreating(false);
         }
     };
 
@@ -98,11 +103,7 @@ export const UserManagementPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -329,9 +330,17 @@ export const UserManagementPage = () => {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                                        disabled={isCreating}
+                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
                                     >
-                                        Create User
+                                        {isCreating ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                Creating...
+                                            </>
+                                        ) : (
+                                            "Create User"
+                                        )}
                                     </button>
                                 </div>
                             </div>

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { instructorService } from '../../services/instructor.service';
 import type { CourseOverview } from '../../types/instructor';
-import { ArrowLeft, Users, BookOpen, TrendingUp, Star, Loader2, Calendar, Award } from 'lucide-react';
+import { ArrowLeft, Users, BookOpen, TrendingUp, Star, Calendar, Award } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export const CourseAnalyticsPage = () => {
@@ -29,11 +30,7 @@ export const CourseAnalyticsPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!data) {

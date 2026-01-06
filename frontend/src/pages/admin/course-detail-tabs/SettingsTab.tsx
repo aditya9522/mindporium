@@ -3,7 +3,7 @@ import { Save, Trash2, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react'
 import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { DeleteConfirmationModal } from '../../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 
 interface SettingsTabProps {
     courseData: any;

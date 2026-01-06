@@ -69,15 +69,20 @@ export const DashboardPage = () => {
     ].filter(item => item.value > 0) : [];
 
     return (
-        <div className="space-y-8 px-8">
+        <div className="space-y-8 px-8 py-8">
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white shadow-lg">
-                <h1 className="text-3xl font-bold mb-2">
-                    Welcome back, {user?.full_name}! 👋
-                </h1>
-                <p className="text-indigo-100 opacity-90">
-                    You're making great progress. Keep up the momentum!
-                </p>
+            <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-10 text-white shadow-2xl shadow-indigo-200 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="absolute top-0 right-0 p-12 opacity-10 transform translate-x-12 -translate-y-12">
+                    <Award className="w-56 h-56 text-white" />
+                </div>
+                <div className="relative z-10">
+                    <h1 className="text-4xl font-extrabold mb-3 tracking-tight">
+                        Welcome back, {user?.full_name?.split(' ')[0]}! 👋
+                    </h1>
+                    <p className="text-indigo-100 text-lg font-medium opacity-90 max-w-xl">
+                        You're making great progress. Keep up the momentum and reach your goals today!
+                    </p>
+                </div>
             </div>
 
             {/* Stats Grid */}
@@ -87,14 +92,14 @@ export const DashboardPage = () => {
                     return (
                         <div
                             key={index}
-                            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                            className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1"
                         >
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
-                                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                                    <p className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">{stat.label}</p>
+                                    <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{stat.value}</p>
                                 </div>
-                                <div className={`${stat.color} p-3 rounded-lg shadow-sm`}>
+                                <div className={`${stat.color} p-3.5 rounded-xl shadow-lg shadow-indigo-100/50`}>
                                     <Icon className="h-6 w-6 text-white" />
                                 </div>
                             </div>

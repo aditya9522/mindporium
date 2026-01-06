@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { MessageSquare, ThumbsUp, MessageCircle, Plus, ChevronDown, ChevronUp, Send } from 'lucide-react';
+import { MessageSquare, ThumbsUp, MessageCircle, Plus, ChevronDown, ChevronUp, Send, X } from 'lucide-react';
 import api from '../../lib/axios';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
@@ -42,7 +42,7 @@ export const CourseQAPage = () => {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isAsking, setIsAsking] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Form State
     const [newTitle, setNewTitle] = useState('');
@@ -91,7 +91,7 @@ export const CourseQAPage = () => {
                 subject_id: selectedSubjectId
             });
             toast.success('Question posted successfully!');
-            setIsAsking(false);
+            setIsModalOpen(false);
             setNewTitle('');
             setNewQuestion('');
             loadData();
@@ -140,223 +140,274 @@ export const CourseQAPage = () => {
     }
 
     return (
-        <div className="py-8 max-w-4xl mx-auto space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Course Community</h1>
-                    <p className="text-gray-500 mt-1">Ask questions and discuss topics with your peers</p>
-                </div>
-                <Button onClick={() => setIsAsking(!isAsking)}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Ask Question
-                </Button>
-            </div>
+        <div className="max-w-7xl mx-auto space-y-8 py-8 px-4 sm:px-6">
+            <div className="flex flex-col md:flex-row gap-8">
+                {/* Left Sidebar - Filters & Actions */}
+                <div className="w-full md:w-64 flex-shrink-0 space-y-6">
+                    <div>
+                        <Button onClick={() => setIsModalOpen(true)} className="w-full shadow-lg shadow-indigo-200">
+                            <Plus className="w-4 h-4 mr-2" />
+                            Ask Question
+                        </Button>
+                    </div>
 
-            {/* Subject Filters */}
-            <div className="flex overflow-x-auto pb-2 gap-2 mb-6 no-scrollbar">
-                <button
-                    onClick={() => setActiveFilter('all')}
-                    className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === 'all'
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                        }`}
-                >
-                    All Subjects
-                </button>
-                {subjects.map(subject => (
-                    <button
-                        key={subject.id}
-                        onClick={() => setActiveFilter(subject.id)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === subject.id
-                            ? 'bg-indigo-600 text-white shadow-sm'
-                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                            }`}
-                    >
-                        {subject.title}
-                    </button>
-                ))}
-            </div>
-
-            {isAsking && (
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-in fade-in slide-in-from-top-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Ask a Question</h3>
-                    <form onSubmit={handleAskQuestion} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                            <div className="relative">
-                                <select
-                                    value={selectedSubjectId}
-                                    onChange={(e) => setSelectedSubjectId(Number(e.target.value))}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all outline-none appearance-none"
-                                    required
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                        <h3 className="font-bold text-gray-900 mb-3 px-2">Topics</h3>
+                        <div className="space-y-1">
+                            <button
+                                onClick={() => setActiveFilter('all')}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeFilter === 'all'
+                                    ? 'bg-indigo-50 text-indigo-700'
+                                    : 'text-gray-600 hover:bg-gray-50'
+                                    }`}
+                            >
+                                All Subjects
+                            </button>
+                            {subjects.map(subject => (
+                                <button
+                                    key={subject.id}
+                                    onClick={() => setActiveFilter(subject.id)}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeFilter === subject.id
+                                        ? 'bg-indigo-50 text-indigo-700'
+                                        : 'text-gray-600 hover:bg-gray-50'
+                                        }`}
                                 >
-                                    <option value="" disabled>Select a subject</option>
-                                    {subjects.map(s => (
-                                        <option key={s.id} value={s.id}>{s.title}</option>
-                                    ))}
-                                </select>
-                                <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+                                    {subject.title}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <div className="flex-1 min-w-0">
+                    <div className="mb-6">
+                        <h1 className="text-2xl font-bold text-gray-900">Course Community</h1>
+                        <p className="text-gray-500 mt-1">Ask questions and discuss topics with your peers</p>
+                    </div>
+
+                    {isModalOpen && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                            <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
+                                {/* Header */}
+                                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                                    <h3 className="text-lg font-bold text-gray-900">Ask a Question</h3>
+                                    <button
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleAskQuestion} className="flex-1 overflow-y-auto p-6 space-y-5">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                                            Select Topic <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative">
+                                            <select
+                                                value={selectedSubjectId}
+                                                onChange={(e) => setSelectedSubjectId(Number(e.target.value))}
+                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all outline-none appearance-none font-medium text-gray-700"
+                                                required
+                                            >
+                                                <option value="" disabled>Choose a subject...</option>
+                                                {subjects.map(s => (
+                                                    <option key={s.id} value={s.id}>{s.title}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                                            Question Title <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={newTitle}
+                                            onChange={(e) => setNewTitle(e.target.value)}
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all outline-none font-medium placeholder:font-normal"
+                                            placeholder="e.g., How do I implement authentication?"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                                            Details <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative">
+                                            <textarea
+                                                value={newQuestion}
+                                                onChange={(e) => setNewQuestion(e.target.value)}
+                                                rows={8}
+                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all outline-none resize-none font-medium placeholder:font-normal"
+                                                placeholder="Describe your question in detail..."
+                                                required
+                                            />
+                                        </div>
+                                        <p className="text-xs text-gray-400 mt-2 text-right">Markdown is supported</p>
+                                    </div>
+                                </form>
+
+                                <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-3 sticky bottom-0">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="text-gray-600 hover:text-gray-900"
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        onClick={handleAskQuestion}
+                                        isLoading={isSubmitting}
+                                        disabled={isSubmitting}
+                                        className="min-w-[120px]"
+                                    >
+                                        Post Question
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                            <input
-                                type="text"
-                                value={newTitle}
-                                onChange={(e) => setNewTitle(e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all outline-none"
-                                placeholder="What is your question about?"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Details</label>
-                            <textarea
-                                value={newQuestion}
-                                onChange={(e) => setNewQuestion(e.target.value)}
-                                rows={4}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all outline-none resize-none"
-                                placeholder="Describe your question in detail..."
-                                required
-                            />
-                        </div>
-                        <div className="flex justify-end gap-3">
-                            <Button type="button" variant="ghost" onClick={() => setIsAsking(false)}>Cancel</Button>
-                            <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Posting...' : 'Post Question'}</Button>
-                        </div>
-                    </form>
-                </div>
-            )}
+                    )}
 
-            <div className="space-y-4">
-                {(activeFilter === 'all' ? questions : questions.filter(q => q.subject_id === activeFilter)).length === 0 ? (
-                    <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
-                        <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900">No questions found</h3>
-                        <p className="text-gray-500 mt-2">
-                            {activeFilter === 'all' ? 'Be the first to ask a question!' : 'No questions for this subject yet.'}
-                        </p>
-                    </div>
-                ) : (
-                    (activeFilter === 'all' ? questions : questions.filter(q => q.subject_id === activeFilter)).map((question) => (
-                        <div key={question.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                            <div className="flex gap-4">
-                                <div className="flex-shrink-0 flex flex-col items-center gap-1 text-gray-500">
-                                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                                        {question.user?.photo ? (
-                                            <img src={getImageUrl(question.user.photo)} className="w-full h-full rounded-full object-cover" />
-                                        ) : (
-                                            <span className="font-bold text-gray-500">
-                                                {question.user?.full_name?.charAt(0) || 'U'}
-                                            </span>
-                                        )}
-                                    </div>
+                    <div className="space-y-4">
+                        {(activeFilter === 'all' ? questions : questions.filter(q => q.subject_id === activeFilter)).length === 0 ? (
+                            <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
+                                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <MessageSquare className="w-8 h-8 text-gray-300" />
                                 </div>
-                                <div className="flex-1">
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900">{question.title}</h3>
-                                            <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                                                <span className="font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded text-xs">
-                                                    {getSubjectName(question.subject_id)}
-                                                </span>
-                                                <span>•</span>
-                                                <span>{question.user?.full_name || 'Anonymous'}</span>
-                                                <span>•</span>
-                                                <span>{new Date(question.created_at).toLocaleDateString()}</span>
+                                <h3 className="text-lg font-medium text-gray-900">No questions found</h3>
+                                <p className="text-gray-500 mt-2">
+                                    {activeFilter === 'all' ? 'Be the first to ask a question!' : 'No questions for this subject yet.'}
+                                </p>
+                            </div>
+                        ) : (
+                            (activeFilter === 'all' ? questions : questions.filter(q => q.subject_id === activeFilter)).map((question) => (
+                                <div key={question.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 flex flex-col items-center gap-1 text-gray-500">
+                                            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                                                {question.user?.photo ? (
+                                                    <img src={getImageUrl(question.user.photo)} className="w-full h-full rounded-full object-cover" />
+                                                ) : (
+                                                    <span className="font-bold text-gray-500">
+                                                        {question.user?.full_name?.charAt(0) || 'U'}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
-                                        {/* Expand Toggle */}
-                                        <button
-                                            onClick={() => toggleExpand(question.id)}
-                                            className="flex items-center gap-1 text-gray-500 text-sm bg-gray-50 px-3 py-1 rounded-full hover:bg-gray-100 transition-colors"
-                                        >
-                                            <MessageCircle className="w-4 h-4" />
-                                            <span>{question.answers.length} answers</span>
-                                            {expandedQuestions.includes(question.id) ? (
-                                                <ChevronUp className="w-4 h-4 ml-1" />
-                                            ) : (
-                                                <ChevronDown className="w-4 h-4 ml-1" />
-                                            )}
-                                        </button>
-                                    </div>
-                                    <p className="text-gray-600 mt-3 whitespace-pre-wrap">{question.question_text}</p>
-
-                                    {/* Action Buttons */}
-                                    <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
-                                        <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-600 transition-colors">
-                                            <ThumbsUp className="w-4 h-4" />
-                                            <span>Upvote ({question.upvotes})</span>
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setReplyingTo(replyingTo === question.id ? null : question.id);
-                                                // If trying to reply, also expand
-                                                if (replyingTo !== question.id && !expandedQuestions.includes(question.id)) {
-                                                    toggleExpand(question.id);
-                                                }
-                                            }}
-                                            className={`flex items-center gap-2 text-sm transition-colors ${replyingTo === question.id ? 'text-indigo-600 font-medium' : 'text-gray-500 hover:text-indigo-600'
-                                                }`}
-                                        >
-                                            <MessageCircle className="w-4 h-4" />
-                                            <span>Reply</span>
-                                        </button>
-                                    </div>
-
-                                    {/* Expanded Answers Section */}
-                                    {expandedQuestions.includes(question.id) && (
-                                        <div className="mt-6 space-y-4 pl-4 border-l-2 border-gray-100">
-                                            {question.answers.length === 0 ? (
-                                                <p className="text-sm text-gray-500 italic">No answers yet.</p>
-                                            ) : (
-                                                question.answers.map(answer => (
-                                                    <div key={answer.id} className={`p-3 rounded-lg ${answer.is_instructor_answer ? 'bg-indigo-50 border border-indigo-100' : 'bg-gray-50'}`}>
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="font-semibold text-sm text-gray-900">{answer.user.full_name}</span>
-                                                                {answer.is_instructor_answer && (
-                                                                    <span className="text-[10px] font-bold text-indigo-700 bg-indigo-200 px-1.5 py-0.5 rounded-full uppercase">Instructor</span>
-                                                                )}
-                                                            </div>
-                                                            <span className="text-xs text-gray-500">{new Date(answer.created_at).toLocaleDateString()}</span>
-                                                        </div>
-                                                        <p className="text-gray-700 text-sm whitespace-pre-wrap">{answer.answer_text}</p>
+                                        <div className="flex-1">
+                                            <div className="flex items-start justify-between">
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-gray-900">{question.title}</h3>
+                                                    <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                                                        <span className="font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded text-xs">
+                                                            {getSubjectName(question.subject_id)}
+                                                        </span>
+                                                        <span>•</span>
+                                                        <span>{question.user?.full_name || 'Anonymous'}</span>
+                                                        <span>•</span>
+                                                        <span>{new Date(question.created_at).toLocaleDateString()}</span>
                                                     </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    )}
+                                                </div>
+                                                {/* Expand Toggle */}
+                                                <button
+                                                    onClick={() => toggleExpand(question.id)}
+                                                    className="flex items-center gap-1 text-gray-500 text-sm bg-gray-50 px-3 py-1 rounded-full hover:bg-gray-100 transition-colors"
+                                                >
+                                                    <MessageCircle className="w-4 h-4" />
+                                                    <span>{question.answers.length} answers</span>
+                                                    {expandedQuestions.includes(question.id) ? (
+                                                        <ChevronUp className="w-4 h-4 ml-1" />
+                                                    ) : (
+                                                        <ChevronDown className="w-4 h-4 ml-1" />
+                                                    )}
+                                                </button>
+                                            </div>
+                                            <p className="text-gray-600 mt-3 whitespace-pre-wrap">{question.question_text}</p>
 
-                                    {/* Reply Form */}
-                                    {replyingTo === question.id && (
-                                        <div className="mt-4 pl-4 border-l-2 border-indigo-200 animate-in fade-in slide-in-from-top-2">
-                                            <div className="flex gap-2 bg-gray-50 p-2 rounded-xl border border-gray-200 items-center">
-                                                <input
-                                                    type="text"
-                                                    value={replyText}
-                                                    onChange={(e) => setReplyText(e.target.value)}
-                                                    placeholder="Write your reply..."
-                                                    className="flex-1 bg-transparent border-none text-sm focus:ring-0 focus:outline-none px-2"
-                                                    autoFocus
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                                            e.preventDefault();
-                                                            handlePostReply(question.id);
+                                            {/* Action Buttons */}
+                                            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+                                                <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-600 transition-colors">
+                                                    <ThumbsUp className="w-4 h-4" />
+                                                    <span>Upvote ({question.upvotes})</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setReplyingTo(replyingTo === question.id ? null : question.id);
+                                                        // If trying to reply, also expand
+                                                        if (replyingTo !== question.id && !expandedQuestions.includes(question.id)) {
+                                                            toggleExpand(question.id);
                                                         }
                                                     }}
-                                                />
-                                                <Button size="sm" onClick={() => handlePostReply(question.id)} disabled={isReplying} className="rounded-lg h-8 w-8 p-0 flex items-center justify-center">
-                                                    <Send className="w-4 h-4" />
-                                                </Button>
+                                                    className={`flex items-center gap-2 text-sm transition-colors ${replyingTo === question.id ? 'text-indigo-600 font-medium' : 'text-gray-500 hover:text-indigo-600'
+                                                        }`}
+                                                >
+                                                    <MessageCircle className="w-4 h-4" />
+                                                    <span>Reply</span>
+                                                </button>
                                             </div>
+
+                                            {/* Expanded Answers Section */}
+                                            {expandedQuestions.includes(question.id) && (
+                                                <div className="mt-6 space-y-4 pl-4 border-l-2 border-gray-100">
+                                                    {question.answers.length === 0 ? (
+                                                        <p className="text-sm text-gray-500 italic">No answers yet.</p>
+                                                    ) : (
+                                                        question.answers.map(answer => (
+                                                            <div key={answer.id} className={`p-3 rounded-lg ${answer.is_instructor_answer ? 'bg-indigo-50 border border-indigo-100' : 'bg-gray-50'}`}>
+                                                                <div className="flex items-center justify-between mb-2">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="font-semibold text-sm text-gray-900">{answer.user.full_name}</span>
+                                                                        {answer.is_instructor_answer && (
+                                                                            <span className="text-[10px] font-bold text-indigo-700 bg-indigo-200 px-1.5 py-0.5 rounded-full uppercase">Instructor</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <span className="text-xs text-gray-500">{new Date(answer.created_at).toLocaleDateString()}</span>
+                                                                </div>
+                                                                <p className="text-gray-700 text-sm whitespace-pre-wrap">{answer.answer_text}</p>
+                                                            </div>
+                                                        ))
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Reply Form */}
+                                            {replyingTo === question.id && (
+                                                <div className="mt-4 pl-4 border-l-2 border-indigo-200 animate-in fade-in slide-in-from-top-2">
+                                                    <div className="flex gap-2 bg-gray-50 p-2 rounded-xl border border-gray-200 items-center">
+                                                        <input
+                                                            type="text"
+                                                            value={replyText}
+                                                            onChange={(e) => setReplyText(e.target.value)}
+                                                            placeholder="Write your reply..."
+                                                            className="flex-1 bg-transparent border-none text-sm focus:ring-0 focus:outline-none px-2"
+                                                            autoFocus
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                                    e.preventDefault();
+                                                                    handlePostReply(question.id);
+                                                                }
+                                                            }}
+                                                        />
+                                                        <Button size="sm" onClick={() => handlePostReply(question.id)} disabled={isReplying} className="rounded-lg h-8 w-8 p-0 flex items-center justify-center">
+                                                            <Send className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    ))
-                )}
+                            ))
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import type { Post, Comment } from '../../types/community';
 import { communityService } from '../../services/community.service';
-import { MessageSquare, Heart, Share2, MoreHorizontal, Send, Loader2 } from 'lucide-react';
+import { MessageSquare, Heart, MoreHorizontal, Send, Loader2, Pin, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
+import { getImageUrl } from '../../lib/utils';
 
 interface PostCardProps {
     post: Post;
@@ -85,7 +86,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+        <div className={`bg-white rounded-xl shadow-sm border ${post.is_pinned ? 'border-amber-200 ring-1 ring-amber-100' : 'border-gray-100'} overflow-hidden mb-6`}>
             <div className="p-6">
                 {/* Author Info */}
                 <div className="flex items-center justify-between mb-4">
@@ -94,7 +95,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
                             {post.user?.full_name?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div>
-                            <p className="font-medium text-gray-900">{post.user?.full_name || 'Unknown User'}</p>
+                            <p className="font-medium text-gray-900 flex items-center gap-2">
+                                {post.user?.full_name || 'Unknown User'}
+                                {post.is_pinned && <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full flex items-center gap-1 font-normal"><Pin className="w-3 h-3 fill-current" /> Pinned</span>}
+                                {post.is_locked && <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full flex items-center gap-1 font-normal"><Lock className="w-3 h-3" /> Locked</span>}
+                            </p>
                             <p className="text-xs text-gray-500">
                                 {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
@@ -106,10 +111,21 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{post.title}</h3>
-                <div className="prose prose-sm max-w-none text-gray-600 mb-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{post.title}</h3>
+                <div className="prose prose-sm max-w-none text-gray-600 mb-4 cursor-text select-text">
                     <ReactMarkdown>{post.content}</ReactMarkdown>
                 </div>
+
+                {post.attachments && (
+                    <div className="-mx-6 mt-4 mb-4 bg-gray-50 border-y border-gray-100">
+                        <img
+                            src={getImageUrl(post.attachments)}
+                            alt="Post content"
+                            className="w-full h-auto max-h-[600px] object-contain mx-auto"
+                            loading="lazy"
+                        />
+                    </div>
+                )}
 
                 {/* Actions */}
                 <div className="flex items-center gap-6 pt-4 border-t border-gray-100">
@@ -128,10 +144,15 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
                         <MessageSquare className="w-5 h-5" />
                         <span>{post.comment_count}</span>
                     </button>
-                    <button className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors ml-auto">
-                        <Share2 className="w-5 h-5" />
-                        <span className="hidden sm:inline">Share</span>
-                    </button>
+                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500 ml-auto">
+                        <span className="flex items-center gap-1.5" title="Views">
+                            <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            {post.view_count}
+                        </span>
+                    </div>
                 </div>
             </div>
 

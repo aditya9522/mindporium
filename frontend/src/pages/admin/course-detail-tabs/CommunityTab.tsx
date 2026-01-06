@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, MessageSquare, Search, ExternalLink, Plus } from 'lucide-react';
+import { Users, MessageSquare, Search, ExternalLink, Plus, Loader2 } from 'lucide-react';
 import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -37,8 +37,8 @@ export const CommunityTab = ({ courseData }: CommunityTabProps) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
             </div>
         );
     }

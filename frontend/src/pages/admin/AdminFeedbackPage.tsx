@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
-import { Loader2, MessageSquare, Star, User, TrendingUp, Brain, ThumbsUp, ThumbsDown, X, Edit, Trash2, Calendar, Mail } from 'lucide-react';
+import { MessageSquare, Star, User, TrendingUp, Brain, ThumbsUp, ThumbsDown, X, Edit, Trash2, Calendar, Mail } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow, format } from 'date-fns';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { FeedbackModal } from '../../components/feedback/FeedbackModal';
-import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
 
@@ -84,11 +85,7 @@ export const AdminFeedbackPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     // Prepare chart data

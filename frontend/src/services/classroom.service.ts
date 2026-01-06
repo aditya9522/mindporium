@@ -83,7 +83,12 @@ export const classroomService = {
     },
 
     markAttendance: async (id: number) => {
-        const response = await api.post('/attendance', { classroom_id: id });
+        const deviceInfo = navigator.userAgent;
+        const response = await api.post('/attendance', {
+            classroom_id: id,
+            device_info: deviceInfo
+            // ip_address is usually handled by server/load-balancer headers, but can be added here if client has reliable source
+        });
         return response.data;
     },
 

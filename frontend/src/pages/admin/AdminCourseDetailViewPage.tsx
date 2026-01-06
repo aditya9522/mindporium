@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link, Routes, Route, useLocation } from 'react-router-dom';
 import api from '../../lib/axios';
 import {
-    Loader2, ArrowLeft, BookOpen, Users, FileText, TestTube,
+    ArrowLeft, BookOpen, Users, FileText, TestTube,
     MessageSquare, Settings, Bell, Star, BarChart3, Activity,
     GraduationCap, FolderOpen
 } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import toast from 'react-hot-toast';
 import { CourseOverviewTab } from './course-detail-tabs/CourseOverviewTab';
 import { SubjectsTab } from './course-detail-tabs/SubjectsTab';
@@ -123,11 +124,7 @@ export const AdminCourseDetailViewPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!courseData) {

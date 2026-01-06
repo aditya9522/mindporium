@@ -8,6 +8,7 @@ import { ArrowLeft, Save, Loader2, Plus, Trash2, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { PageLoader } from '../../components/common/PageLoader';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 
 export const EditCoursePage = () => {
     // ... (state)
@@ -94,16 +95,30 @@ export const EditCoursePage = () => {
         setNewSubjects(updated);
     };
 
-    const handleDeleteSubject = async (subjectId: number) => {
-        if (!window.confirm('Are you sure you want to delete this subject?')) return;
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [subjectToDelete, setSubjectToDelete] = useState<{ id: number; title: string } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
+    const handleDeleteClick = (subject: Subject) => {
+        setSubjectToDelete({ id: subject.id, title: subject.title });
+        setDeleteModalOpen(true);
+    };
+
+    const confirmDeleteSubject = async () => {
+        if (!subjectToDelete) return;
+
+        setIsDeleting(true);
         try {
-            await subjectService.deleteSubject(subjectId);
-            setSubjects(subjects.filter(s => s.id !== subjectId));
-            toast.success('Subject deleted');
+            await subjectService.deleteSubject(subjectToDelete.id);
+            setSubjects(subjects.filter(s => s.id !== subjectToDelete.id));
+            toast.success('Subject deleted successfully');
+            setDeleteModalOpen(false);
         } catch (error) {
             console.error('Failed to delete subject:', error);
             toast.error('Failed to delete subject');
+        } finally {
+            setIsDeleting(false);
+            setSubjectToDelete(null);
         }
     };
 
@@ -354,7 +369,7 @@ export const EditCoursePage = () => {
                                     <div className="flex items-start justify-between mb-3">
                                         <h4 className="font-medium text-gray-900">{subject.title}</h4>
                                         <button
-                                            onClick={() => handleDeleteSubject(subject.id)}
+                                            onClick={() => handleDeleteClick(subject)}
                                             className="text-red-600 hover:text-red-800"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -447,6 +462,16 @@ export const EditCoursePage = () => {
                     </button>
                 </div>
             </div>
+
+            <DeleteConfirmationModal
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onConfirm={confirmDeleteSubject}
+                title="Delete Subject"
+                message="Are you sure you want to delete the subject"
+                itemName={subjectToDelete?.title}
+                isDeleting={isDeleting}
+            />
         </div>
     );
 };

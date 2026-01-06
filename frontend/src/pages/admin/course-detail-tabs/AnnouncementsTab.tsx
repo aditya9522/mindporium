@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Megaphone, Calendar, User, Plus, Trash2, Edit, X } from 'lucide-react';
+import { Megaphone, Calendar, User, Plus, Trash2, Edit, X, Loader2 } from 'lucide-react';
 import { announcementService } from '../../../services/announcement.service';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 import { format } from 'date-fns';
 
 interface AnnouncementsTabProps {
@@ -126,8 +126,8 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
             </div>
         );
     }

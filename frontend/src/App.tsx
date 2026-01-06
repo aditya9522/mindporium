@@ -4,8 +4,7 @@ import { Toaster } from 'react-hot-toast';
 // Layouts (Eagerly loaded for shell)
 import { MainLayout } from './components/layout/MainLayout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
-import { CatalogLayout } from './components/layout/CatalogLayout';
-import { StudentCourseLayout } from './components/layout/StudentCourseLayout';
+import { CourseContextLayout } from './components/layout/CourseContextLayout';
 
 // Common
 import { ErrorBoundary } from './components/common/ErrorBoundary';
@@ -13,6 +12,8 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 // Pages
 import { LandingPage } from './pages/public/LandingPage';
 import { LoginPage } from './pages/auth/LoginPage';
+import { ThemeInitializer } from './components/common/ThemeInitializer';
+
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { VerifyOTPPage } from './pages/auth/VerifyOTPPage';
@@ -101,6 +102,7 @@ function App() {
         }}
       />
       <ErrorBoundary>
+        <ThemeInitializer />
         <Routes>
           {/* Public Routes */}
           <Route element={<MainLayout />}>
@@ -112,25 +114,26 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
           </Route>
 
-          {/* Course Catalog with Sidebar */}
-          <Route element={<CatalogLayout />}>
+
+          {/* Dashboard Layout Routes (Unified) */}
+          <Route element={<DashboardLayout />}>
+            {/* Course Catalog */}
             <Route path="/courses" element={<CourseCatalogPage />} />
             <Route path="/instructors" element={<InstructorsPage />} />
             <Route path="/instructors/:id" element={<InstructorOverviewPage />} />
-          </Route>
 
-          {/* Course Detail Routes with Sidebar */}
-          <Route element={<StudentCourseLayout />}>
-            <Route path="/courses/:id" element={<CourseDetailPage />} />
-            <Route path="/courses/:id/reviews" element={<CourseReviewsPage />} />
-            <Route path="/courses/:id/instructors" element={<CourseInstructorsPage />} />
-            <Route path="/courses/:id/content" element={<CourseContentPage />} />
-            <Route path="/courses/:id/announcements" element={<CourseAnnouncementsPage />} />
-            <Route path="/community/course/:id/qa" element={<CourseQAPage />} />
-          </Route>
+            {/* Course Detail Routes (with context sidebar) */}
+            <Route element={<CourseContextLayout />}>
+              <Route path="/courses/:id" element={<CourseDetailPage />} />
+              <Route path="/courses/:id/reviews" element={<CourseReviewsPage />} />
+              <Route path="/courses/:id/instructors" element={<CourseInstructorsPage />} />
+              <Route path="/courses/:id/content" element={<CourseContentPage />} />
+              <Route path="/courses/:id/announcements" element={<CourseAnnouncementsPage />} />
+              <Route path="/community/course/:id/qa" element={<CourseQAPage />} />
+            </Route>
 
-          {/* Protected Routes */}
-          <Route element={<DashboardLayout />}>
+
+            {/* Protected Routes */}
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/my-learning" element={<MyLearningPage />} />
             <Route path="/student/attendance" element={<StudentAttendancePage />} />
@@ -149,6 +152,7 @@ function App() {
             <Route path="/instructor/progress" element={<InstructorStudentsPage />} />
             <Route path="/instructor/tests" element={<TestsManagementPage />} />
             <Route path="/instructor/tests/create" element={<CreateTestPage />} />
+            <Route path="/instructor/tests/:id/edit" element={<CreateTestPage />} />
             <Route path="/instructor/feedback" element={<FeedbackPage />} />
             <Route path="/instructor/profile" element={<InstructorProfilePage />} />
 

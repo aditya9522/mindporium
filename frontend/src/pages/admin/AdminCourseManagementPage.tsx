@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { courseService } from '../../services/course.service';
-import { Loader2, Search, BookOpen, Eye, BarChart3, Activity, TrendingUp, Users, Star, DollarSign, Delete, Plus } from 'lucide-react';
+import { Search, BookOpen, Eye, BarChart3, Activity, Users, Star, DollarSign, Delete, Plus } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
 import { useNavigate } from 'react-router-dom';
-import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 
 export const AdminCourseManagementPage = () => {
     const navigate = useNavigate();
@@ -58,11 +59,7 @@ export const AdminCourseManagementPage = () => {
     );
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -102,117 +99,103 @@ export const AdminCourseManagementPage = () => {
                     {filteredCourses.map((course) => (
                         <div
                             key={course.id}
-                            className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:border-indigo-200 transition-all duration-300 transform hover:-translate-y-1"
+                            className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-all duration-300 group"
                         >
-                            {/* Course Thumbnail */}
-                            <div className="relative h-48 bg-gradient-to-br from-indigo-500 to-purple-600 overflow-hidden">
-                                {course.thumbnail ? (
-                                    <img
-                                        src={getImageUrl(course.thumbnail)}
-                                        alt={course.title}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <BookOpen className="w-16 h-16 text-white/80" />
-                                    </div>
-                                )}
-                                <div className="absolute top-4 right-4">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${course.is_published
-                                        ? 'bg-green-500/90 text-white'
-                                        : 'bg-yellow-500/90 text-white'
-                                        }`}>
-                                        {course.is_published ? 'Published' : 'Draft'}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Course Content */}
-                            <div className="p-6">
-                                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
-                                    {course.title}
-                                </h3>
-                                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                                    {course.description || 'No description available'}
-                                </p>
-
-                                {/* Course Meta */}
-                                <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
-                                    <div className="flex items-center gap-2">
-                                        <div className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded text-xs font-medium capitalize">
-                                            {course.level}
+                            <div className="flex flex-col h-full">
+                                {/* Header / Thumbnail Area */}
+                                <div className="relative h-48 bg-slate-900 overflow-hidden">
+                                    {course.thumbnail ? (
+                                        <img
+                                            src={getImageUrl(course.thumbnail)}
+                                            alt={course.title}
+                                            className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600">
+                                            <BookOpen className="w-12 h-12 text-white/50" />
                                         </div>
-                                        <div className="px-2 py-1 bg-purple-50 text-purple-600 rounded text-xs font-medium capitalize">
-                                            {course.category}
+                                    )}
+                                    <div className="absolute top-3 right-3 flex gap-2">
+                                        <span className={`px-2.5 py-1 rounded-md text-xs font-bold backdrop-blur-md shadow-sm border ${course.is_published
+                                            ? 'bg-emerald-500/90 border-emerald-400 text-white'
+                                            : 'bg-amber-500/90 border-amber-400 text-white'
+                                            }`}>
+                                            {course.is_published ? 'Published' : 'Draft'}
+                                        </span>
+                                    </div>
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent">
+                                        <h3 className="text-lg font-bold text-white line-clamp-1 group-hover:text-indigo-200 transition-colors">
+                                            {course.title}
+                                        </h3>
+                                        <div className="flex items-center gap-3 mt-1 text-xs text-slate-300 font-medium">
+                                            <span className="uppercase tracking-wider">{course.level}</span>
+                                            <span className="w-1 h-1 bg-slate-400 rounded-full" />
+                                            <span>{course.category}</span>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-1 text-sm font-bold text-emerald-600">
-                                        <DollarSign className="w-4 h-4" />
-                                        {course.price > 0 ? course.price : 'Free'}
-                                    </div>
                                 </div>
 
-                                {/* Stats Row */}
-                                <div className="grid grid-cols-3 gap-2 mb-4">
-                                    <div className="text-center p-2 bg-gray-50 rounded-lg">
-                                        <Users className="w-4 h-4 mx-auto text-gray-400 mb-1" />
-                                        <p className="text-xs text-gray-500">Students</p>
-                                        <p className="text-sm font-bold text-gray-900">{course.enrollments_count || 0}</p>
+                                {/* Body */}
+                                <div className="p-5 flex-1 flex flex-col">
+                                    {/* Stats Grid */}
+                                    <div className="grid grid-cols-3 gap-3 mb-6">
+                                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-center">
+                                            <div className="flex items-center justify-center gap-1.5 text-slate-500 text-[10px] uppercase font-bold tracking-wide mb-1">
+                                                <Users className="w-3 h-3" /> Students
+                                            </div>
+                                            <div className="font-bold text-slate-900">{course.enrollments_count || 0}</div>
+                                        </div>
+                                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-center">
+                                            <div className="flex items-center justify-center gap-1.5 text-slate-500 text-[10px] uppercase font-bold tracking-wide mb-1">
+                                                <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> Rating
+                                            </div>
+                                            <div className="font-bold text-slate-900">{course.rating ? course.rating.toFixed(1) : '-'}</div>
+                                        </div>
+                                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-center">
+                                            <div className="flex items-center justify-center gap-1.5 text-slate-500 text-[10px] uppercase font-bold tracking-wide mb-1">
+                                                <DollarSign className="w-3 h-3 text-emerald-500" /> Price
+                                            </div>
+                                            <div className="font-bold text-slate-900">{course.price > 0 ? `$${course.price}` : 'Free'}</div>
+                                        </div>
                                     </div>
-                                    <div className="text-center p-2 bg-gray-50 rounded-lg">
-                                        <Star className="w-4 h-4 mx-auto text-yellow-400 mb-1" />
-                                        <p className="text-xs text-gray-500">Rating</p>
-                                        <p className="text-sm font-bold text-gray-900">{course.rating || 0}</p>
+
+                                    {/* Actions */}
+                                    <div className="grid grid-cols-2 gap-2 mt-auto">
+                                        <button
+                                            onClick={() => navigate(`/admin/courses/${course.id}/view`)}
+                                            className="col-span-2 flex items-center justify-center gap-2 px-3 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors text-xs font-semibold"
+                                        >
+                                            <Eye className="w-3.5 h-3.5" /> View Details
+                                        </button>
+                                        <button
+                                            onClick={() => navigate(`/admin/courses/${course.id}/analytics`)}
+                                            className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-100 transition-colors text-xs font-medium"
+                                        >
+                                            <BarChart3 className="w-3.5 h-3.5" /> Analytics
+                                        </button>
+                                        <button
+                                            onClick={() => navigate(`/admin/courses/${course.id}/monitoring`)}
+                                            className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100 transition-colors text-xs font-medium"
+                                        >
+                                            <Activity className="w-3.5 h-3.5" /> Monitor
+                                        </button>
                                     </div>
-                                    <div className="text-center p-2 bg-gray-50 rounded-lg">
-                                        <BookOpen className="w-4 h-4 mx-auto text-gray-400 mb-1" />
-                                        <p className="text-xs text-gray-500">Subjects</p>
-                                        <p className="text-sm font-bold text-gray-900">{course.subjects_count || 0}</p>
+
+                                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                                        <span className="text-[10px] font-medium text-slate-400">
+                                            Updated {course.updated_at ? formatDistanceToNow(new Date(course.updated_at)) : 'recently'} ago
+                                        </span>
+                                        <div className="flex gap-1">
+                                            {/* Additional minimal actions if needed */}
+                                            <button
+                                                onClick={() => setDeleteModal({ isOpen: true, course })}
+                                                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                title="Delete Course"
+                                            >
+                                                <Delete className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="grid grid-cols-2 gap-2 mb-3">
-                                    <button
-                                        onClick={() => navigate(`/admin/courses/${course.id}/view`)}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
-                                    >
-                                        <Eye className="w-4 h-4" /> View
-                                    </button>
-                                    <button
-                                        onClick={() => navigate(`/admin/courses/${course.id}/analytics`)}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors text-sm"
-                                    >
-                                        <BarChart3 className="w-4 h-4" /> Analytics
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button
-                                        onClick={() => navigate(`/admin/courses/${course.id}/monitoring`)}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors text-sm"
-                                    >
-                                        <Activity className="w-4 h-4" /> Monitor
-                                    </button>
-                                    <button
-                                        onClick={() => navigate(`/admin/courses/${course.id}/tracking`)}
-                                        className="flex items-center justify-center gap-2 px-3 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors text-sm"
-                                    >
-                                        <TrendingUp className="w-4 h-4" /> Track
-                                    </button>
-                                </div>
-
-                                {/* Footer */}
-                                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                                    <span className="text-xs text-gray-500">
-                                        {course.created_at ? formatDistanceToNow(new Date(course.created_at), { addSuffix: true }) : 'N/A'}
-                                    </span>
-                                    <button
-                                        onClick={() => setDeleteModal({ isOpen: true, course })}
-                                        className="flex items-center gap-2 text-xs text-red-600 hover:text-red-700 font-medium hover:bg-red-50 px-2 py-1 rounded"
-                                    >
-                                        <Delete className="w-4 h-4" /> Delete
-                                    </button>
                                 </div>
                             </div>
                         </div>

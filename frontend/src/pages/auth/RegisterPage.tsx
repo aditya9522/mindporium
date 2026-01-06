@@ -7,6 +7,7 @@ import { Input } from '../../components/ui/Input';
 import { BookOpen, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
+import { BackgroundAnimation } from '../../components/common/BackgroundAnimation';
 
 const registerSchema = z.object({
     fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -54,21 +55,14 @@ export const RegisterPage = () => {
 
     return (
         <div className="relative min-h-[90vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div className="absolute inset-0 z-0">
-                <img
-                    src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80"
-                    alt="Background"
-                    className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px]" />
-            </div>
-            <div className="w-full max-w-md p-8 space-y-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 relative z-10">
+            <BackgroundAnimation />
+            <div className="w-full max-w-md p-8 space-y-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 relative z-10 animate-in fade-in zoom-in duration-500">
                 <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100 mb-4">
-                        <BookOpen className="h-6 w-6 text-primary-600" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-200 mb-6 transform -rotate-6">
+                        <BookOpen className="h-8 w-8 text-white" />
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900">Create an account</h2>
-                    <p className="mt-2 text-gray-600">Join Mindporium to start learning</p>
+                    <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Create an account</h2>
+                    <p className="mt-2 text-gray-500 font-medium">Join Mindporium to start learning</p>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -77,7 +71,7 @@ export const RegisterPage = () => {
                         <Input
                             {...register('fullName')}
                             placeholder="John Doe"
-                            className={errors.fullName ? "border-red-500 focus-visible:ring-red-500" : ""}
+                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.fullName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.fullName && <p className="text-sm text-red-500">{errors.fullName.message}</p>}
                     </div>
@@ -88,7 +82,7 @@ export const RegisterPage = () => {
                             {...register('email')}
                             type="email"
                             placeholder="you@example.com"
-                            className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
                     </div>
@@ -101,7 +95,7 @@ export const RegisterPage = () => {
                             {...register('password')}
                             type="password"
                             placeholder="••••••••"
-                            className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
+                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
                     </div>
@@ -112,12 +106,12 @@ export const RegisterPage = () => {
                             {...register('confirmPassword')}
                             type="password"
                             placeholder="••••••••"
-                            className={errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
+                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
                     </div>
 
-                    <Button type="submit" className="w-full flex items-center justify-center gap-2" size="lg" disabled={isSubmitting}>
+                    <Button type="submit" className="w-full flex items-center justify-center gap-2 h-12 rounded-xl text-base font-semibold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all transform hover:-translate-y-0.5" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin" />

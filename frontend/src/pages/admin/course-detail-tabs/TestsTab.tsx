@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, CheckCircle, Clock, FileText, Plus, AlertCircle, Calendar, Edit, Trash2, X } from 'lucide-react';
+import { BookOpen, CheckCircle, Clock, FileText, Plus, AlertCircle, Calendar, Edit, Trash2, X, Loader2 } from 'lucide-react';
 import { testService } from '../../../services/test.service';
 import { subjectService } from '../../../services/subject.service';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 import { format } from 'date-fns';
 
 interface TestsTabProps {
@@ -163,8 +163,8 @@ export const TestsTab = ({ courseData }: TestsTabProps) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
             </div>
         );
     }

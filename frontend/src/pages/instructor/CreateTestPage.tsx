@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { testService } from '../../services/test.service';
 import { subjectService } from '../../services/subject.service';
-import { Plus, Trash2, ArrowLeft, Loader2, Save, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react';
+import { courseService } from '../../services/course.service';
+import { Plus, Trash2, ArrowLeft, Loader2, Save, ChevronDown, ChevronUp, CheckCircle, Filter } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Question {
+    id?: number;
     question_text: string;
     question_type: 'mcq' | 'short_answer' | 'essay';
     options?: string[];
@@ -16,9 +18,18 @@ interface Question {
 
 export const CreateTestPage = () => {
     const navigate = useNavigate();
+    const { id } = useParams();
+    const isEditing = !!id;
+
     const [loading, setLoading] = useState(false);
-    const [subjects, setSubjects] = useState<any[]>([]);
-    const [loadingSubjects, setLoadingSubjects] = useState(true);
+    const [pageLoading, setPageLoading] = useState(true);
+
+    // Data Sources
+    const [allSubjects, setAllSubjects] = useState<any[]>([]);
+    const [courses, setCourses] = useState<any[]>([]);
+
+    // UI State
+    const [selectedCourseId, setSelectedCourseId] = useState<string>('');
     const [expandedQuestions, setExpandedQuestions] = useState<{ [key: number]: boolean }>({ 0: true });
 
     const [formData, setFormData] = useState({
@@ -51,30 +62,87 @@ export const CreateTestPage = () => {
 
     const [searchParams] = useSearchParams();
 
+    // Initial Data Fetch
     useEffect(() => {
-        const subjectIdParam = searchParams.get('subject_id');
-        if (subjectIdParam) {
-            setFormData(prev => ({ ...prev, subject_id: subjectIdParam }));
-        }
-        fetchSubjects();
-    }, [searchParams]);
+        loadInitialData();
+    }, []);
 
-    useEffect(() => {
-        // Auto-calculate total marks
-        const total = questions.reduce((sum, q) => sum + q.marks, 0);
-        setFormData(prev => ({ ...prev, total_marks: total }));
-    }, [questions]);
+    // Filter subjects based on selected course
+    const filteredSubjects = selectedCourseId
+        ? allSubjects.filter(s => s.course_id === parseInt(selectedCourseId))
+        : allSubjects;
 
-    const fetchSubjects = async () => {
+    const loadInitialData = async () => {
         try {
-            setLoadingSubjects(true);
-            const data = await subjectService.getMySubjects();
-            setSubjects(data);
+            setPageLoading(true);
+            const [subjectsData, coursesData] = await Promise.all([
+                subjectService.getMySubjects(),
+                courseService.getMyCourses()
+            ]);
+
+            setAllSubjects(subjectsData);
+            setCourses(coursesData);
+
+            // If query param exists
+            const subjectIdParam = searchParams.get('subject_id');
+            if (subjectIdParam) {
+                setFormData(prev => ({ ...prev, subject_id: subjectIdParam }));
+                // Try to find course for this subject
+                const subj = subjectsData.find(s => s.id === parseInt(subjectIdParam));
+                if (subj) setSelectedCourseId(subj.course_id.toString());
+            }
+
+            // If Editing
+            if (id) {
+                await loadTestData(parseInt(id), subjectsData);
+            }
+
         } catch (error) {
-            console.error('Failed to fetch subjects:', error);
-            toast.error('Failed to load subjects');
+            console.error('Failed to load data:', error);
+            toast.error('Failed to load initial data');
         } finally {
-            setLoadingSubjects(false);
+            setPageLoading(false);
+        }
+    };
+
+    const loadTestData = async (testId: number, currentSubjects: any[]) => {
+        try {
+            const test = await testService.getTest(testId);
+            setFormData({
+                title: test.title,
+                description: test.description || '',
+                subject_id: test.subject_id?.toString() || '',
+                duration_minutes: test.duration_minutes,
+                total_marks: test.total_marks,
+                passing_marks: test.passing_marks,
+                status: test.status as 'draft' | 'published',
+            });
+
+            // Map questions
+            if (test.questions && test.questions.length > 0) {
+                setQuestions(test.questions.map((q: any, idx: number) => ({
+                    id: q.id,
+                    question_text: q.question_text,
+                    question_type: q.question_type,
+                    options: q.options || ['', '', '', ''],
+                    correct_answer: q.correct_answer || '',
+                    marks: q.marks,
+                    order_index: idx,
+                })));
+            }
+
+            // Set Course Filter
+            if (test.subject_id) {
+                const subj = currentSubjects.find(s => s.id === test.subject_id);
+                if (subj) {
+                    setSelectedCourseId(subj.course_id.toString());
+                }
+            }
+
+        } catch (error) {
+            console.error('Failed to load test:', error);
+            toast.error('Failed to load test details');
+            navigate('/instructor/tests');
         }
     };
 
@@ -116,6 +184,12 @@ export const CreateTestPage = () => {
         }
     };
 
+    // Auto-calculate marks
+    useEffect(() => {
+        const total = questions.reduce((sum, q) => sum + q.marks, 0);
+        setFormData(prev => ({ ...prev, total_marks: total }));
+    }, [questions]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -124,7 +198,6 @@ export const CreateTestPage = () => {
             toast.error('Please enter a test title');
             return;
         }
-        // Subject is now optional
 
         if (questions.some(q => !q.question_text.trim())) {
             toast.error('All questions must have text');
@@ -137,10 +210,11 @@ export const CreateTestPage = () => {
 
         try {
             setLoading(true);
-            const testData = {
+            const payload = {
                 ...formData,
                 subject_id: formData.subject_id ? parseInt(formData.subject_id) : undefined,
                 questions: questions.map((q, idx) => ({
+                    id: q.id, // Include ID for updates
                     question_text: q.question_text,
                     question_type: q.question_type,
                     options: q.question_type === 'mcq' ? q.options : undefined,
@@ -150,20 +224,34 @@ export const CreateTestPage = () => {
                 })),
             };
 
-            await testService.createTest(testData);
-            toast.success('Test created successfully!');
+            if (isEditing && id) {
+                await testService.updateTest(parseInt(id), payload);
+                toast.success('Test updated successfully!');
+            } else {
+                await testService.createTest(payload);
+                toast.success('Test created successfully!');
+            }
+
             navigate('/instructor/tests');
         } catch (error: any) {
-            console.error('Failed to create test:', error);
-            toast.error(error.response?.data?.detail || 'Failed to create test');
+            console.error('Failed to save test:', error);
+            toast.error(error.response?.data?.detail || 'Failed to save test');
         } finally {
             setLoading(false);
         }
     };
 
+    if (pageLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 py-8">
-            <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <button
                     onClick={() => navigate('/instructor/tests')}
                     className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
@@ -173,7 +261,9 @@ export const CreateTestPage = () => {
                 </button>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-6">Create New Test</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-6">
+                        {isEditing ? 'Edit Test' : 'Create New Test'}
+                    </h1>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Basic Info */}
@@ -205,23 +295,52 @@ export const CreateTestPage = () => {
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Subject (Optional)
-                                </label>
-                                <select
-                                    value={formData.subject_id}
-                                    onChange={(e) => setFormData({ ...formData, subject_id: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    disabled={loadingSubjects}
-                                >
-                                    <option value="">Select a subject</option>
-                                    {subjects.map((subject) => (
-                                        <option key={subject.id} value={subject.id}>
-                                            {subject.title} ({subject.course_title})
-                                        </option>
-                                    ))}
-                                </select>
+                            {/* Course & Subject Selection */}
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 md:col-span-2 space-y-4">
+                                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                                    <Filter className="w-4 h-4" />
+                                    Test Context (Optional)
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                                            Filter by Course
+                                        </label>
+                                        <select
+                                            value={selectedCourseId}
+                                            onChange={(e) => {
+                                                setSelectedCourseId(e.target.value);
+                                                setFormData({ ...formData, subject_id: '' }); // Reset subject
+                                            }}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm"
+                                        >
+                                            <option value="">All Courses</option>
+                                            {courses.map((course) => (
+                                                <option key={course.id} value={course.id}>
+                                                    {course.title}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                                            Select Subject
+                                        </label>
+                                        <select
+                                            value={formData.subject_id}
+                                            onChange={(e) => setFormData({ ...formData, subject_id: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm"
+                                        >
+                                            <option value="">-- General / No Subject --</option>
+                                            {filteredSubjects.map((subject) => (
+                                                <option key={subject.id} value={subject.id}>
+                                                    {subject.title} {selectedCourseId ? '' : `(${subject.course_title})`}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
                             <div>
@@ -435,12 +554,12 @@ export const CreateTestPage = () => {
                                 {loading ? (
                                     <>
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        Creating...
+                                        {isEditing ? 'Updating...' : 'Creating...'}
                                     </>
                                 ) : (
                                     <>
                                         <Save className="w-5 h-5" />
-                                        Create Test
+                                        {isEditing ? 'Update Test' : 'Create Test'}
                                     </>
                                 )}
                             </button>

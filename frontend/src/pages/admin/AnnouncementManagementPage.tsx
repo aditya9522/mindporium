@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { announcementService } from '../../services/announcement.service';
 import { useAuthStore } from '../../store/auth.store';
 import { Loader2, Plus, Edit, Trash2, Pin, MessageSquare } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 
 export const AnnouncementManagementPage = () => {
     const { user } = useAuthStore();
@@ -17,6 +18,7 @@ export const AnnouncementManagementPage = () => {
         announcement: null
     });
     const [deleting, setDeleting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -50,6 +52,7 @@ export const AnnouncementManagementPage = () => {
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             await announcementService.createAnnouncement(formData);
             toast.success('Announcement created successfully');
@@ -59,12 +62,15 @@ export const AnnouncementManagementPage = () => {
         } catch (error) {
             console.error('Failed to create announcement:', error);
             toast.error('Failed to create announcement');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingAnnouncement) return;
+        setIsSubmitting(true);
         try {
             await announcementService.updateAnnouncement(editingAnnouncement.id, formData);
             toast.success('Announcement updated successfully');
@@ -74,6 +80,8 @@ export const AnnouncementManagementPage = () => {
         } catch (error) {
             console.error('Failed to update announcement:', error);
             toast.error('Failed to update announcement');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -118,11 +126,7 @@ export const AnnouncementManagementPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -256,9 +260,17 @@ export const AnnouncementManagementPage = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                    disabled={isSubmitting}
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
-                                    {editingAnnouncement ? 'Update' : 'Create'}
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Processing...
+                                        </>
+                                    ) : (
+                                        editingAnnouncement ? 'Update' : 'Create'
+                                    )}
                                 </button>
                             </div>
                         </form>

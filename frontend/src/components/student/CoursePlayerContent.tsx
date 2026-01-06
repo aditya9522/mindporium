@@ -10,9 +10,9 @@ export const CoursePlayerContent = ({ resource }: CoursePlayerContentProps) => {
         <div className="max-w-4xl mx-auto">
             <h1 className="text-2xl font-bold mb-6">{resource.title}</h1>
 
-            <div className="bg-gray-800 rounded-xl overflow-hidden shadow-lg mb-8">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-gray-700/50 mb-8 ring-1 ring-white/5">
                 {resource.resource_type === 'video' && resource.file_url ? (
-                    <div className="aspect-video bg-black">
+                    <div className="aspect-video bg-black relative group">
                         <video
                             src={resource.file_url}
                             controls
@@ -23,36 +23,40 @@ export const CoursePlayerContent = ({ resource }: CoursePlayerContentProps) => {
                         </video>
                     </div>
                 ) : resource.resource_type === 'pdf' ? (
-                    <div className="p-12 flex flex-col items-center justify-center text-center">
-                        <FileText className="w-16 h-16 text-gray-500 mb-4" />
-                        <h3 className="text-xl font-semibold mb-2">PDF Document</h3>
-                        <p className="text-gray-400 mb-6">This lesson contains a PDF document.</p>
+                    <div className="p-16 flex flex-col items-center justify-center text-center bg-gradient-to-b from-gray-800 to-gray-900">
+                        <div className="w-20 h-20 bg-gray-700/50 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-gray-600">
+                            <FileText className="w-10 h-10 text-indigo-400" />
+                        </div>
+                        <h3 className="text-xl font-bold mb-2 text-white">PDF Document</h3>
+                        <p className="text-gray-400 mb-8 max-w-sm">This lesson contains additional reading material in PDF format.</p>
                         {resource.file_url && (
                             <a
                                 href={resource.file_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-medium transition-colors"
+                                className="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white font-semibold transition-all shadow-lg hover:shadow-indigo-500/20 transform hover:-translate-y-0.5"
                             >
-                                <Download className="w-4 h-4 mr-2" />
+                                <Download className="w-5 h-5 mr-2" />
                                 Download PDF
                             </a>
                         )}
                     </div>
                 ) : (
-                    <div className="p-12 flex flex-col items-center justify-center text-center">
-                        <ExternalLink className="w-16 h-16 text-gray-500 mb-4" />
-                        <h3 className="text-xl font-semibold mb-2">External Resource</h3>
-                        <p className="text-gray-400 mb-6">This lesson links to an external resource.</p>
+                    <div className="p-16 flex flex-col items-center justify-center text-center bg-gradient-to-b from-gray-800 to-gray-900">
+                        <div className="w-20 h-20 bg-gray-700/50 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-gray-600">
+                            <ExternalLink className="w-10 h-10 text-emerald-400" />
+                        </div>
+                        <h3 className="text-xl font-bold mb-2 text-white">External Resource</h3>
+                        <p className="text-gray-400 mb-8 max-w-sm">This lesson links to an external resource for further learning.</p>
                         {resource.external_link && (
                             <a
                                 href={resource.external_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-medium transition-colors"
+                                className="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-white font-semibold transition-all shadow-lg hover:shadow-emerald-500/20 transform hover:-translate-y-0.5"
                             >
-                                <ExternalLink className="w-4 h-4 mr-2" />
-                                Open Link
+                                <ExternalLink className="w-5 h-5 mr-2" />
+                                Open Resource
                             </a>
                         )}
                     </div>
@@ -61,8 +65,8 @@ export const CoursePlayerContent = ({ resource }: CoursePlayerContentProps) => {
 
             {resource.description && (
                 <div className="prose prose-invert max-w-none">
-                    <h3 className="text-lg font-semibold mb-2">Description</h3>
-                    <p className="text-gray-300">{resource.description}</p>
+                    <h3 className="text-xl font-bold mb-3 text-white">About this lesson</h3>
+                    <p className="text-gray-300 leading-relaxed text-lg">{resource.description}</p>
                 </div>
             )}
         </div>

@@ -89,45 +89,50 @@ export const ProfilePage = () => {
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-                    <p className="mt-2 text-gray-600">Manage your account information</p>
+                <div className="mb-10 text-center md:text-left">
+                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Profile Settings</h1>
+                    <p className="text-lg text-gray-500 font-medium">Manage your personal information and account preferences</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Profile Card */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div className="bg-white rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8 sticky top-8">
                             <div className="text-center">
-                                <div className="mb-4 flex justify-center">
-                                    <ImageUpload
-                                        value={watch('photo')}
-                                        onChange={(url) => setValue('photo', url, { shouldDirty: true })}
-                                        label=""
-                                        variant="avatar"
-                                        entityType="users"
-                                        entityId={user?.id}
-                                    />
+                                <div className="mb-6 flex justify-center">
+                                    <div className="relative group">
+                                        <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+                                        <div className="relative bg-white rounded-full p-1">
+                                            <ImageUpload
+                                                value={watch('photo')}
+                                                onChange={(url) => setValue('photo', url, { shouldDirty: true })}
+                                                label=""
+                                                variant="avatar"
+                                                entityType="users"
+                                                entityId={user?.id}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900">{user?.full_name}</h2>
-                                <div className="flex items-center justify-center gap-2 mt-2 text-gray-600">
-                                    <Mail className="w-4 h-4" />
+                                <h2 className="text-2xl font-bold text-gray-900 mb-1">{user?.full_name}</h2>
+                                <div className="flex items-center justify-center gap-2 mb-4 text-gray-500 font-medium bg-gray-50 py-1 px-3 rounded-full inline-flex mx-auto border border-gray-100">
+                                    <Mail className="w-3.5 h-3.5" />
                                     <span className="text-sm">{user?.email}</span>
                                 </div>
                                 <div className="mt-4 flex justify-center">
                                     {getRoleBadge(user?.role)}
                                 </div>
-                                <div className="mt-6 pt-6 border-t border-gray-100">
+                                <div className="mt-8 pt-8 border-t border-gray-100 space-y-3">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-600">Account Status</span>
-                                        <span className={`font-semibold ${user?.is_active ? 'text-green-600' : 'text-red-600'}`}>
+                                        <span className="text-gray-500 font-medium">Account Status</span>
+                                        <span className={`font-bold px-2 py-0.5 rounded ${user?.is_active ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
                                             {user?.is_active ? 'Active' : 'Inactive'}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between text-sm mt-2">
-                                        <span className="text-gray-600">Member Since</span>
-                                        <span className="font-semibold text-gray-900">
-                                            {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-500 font-medium">Member Since</span>
+                                        <span className="font-bold text-gray-900">
+                                            {user?.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                                         </span>
                                     </div>
                                 </div>
@@ -138,8 +143,11 @@ export const ProfilePage = () => {
                     {/* Edit Form */}
                     {/* Edit Form */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>
+                        <div className="bg-white rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
+                                <User className="w-5 h-5 text-indigo-600" />
+                                Personal Information
+                            </h3>
 
                             <div className="mb-6">
                                 <ImageUpload

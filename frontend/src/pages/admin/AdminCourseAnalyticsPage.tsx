@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { adminService } from '../../services/admin.service';
 import { courseService } from '../../services/course.service';
-import { Loader2, ArrowLeft, Users, Clock, BookOpen, TrendingUp, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Users, Clock, BookOpen, TrendingUp, BarChart3 } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import toast from 'react-hot-toast';
 
@@ -37,11 +38,7 @@ export const AdminCourseAnalyticsPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!course) {
@@ -76,8 +73,8 @@ export const AdminCourseAnalyticsPage = () => {
                             <p className="mt-1 text-gray-600">Monitoring: <span className="font-semibold">{course.title}</span></p>
                         </div>
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${course.is_published
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-yellow-100 text-yellow-700'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-yellow-100 text-yellow-700'
                             }`}>
                             {course.is_published ? 'Published' : 'Draft'}
                         </span>

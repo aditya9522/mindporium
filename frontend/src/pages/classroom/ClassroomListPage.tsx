@@ -9,7 +9,7 @@ import { Loader2, Calendar, Clock, Video, Plus, User as UserIcon, Edit, Trash2, 
 import { Button } from '../../components/ui/Button';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import { PageLoader } from '../../components/common/PageLoader';
 import type { Course } from '../../types/course';
 import type { Subject } from '../../types/enrollment';
@@ -348,7 +348,7 @@ export const ClassroomListPage = () => {
                                             <option key={subject.id} value={subject.id}>{subject.title}</option>
                                         ))}
                                     </select>
-                                    {loadingSubjects && <div className="absolute right-3 top-1/2 -translate-y-1/2"><Loader2 className="w-4 h-4 animate-spin text-indigo-500" /></div>}
+                                    {loadingSubjects && <div className="absolute right-4 top-1/2 -translate-y-1/2"><Loader2 className="w-4 h-4 animate-spin text-indigo-500" /></div>}
                                 </div>
                             </div>
                         )}

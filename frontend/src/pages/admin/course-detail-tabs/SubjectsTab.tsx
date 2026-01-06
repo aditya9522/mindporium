@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { FolderOpen, Plus, Edit, Trash2, BookOpen, GraduationCap, FileText, X } from 'lucide-react';
+import { FolderOpen, Plus, Edit, Trash2, BookOpen, GraduationCap, FileText, X, Loader2 } from 'lucide-react';
 import api from '../../../lib/axios';
 import { subjectService } from '../../../services/subject.service';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 
 interface SubjectsTabProps {
     courseData: any;
@@ -105,8 +105,8 @@ export const SubjectsTab = ({ courseData }: SubjectsTabProps) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
             </div>
         );
     }

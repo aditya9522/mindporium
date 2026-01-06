@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { testService } from '../../services/test.service';
 import type { Test } from '../../types/test';
-import { Plus, FileText, Users, Clock, CheckCircle, Loader2, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, FileText, Users, Clock, CheckCircle, Eye, Edit, Trash2 } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import toast from 'react-hot-toast';
-import { DeleteConfirmationModal } from '../../components/modals/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 
 export const TestsManagementPage = () => {
     const [tests, setTests] = useState<Test[]>([]);
@@ -48,6 +49,10 @@ export const TestsManagementPage = () => {
         }
     };
 
+    if (loading) {
+        return <PageLoader />;
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,11 +72,7 @@ export const TestsManagementPage = () => {
                 </div>
 
                 {/* Tests Grid */}
-                {loading ? (
-                    <div className="flex justify-center py-12">
-                        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-                    </div>
-                ) : tests.length === 0 ? (
+                {tests.length === 0 ? (
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
                         <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No tests yet</h3>
@@ -169,7 +170,7 @@ export const TestsManagementPage = () => {
                 onConfirm={handleDelete}
                 title="Delete Test"
                 message="Are you sure you want to delete this test? This action cannot be undone."
-                loading={deleting}
+                isDeleting={deleting}
             />
         </div>
     );

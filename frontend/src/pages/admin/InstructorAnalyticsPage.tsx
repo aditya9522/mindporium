@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { adminService } from '../../services/admin.service';
 import { instructorService } from '../../services/instructor.service';
 import { useAuthStore } from '../../store/auth.store';
-import { Loader2, ArrowLeft, Users, BookOpen, Star, Award, BarChart3, TrendingUp, Brain, ThumbsUp, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Users, BookOpen, Star, Award, BarChart3, TrendingUp, Brain, ThumbsUp, AlertCircle } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import toast from 'react-hot-toast';
 
@@ -44,11 +45,7 @@ export const InstructorAnalyticsPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!performanceData) {

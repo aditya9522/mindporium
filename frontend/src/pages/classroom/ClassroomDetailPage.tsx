@@ -107,7 +107,7 @@ export const ClassroomDetailPage = () => {
     // --- View Logic / Hooks must be before returns ---
 
     // View Logic - compute main stream
-    const isInstructor = user?.id === classroom?.instructor_id;
+    const isInstructor = Number(user?.id) === Number(classroom?.instructor_id);
     const instructorId = String(classroom?.instructor_id || '');
     const mainStream = isInstructor ? localStream : remotePeers.get(instructorId)?.stream;
 
@@ -279,11 +279,12 @@ export const ClassroomDetailPage = () => {
             // Set TURN
             let iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
             if (response.turn_server) {
-                iceServers = response.turn_server.urls.map((url: string) => ({
+                const turnServers = response.turn_server.urls.map((url: string) => ({
                     urls: url,
                     username: response.turn_server.username,
                     credential: response.turn_server.credential
                 }));
+                iceServers = [...iceServers, ...turnServers];
             }
 
             // Connect WS
@@ -424,6 +425,14 @@ export const ClassroomDetailPage = () => {
         const senderId = String(data.sender_user_id);
         const pc = createPeerConnection(senderId, false, iceServers);
         await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+
+        // Add any queued candidates
+        const queued = (pc as any)._queuedCandidates || [];
+        for (const candidate of queued) {
+            await pc.addIceCandidate(new RTCIceCandidate(candidate)).catch(console.error);
+        }
+        (pc as any)._queuedCandidates = [];
+
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
         wsRef.current?.send(JSON.stringify({
@@ -440,8 +449,22 @@ export const ClassroomDetailPage = () => {
     };
 
     const handleCandidate = async (data: any) => {
-        const pc = pcsRef.current[String(data.sender_user_id)];
-        if (pc) await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+        const senderId = String(data.sender_user_id);
+        const pc = pcsRef.current[senderId];
+        if (pc) {
+            try {
+                // Only add candidate if remote description is already set
+                if (pc.remoteDescription && pc.remoteDescription.type) {
+                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+                } else {
+                    // Queue candidate (simplified: store on pc object for now)
+                    (pc as any)._queuedCandidates = (pc as any)._queuedCandidates || [];
+                    (pc as any)._queuedCandidates.push(data.candidate);
+                }
+            } catch (e) {
+                console.error("Error adding ice candidate", e);
+            }
+        }
     };
 
 

@@ -7,6 +7,7 @@ import { ArrowLeft, Plus, Trash2, Save, Loader2, FileText, Video, Link as LinkIc
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';
 import { PageLoader } from '../../components/common/PageLoader';
+import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 
 export const ManageResourcesPage = () => {
     const { courseId, subjectId } = useParams<{ courseId: string; subjectId: string }>();
@@ -27,6 +28,13 @@ export const ManageResourcesPage = () => {
         is_downloadable: true,
         order_index: 0,
     });
+
+
+
+    // Delete Modal State
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [resourceToDelete, setResourceToDelete] = useState<number | null>(null);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         if (subjectId) {
@@ -98,16 +106,25 @@ export const ManageResourcesPage = () => {
         }
     };
 
-    const handleDeleteResource = async (resourceId: number) => {
-        if (!window.confirm('Are you sure you want to delete this resource?')) return;
+    const handleDeleteClick = (resourceId: number) => {
+        setResourceToDelete(resourceId);
+        setDeleteModalOpen(true);
+    };
 
+    const confirmDelete = async () => {
+        if (!resourceToDelete) return;
+        setDeleting(true);
         try {
-            await resourceService.deleteResource(resourceId);
-            setResources(resources.filter(r => r.id !== resourceId));
-            toast.success('Resource deleted');
+            await resourceService.deleteResource(resourceToDelete);
+            setResources(resources.filter(r => r.id !== resourceToDelete));
+            toast.success('Resource deleted successfully');
+            setDeleteModalOpen(false);
         } catch (error) {
             console.error('Failed to delete resource:', error);
             toast.error('Failed to delete resource');
+        } finally {
+            setDeleting(false);
+            setResourceToDelete(null);
         }
     };
 
@@ -320,7 +337,7 @@ export const ManageResourcesPage = () => {
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => handleDeleteResource(resource.id)}
+                                        onClick={() => handleDeleteClick(resource.id)}
                                         className="text-red-600 hover:text-red-800 p-2"
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -337,6 +354,16 @@ export const ManageResourcesPage = () => {
                     )}
                 </div>
             </div>
+
+
+            <DeleteConfirmationModal
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Delete Resource"
+                message="Are you sure you want to delete this resource? This cannot be undone."
+                isDeleting={deleting}
+            />
         </div>
     );
 };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
-import { Users, BookOpen, Monitor, Loader2, DollarSign, GraduationCap, Activity } from 'lucide-react';
+import { Users, BookOpen, Monitor, DollarSign, GraduationCap, Activity } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
@@ -45,11 +46,7 @@ export const AdminDashboardPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     const overview = dashboardData?.overview || {};
@@ -117,8 +114,8 @@ export const AdminDashboardPage = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-                    <p className="mt-2 text-gray-600">Platform overview and analytics</p>
+                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700 tracking-tight">Admin Overview</h1>
+                    <p className="mt-2 text-lg text-gray-500 font-medium">Platform insights and performance metrics</p>
                 </div>
 
                 {/* Stats Grid */}
@@ -126,20 +123,20 @@ export const AdminDashboardPage = () => {
                     {statsCards.map((stat, index) => {
                         const Icon = stat.icon;
                         return (
-                            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+                            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center`}>
-                                        <Icon className="w-6 h-6 text-white" />
+                                    <div className={`w-14 h-14 ${stat.color} rounded-xl shadow-lg shadow-indigo-100/50 flex items-center justify-center`}>
+                                        <Icon className="w-7 h-7 text-white" />
                                     </div>
-                                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${stat.changeType === 'positive' ? 'text-green-600 bg-green-50' :
-                                        stat.changeType === 'negative' ? 'text-red-600 bg-red-50' :
-                                            'text-gray-600 bg-gray-50'
+                                    <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${stat.changeType === 'positive' ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' :
+                                        stat.changeType === 'negative' ? 'text-red-700 bg-red-50 border border-red-100' :
+                                            'text-gray-600 bg-gray-50 border border-gray-100'
                                         }`}>
                                         {stat.change}
                                     </span>
                                 </div>
-                                <h3 className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</h3>
-                                <p className="text-sm text-gray-600">{stat.title}</p>
+                                <h3 className="text-3xl font-extrabold text-gray-900 mb-1 tracking-tight">{stat.value}</h3>
+                                <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
                             </div>
                         );
                     })}

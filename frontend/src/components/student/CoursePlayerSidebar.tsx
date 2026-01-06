@@ -52,14 +52,16 @@ export const CoursePlayerSidebar = ({ subjects, activeResource, onSelectResource
                                     <button
                                         key={resource.id}
                                         onClick={() => onSelectResource(resource)}
-                                        className={`w-full flex items-center gap-3 p-3 pl-6 text-sm transition-colors ${activeResource?.id === resource.id
-                                            ? 'bg-indigo-600/10 text-indigo-400 border-r-2 border-indigo-600'
+                                        className={`w-full flex items-center gap-3 p-3 pl-6 text-sm transition-all duration-200 group relative ${activeResource?.id === resource.id
+                                            ? 'bg-indigo-600/10 text-indigo-200 border-r-2 border-indigo-500'
                                             : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
                                             }`}
                                     >
-                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0
-                                        ${isCompleted ? 'bg-green-500 border-green-500' : 'border-gray-600'}`}>
-                                            {isCompleted && <CheckCircle className="w-3 h-3 text-white" />}
+                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300
+                                        ${isCompleted
+                                                ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]'
+                                                : activeResource?.id === resource.id ? 'border-indigo-400' : 'border-gray-600 group-hover:border-gray-500'}`}>
+                                            {isCompleted && <CheckCircle className="w-3.5 h-3.5 text-white" />}
                                         </div>
 
                                         <div className="flex-1 text-left truncate">

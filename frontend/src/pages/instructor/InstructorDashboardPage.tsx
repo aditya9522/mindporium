@@ -43,12 +43,12 @@ export const InstructorDashboardPage = () => {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Instructor Dashboard</h1>
-                        <p className="mt-2 text-gray-600">Manage your courses and track your teaching performance.</p>
+                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700 tracking-tight">Instructor Dashboard</h1>
+                        <p className="mt-2 text-lg text-gray-500 font-medium">Manage your courses and track your teaching performance.</p>
                     </div>
                     <Link
                         to="/instructor/courses/create"
-                        className="mt-4 md:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                        className="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all transform hover:-translate-y-0.5 font-bold"
                     >
                         <Plus className="w-5 h-5 mr-2" />
                         Create Course
@@ -83,89 +83,105 @@ export const InstructorDashboardPage = () => {
                     />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Recent Enrollments */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Enrollments</h2>
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
+                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><Users className="w-5 h-5" /></div>
+                            Recent Enrollments
+                        </h2>
                         {dashboard.recent_enrollments && dashboard.recent_enrollments.length > 0 ? (
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {dashboard.recent_enrollments.slice(0, 5).map((enrollment) => (
-                                    <div key={enrollment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div key={enrollment.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                                         <div>
-                                            <p className="font-medium text-gray-900">{enrollment.user_name}</p>
-                                            <p className="text-sm text-gray-600">{enrollment.course_title}</p>
+                                            <p className="font-bold text-gray-900">{enrollment.user_name}</p>
+                                            <p className="text-sm text-gray-500 font-medium">{enrollment.course_title}</p>
                                         </div>
-                                        <span className="text-xs text-gray-500">
+                                        <span className="text-xs font-semibold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100">
                                             {format(new Date(enrollment.enrolled_at), 'MMM d')}
                                         </span>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-gray-500 text-center py-8">No recent enrollments</p>
+                            <div className="text-center py-10">
+                                <p className="text-gray-400 font-medium">No recent enrollments</p>
+                            </div>
                         )}
                     </div>
 
                     {/* Upcoming Classes */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                            <Calendar className="w-5 h-5 mr-2" />
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
+                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><Calendar className="w-5 h-5" /></div>
                             Upcoming Classes
                         </h2>
                         {dashboard.upcoming_classes && dashboard.upcoming_classes.length > 0 ? (
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {dashboard.upcoming_classes.slice(0, 5).map((classroom) => (
-                                    <div key={classroom.id} className="flex items-start justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div key={classroom.id} className="flex items-start justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                                         <div className="flex-1">
-                                            <p className="font-medium text-gray-900">{classroom.title}</p>
-                                            <p className="text-sm text-gray-600">{classroom.subject_title}</p>
-                                            <p className="text-xs text-gray-500 mt-1">
+                                            <p className="font-bold text-gray-900">{classroom.title}</p>
+                                            <p className="text-sm text-gray-500 font-medium">{classroom.subject_title}</p>
+                                            <p className="text-xs text-indigo-600 font-semibold mt-1.5 flex items-center gap-1">
+                                                <Calendar className="w-3 h-3" />
                                                 {(classroom.scheduled_at || (classroom as any).start_time) && !isNaN(new Date(classroom.scheduled_at || (classroom as any).start_time).getTime())
                                                     ? format(new Date(classroom.scheduled_at || (classroom as any).start_time), 'MMM d, h:mm a')
                                                     : 'Date not set'}
                                             </p>
                                         </div>
-                                        <span className={`text-xs px-2 py-1 rounded capitalize ${(classroom as any).status === 'live' ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-indigo-100 text-indigo-700'}`}>
+                                        <span className={`text-xs px-2.5 py-1 rounded-full font-bold capitalize shadow-sm ${(classroom as any).status === 'live' ? 'bg-red-50 text-red-600 border border-red-100 animate-pulse' : 'bg-indigo-50 text-indigo-600 border border-indigo-100'}`}>
                                             {(classroom as any).status === 'live' ? 'Live' : classroom.type}
                                         </span>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-gray-500 text-center py-8">No upcoming classes</p>
+                            <div className="text-center py-10">
+                                <p className="text-gray-400 font-medium">No upcoming classes</p>
+                            </div>
                         )}
                     </div>
                 </div>
 
                 {/* Course Performance */}
                 {dashboard.course_stats && dashboard.course_stats.length > 0 && (
-                    <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-bold text-gray-900 mb-4">Course Performance</h2>
+                    <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
+                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><TrendingUp className="w-5 h-5" /></div>
+                            Course Performance
+                        </h2>
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="border-b border-gray-200">
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Course</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Enrollments</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Active Students</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Completion Rate</th>
+                                    <tr className="border-b border-gray-100">
+                                        <th className="text-left py-4 px-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Course</th>
+                                        <th className="text-left py-4 px-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Enrollments</th>
+                                        <th className="text-left py-4 px-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Active Students</th>
+                                        <th className="text-left py-4 px-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Completion Rate</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-gray-50">
                                     {dashboard.course_stats.map((course) => (
-                                        <tr key={course.course_id} className="border-b border-gray-100 hover:bg-gray-50">
-                                            <td className="py-3 px-4">
+                                        <tr key={course.course_id} className="hover:bg-gray-50/80 transition-colors group">
+                                            <td className="py-4 px-4">
                                                 <Link
                                                     to={`/instructor/courses/${course.course_id}`}
-                                                    className="font-medium text-indigo-600 hover:text-indigo-700"
+                                                    className="font-bold text-gray-900 hover:text-indigo-600 transition-colors text-lg"
                                                 >
                                                     {course.course_title}
                                                 </Link>
                                             </td>
-                                            <td className="py-3 px-4 text-gray-700">{course.total_enrollments}</td>
-                                            <td className="py-3 px-4 text-gray-700">{course.active_students}</td>
-                                            <td className="py-3 px-4">
-                                                <span className="text-gray-700">{course.completion_rate}%</span>
+                                            <td className="py-4 px-4 text-gray-600 font-medium group-hover:text-gray-900 transition-colors">{course.total_enrollments}</td>
+                                            <td className="py-4 px-4 text-gray-600 font-medium group-hover:text-gray-900 transition-colors">{course.active_students}</td>
+                                            <td className="py-4 px-4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-gray-900 font-bold">{course.completion_rate}%</span>
+                                                    <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                        <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${course.completion_rate}%` }}></div>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

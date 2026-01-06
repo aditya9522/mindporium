@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../lib/axios';
-import { Loader2, ArrowLeft, TrendingUp, Users, CheckCircle, Activity, Target, Clock } from 'lucide-react';
+import { ArrowLeft, TrendingUp, Users, CheckCircle, Activity, Target, Clock } from 'lucide-react';
+import { PageLoader } from '../../components/common/PageLoader';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import toast from 'react-hot-toast';
 
@@ -32,11 +33,7 @@ export const CourseTrackingPage = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     if (!trackingData) {

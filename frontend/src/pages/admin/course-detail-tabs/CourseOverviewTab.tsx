@@ -1,6 +1,6 @@
 import {
     Users, BookOpen, GraduationCap, TestTube, Star,
-    TrendingUp, CheckCircle, FileText, MessageSquare
+    TrendingUp, CheckCircle, FileText, MessageSquare, Loader2
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -14,7 +14,11 @@ interface CourseOverviewTabProps {
 export const CourseOverviewTab = ({ courseData }: CourseOverviewTabProps) => {
 
     if (!courseData) {
-        return <div className="text-center py-12 text-gray-500">Loading...</div>;
+        return (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+            </div>
+        );
     }
 
     const stats = courseData.statistics || {};

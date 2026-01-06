@@ -21,11 +21,12 @@ export interface Post {
     user_id: number;
     title: string;
     content: string;
-    media_url?: string;
+    attachments?: string;
     view_count: number;
     like_count: number;
     comment_count: number;
     is_pinned: boolean;
+    is_locked?: boolean;
     created_at: string;
     user?: {
         id: number;
@@ -60,7 +61,7 @@ export interface CreatePostRequest {
     community_id: number;
     title: string;
     content: string;
-    media_url?: string;
+    attachments?: string;
 }
 
 export interface CreateCommentRequest {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Search, TrendingUp, Award, Clock, Mail } from 'lucide-react';
+import { Users, Search, TrendingUp, Award, Clock, Mail, Loader2 } from 'lucide-react';
 import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
@@ -38,8 +38,8 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
             </div>
         );
     }

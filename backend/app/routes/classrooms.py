@@ -182,7 +182,11 @@ async def join_classroom(
         "meeting_id": classroom.meeting_id,
         "websocket_url": f"ws/classroom/{classroom_id}", # Frontend will append base URL
         "turn_server": {
-            "urls": [f"turn:{settings.TURN_URL}"],
+            "urls": [
+                f"turn:{settings.TURN_URL}?transport=udp",
+                f"turn:{settings.TURN_URL}?transport=tcp",
+                f"stun:{settings.TURN_URL}"
+            ],
             "username": settings.TURN_USERNAME,
             "credential": settings.TURN_PASSWORD,
         },

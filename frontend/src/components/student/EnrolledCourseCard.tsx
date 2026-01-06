@@ -13,54 +13,57 @@ export const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
 
     return (
         <Link to={`/courses/${course.id}`}>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group flex flex-col h-full">
+            <div className="bg-white rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 group flex flex-col h-full transform hover:-translate-y-1">
                 {/* Thumbnail */}
-                <div className="relative h-40 bg-gradient-to-br from-indigo-500 to-teal-500 overflow-hidden">
+                <div className="relative h-44 bg-slate-900 overflow-hidden">
                     {course.thumbnail ? (
                         <img
                             src={course.thumbnail}
                             alt={course.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out opacity-90 group-hover:opacity-100"
                         />
                     ) : (
-                        <div className="flex items-center justify-center h-full">
-                            <BookOpen className="h-12 w-12 text-white opacity-50" />
+                        <div className="flex items-center justify-center h-full bg-gradient-to-br from-indigo-500 to-purple-600">
+                            <BookOpen className="h-12 w-12 text-white/50" />
                         </div>
                     )}
-                    
+
                     {/* Overlay Play Button */}
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <PlayCircle className="w-12 h-12 text-white" />
+                    <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-white/20 backdrop-blur-md p-3 rounded-full border border-white/30 transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                            <PlayCircle className="w-8 h-8 text-white fill-white/20" />
+                        </div>
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-5 flex flex-col flex-grow">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors">
                         {course.title}
                     </h3>
 
-                    <div className="mt-auto">
+                    <div className="mt-auto pt-4">
                         {/* Progress Bar */}
-                        <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                            <span className="font-medium">{progress}% Complete</span>
+                        <div className="flex items-center justify-between text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+                            <span>{progress}% Complete</span>
                             {progress === 100 && (
-                                <span className="flex items-center text-green-600 text-xs font-bold">
+                                <span className="flex items-center text-emerald-600">
                                     <Award className="w-4 h-4 mr-1" />
-                                    Completed
+                                    Done
                                 </span>
                             )}
                         </div>
-                        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                            <div 
-                                className={`h-full rounded-full transition-all duration-500 ${
-                                    progress === 100 ? 'bg-green-500' : 'bg-indigo-600'
-                                }`}
+                        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden mb-5">
+                            <div
+                                className={`h-full rounded-full transition-all duration-1000 ease-out shadow-sm ${progress === 100
+                                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                                    : 'bg-gradient-to-r from-indigo-500 to-purple-500'
+                                    }`}
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
-                        
-                        <button className="w-full mt-4 py-2 px-4 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-semibold hover:bg-indigo-100 transition-colors">
+
+                        <button className="w-full py-2.5 px-4 bg-gray-50 text-gray-700 rounded-xl text-sm font-bold border border-gray-100 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600 group-hover:shadow-lg group-hover:shadow-indigo-200 transition-all duration-300">
                             {progress === 0 ? 'Start Learning' : 'Continue Learning'}
                         </button>
                     </div>

@@ -5,6 +5,7 @@ import { chatbotService } from '../../services/chatbot.service';
 import type { ChatSession, ChatMessage } from '../../types/chatbot';
 import { Send, Loader2, Bot } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { PageLoader } from '../../components/common/PageLoader';
 
 export const ChatbotPage = () => {
     const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -34,7 +35,6 @@ export const ChatbotPage = () => {
             const data = await chatbotService.getSessions();
             setSessions(data);
 
-            // If we have sessions but none selected, select the most recent one
             if (data.length > 0 && !currentSession) {
                 await loadSession(data[0].id);
             } else if (data.length === 0) {
@@ -129,9 +129,6 @@ export const ChatbotPage = () => {
         try {
             const responseMsg = await chatbotService.sendMessage(currentSession.id, content);
 
-            // Update session with actual AI response
-            // We need to reload the session to get the updated messages list properly synced or just append
-            // For smoother UX, let's append the AI response
             setCurrentSession(prev => {
                 if (!prev) return null;
                 return {
@@ -140,119 +137,117 @@ export const ChatbotPage = () => {
                 };
             });
 
-            // Update session title in sidebar if it was "New Chat" and this is the first message
             if (currentSession.messages.length === 0) {
-                loadSessions(); // Refresh list to get new title
+                loadSessions();
             }
 
         } catch (error) {
             console.error('Failed to send message:', error);
             toast.error('Failed to send message');
-            // Revert optimistic update on error (optional, but good practice)
         } finally {
             setSending(false);
         }
     };
 
     return (
-        <div className="flex h-[calc(100vh-64px)] bg-gray-50">
-            {/* Sidebar */}
-            <ChatSidebar
-                sessions={sessions}
-                currentSessionId={currentSession?.id || null}
-                onSelectSession={loadSession}
-                onNewChat={handleNewChat}
-                onUpdateSession={handleUpdateSession}
-                onDeleteSession={handleDeleteSession}
-                loading={loading}
-            />
+        <div className="p-0">
+            <div className="flex h-[calc(100vh-64px)] bg-gray-50">
+                {/* Sidebar */}
+                <ChatSidebar
+                    sessions={sessions}
+                    currentSessionId={currentSession?.id || null}
+                    onSelectSession={loadSession}
+                    onNewChat={handleNewChat}
+                    onUpdateSession={handleUpdateSession}
+                    onDeleteSession={handleDeleteSession}
+                    loading={loading}
+                />
 
-            {/* Main Chat Area */}
-            <div className="flex-1 flex flex-col h-full">
-                {currentSession ? (
-                    <>
-                        {/* Chat Header */}
-                        <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-indigo-100 p-2 rounded-lg">
-                                    <Bot className="w-6 h-6 text-indigo-600" />
-                                </div>
-                                <div>
-                                    <h2 className="text-lg font-semibold text-gray-900">
-                                        {currentSession.title || 'AI Assistant'}
-                                    </h2>
-                                    <p className="text-sm text-gray-500">Always here to help you learn</p>
+                {/* Main Chat Area */}
+                <div className="flex-1 flex flex-col h-full">
+                    {currentSession ? (
+                        <>
+                            {/* Chat Header */}
+                            <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-indigo-100 p-2 rounded-lg">
+                                        <Bot className="w-6 h-6 text-indigo-600" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-semibold text-gray-900">
+                                            {currentSession.title || 'AI Assistant'}
+                                        </h2>
+                                        <p className="text-sm text-gray-500">Always here to help you learn</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Messages Area */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50/50">
-                            {currentSession.messages && currentSession.messages.length > 0 ? (
-                                currentSession.messages.map((msg) => (
-                                    <MessageBubble key={msg.id} message={msg} />
-                                ))
-                            ) : (
-                                <div className="h-full flex flex-col items-center justify-center text-gray-400 space-y-4">
-                                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm">
-                                        <Bot className="w-8 h-8 text-indigo-400" />
-                                    </div>
-                                    <div className="text-center">
-                                        <h3 className="text-lg font-medium text-gray-900">How can I help you today?</h3>
-                                        <p className="max-w-sm mt-2 text-sm text-gray-500">
-                                            Ask me anything about your courses, assignments, or general topics.
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                            {sending && (
-                                <div className="flex justify-start w-full mb-6">
-                                    <div className="flex max-w-[80%] flex-row">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center bg-indigo-100 text-indigo-600 mr-3">
-                                            <Bot size={20} />
+                            {/* Messages Area */}
+                            <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50/50">
+                                {currentSession.messages && currentSession.messages.length > 0 ? (
+                                    currentSession.messages.map((msg) => (
+                                        <MessageBubble key={msg.id} message={msg} />
+                                    ))
+                                ) : (
+                                    <div className="h-full flex flex-col items-center justify-center text-gray-400 space-y-4">
+                                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                            <Bot className="w-8 h-8 text-indigo-400" />
                                         </div>
-                                        <div className="bg-white border border-gray-100 p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-2">
-                                            <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                                            <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                                            <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                                        <div className="text-center">
+                                            <h3 className="text-lg font-medium text-gray-900">How can I help you today?</h3>
+                                            <p className="max-w-sm mt-2 text-sm text-gray-500">
+                                                Ask me anything about your courses, assignments, or general topics.
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                            <div ref={messagesEndRef} />
-                        </div>
-
-                        {/* Input Area */}
-                        <div className="bg-white border-t border-gray-200 p-4">
-                            <div className="max-w-4xl mx-auto">
-                                <form onSubmit={handleSendMessage} className="relative flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        value={input}
-                                        onChange={(e) => setInput(e.target.value)}
-                                        placeholder="Type your message..."
-                                        className="w-full pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none text-gray-900"
-                                        disabled={sending}
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={!input.trim() || sending}
-                                        className="absolute right-2 p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                                    </button>
-                                </form>
-                                <p className="text-xs text-center text-gray-400 mt-2">
-                                    AI can make mistakes. Consider checking important information.
-                                </p>
+                                )}
+                                {sending && (
+                                    <div className="flex justify-start w-full mb-6">
+                                        <div className="flex max-w-[80%] flex-row">
+                                            <div className="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center bg-indigo-100 text-indigo-600 mr-3">
+                                                <Bot size={20} />
+                                            </div>
+                                            <div className="bg-white border border-gray-100 p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-2">
+                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={messagesEndRef} />
                             </div>
-                        </div>
-                    </>
-                ) : (
-                    <div className="flex-1 flex items-center justify-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-                    </div>
-                )}
+
+                            {/* Input Area */}
+                            <div className="bg-white border-t border-gray-200 p-4">
+                                <div className="max-w-4xl mx-auto">
+                                    <form onSubmit={handleSendMessage} className="relative flex items-center gap-2">
+                                        <input
+                                            type="text"
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            placeholder="Type your message..."
+                                            className="w-full pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none text-gray-900"
+                                            disabled={sending}
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={!input.trim() || sending}
+                                            className="absolute right-2 p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                                        </button>
+                                    </form>
+                                    <p className="text-xs text-center text-gray-400 mt-2">
+                                        AI can make mistakes. Consider checking important information.
+                                    </p>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <PageLoader />
+                    )}
+                </div>
             </div>
         </div>
     );
