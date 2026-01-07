@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from sqlalchemy.orm import selectinload
@@ -11,6 +11,8 @@ from app.models.subject import Subject
 from app.models.user import User
 from app.schemas.qa import QuestionCreate, QuestionResponse, AnswerCreate, AnswerResponse
 from app.models.enums import RoleEnum
+from app.services.notification_service import notification_service
+from app.models.course import Course
 
 router = APIRouter()
 
@@ -20,6 +22,7 @@ async def ask_question(
     *,
     db: AsyncSession = Depends(deps.get_db),
     question_in: QuestionCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -46,6 +49,19 @@ async def ask_question(
     ).where(QAQuestion.id == question.id)
     result = await db.execute(query)
     question = result.scalars().first()
+
+    # Notify instructor of the new question
+    if question:
+        res_course = await db.execute(select(Course).where(Course.id == subject.course_id))
+        course = res_course.scalars().first()
+        if course:
+            background_tasks.add_task(
+                notification_service.create_notification,
+                user_id=course.created_by,
+                title="New Question Asked",
+                message=f"A student asked a question in '{subject.title}': {question.title}",
+                notification_type="qa"
+            )
 
     return question
 
@@ -100,6 +116,7 @@ async def answer_question(
     *,
     db: AsyncSession = Depends(deps.get_db),
     answer_in: AnswerCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -128,5 +145,15 @@ async def answer_question(
     ).where(QAAnswer.id == answer.id)
     result = await db.execute(query)
     answer = result.scalars().first()
+
+    # Notify question asker
+    if answer:
+        background_tasks.add_task(
+            notification_service.create_notification,
+            user_id=question.user_id,
+            title="New Answer Received",
+            message=f"{current_user.full_name} answered your question: {question.title}",
+            notification_type="qa"
+        )
 
     return answer

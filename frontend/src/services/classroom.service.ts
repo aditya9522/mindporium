@@ -10,7 +10,8 @@ export interface Classroom {
     instructor_id: number;
     subject_id?: number;
     meeting_id?: string;
-    provider: 'zoom' | 'meet' | 'custom';
+    class_type?: 'trial' | 'free' | 'regular' | 'extra';
+    provider: 'zoom' | 'meet' | 'custom' | 'google_meet' | 'agora';
     instructor?: {
         full_name: string;
         photo?: string;

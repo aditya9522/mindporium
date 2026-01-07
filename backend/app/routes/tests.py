@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from sqlalchemy.orm import selectinload
@@ -11,7 +11,9 @@ from app.models.subject import Subject
 from app.models.classroom import Classroom
 from app.models.user import User
 from app.schemas.test import TestCreate, TestResponse, TestUpdate
-from app.models.enums import RoleEnum
+from app.models.enums import RoleEnum, TestStatusEnum
+from app.services.notification_service import notification_service
+from app.models.enrollment import Enrollment
 
 router = APIRouter()
 
@@ -21,6 +23,7 @@ async def create_test(
     *,
     db: AsyncSession = Depends(deps.get_db),
     test_in: TestCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -58,7 +61,29 @@ async def create_test(
     result = await db.execute(
         select(Test).options(selectinload(Test.questions)).where(Test.id == test.id)
     )
-    return result.scalars().first()
+    test = result.scalars().first()
+
+    # Notify students if published
+    if test and test.status == TestStatusEnum.published.value:
+        # Get course ID from subject or classroom
+        course_id = None
+        if test.subject_id:
+            res = await db.execute(select(Subject.course_id).where(Subject.id == test.subject_id))
+            course_id = res.scalar()
+        
+        if course_id:
+            enrollments_result = await db.execute(
+                select(Enrollment.user_id).where(Enrollment.course_id == course_id)
+            )
+            student_ids = [row[0] for row in enrollments_result.all()]
+            if student_ids:
+                background_tasks.add_task(
+                    notification_service.notify_test_published,
+                    user_ids=student_ids,
+                    test_title=test.title
+                )
+                
+    return test
 
 
 @router.get("/{test_id}", response_model=TestResponse)
@@ -213,6 +238,7 @@ async def update_test(
     db: AsyncSession = Depends(deps.get_db),
     test_id: int,
     test_in: TestUpdate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -250,12 +276,34 @@ async def update_test(
 
     update_data = test_in.model_dump(exclude_unset=True)
 
+    was_published = test.status == TestStatusEnum.published.value
+    
     for field, value in update_data.items():
         setattr(test, field, value)
 
     db.add(test)
     await db.commit()
     await db.refresh(test)
+
+    # Notify if newly published
+    if not was_published and test.status == TestStatusEnum.published.value:
+        course_id = None
+        if test.subject_id:
+            res = await db.execute(select(Subject.course_id).where(Subject.id == test.subject_id))
+            course_id = res.scalar()
+        
+        if course_id:
+            enrollments_result = await db.execute(
+                select(Enrollment.user_id).where(Enrollment.course_id == course_id)
+            )
+            student_ids = [row[0] for row in enrollments_result.all()]
+            if student_ids:
+                background_tasks.add_task(
+                    notification_service.notify_test_published,
+                    user_ids=student_ids,
+                    test_title=test.title
+                )
+
     return test
 
 

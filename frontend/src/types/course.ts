@@ -8,6 +8,7 @@ export type LevelEnum = typeof LevelEnum[keyof typeof LevelEnum];
 export const CategoryEnum = {
     FREE: "free",
     PAID: "paid",
+    SUBSCRIPTION: "subscription",
 } as const;
 export type CategoryEnum = typeof CategoryEnum[keyof typeof CategoryEnum];
 

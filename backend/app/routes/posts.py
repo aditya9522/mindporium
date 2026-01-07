@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from sqlalchemy.orm import selectinload
@@ -9,6 +9,7 @@ from app.api import deps
 from app.models.community import CommunityPost, CommunityComment, Community, CommunityReaction
 from app.models.user import User
 from app.schemas.community import PostCreate, PostResponse, CommentCreate, CommentResponse
+from app.services.notification_service import notification_service
 
 router = APIRouter()
 
@@ -74,6 +75,7 @@ async def create_comment(
     db: AsyncSession = Depends(deps.get_db),
     post_id: int,
     comment_in: CommentCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -98,6 +100,17 @@ async def create_comment(
     
     await db.commit()
     await db.refresh(comment)
+
+    # Notify post owner if not the same person
+    if post.user_id != current_user.id:
+        background_tasks.add_task(
+            notification_service.create_notification,
+            user_id=post.user_id,
+            title="New Comment on Your Post",
+            message=f"{current_user.full_name} commented on your post: '{post.title[:30]}...'",
+            notification_type="community"
+        )
+
     return comment
 
 
@@ -125,6 +138,7 @@ async def read_comments(
 async def like_post(
     post_id: int,
     db: AsyncSession = Depends(deps.get_db),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -161,6 +175,15 @@ async def like_post(
         db.add(new_reaction)
         post.like_count += 1
         message = "Liked"
+        
+        if post.user_id != current_user.id:
+            background_tasks.add_task(
+                notification_service.create_notification,
+                user_id=post.user_id,
+                title="Your Post was Liked",
+                message=f"{current_user.full_name} liked your post: '{post.title[:30]}...'",
+                notification_type="community"
+            )
         
     db.add(post)
     await db.commit()

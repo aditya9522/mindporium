@@ -27,7 +27,7 @@ export const InstructorsTab = ({ courseData, refreshData }: InstructorsTabProps)
 
     const fetchAllInstructors = async () => {
         try {
-            const response = await api.get('/admin/instructors');
+            const response = await api.get('/users/instructors');
             setAllInstructors(response.data);
         } catch (error) {
             toast.error('Failed to fetch instructors');

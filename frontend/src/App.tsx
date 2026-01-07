@@ -42,6 +42,7 @@ import { CourseAnalyticsPage } from './pages/instructor/CourseAnalyticsPage';
 import { InstructorStudentsPage } from './pages/instructor/InstructorStudentsPage';
 import { FeedbackPage } from './pages/instructor/FeedbackPage';
 import { ProfilePage as InstructorProfilePage } from './pages/instructor/ProfilePage';
+import { StudentProfilePage } from './pages/instructor/StudentProfilePage';
 import { CommunityPage } from './pages/community/CommunityPage';
 import { CommunityDetailPage } from './pages/community/CommunityDetailPage';
 import { NewsPage } from './pages/common/NewsPage';
@@ -146,6 +147,7 @@ function App() {
             <Route path="/instructor/courses/:courseId/subjects/:subjectId/resources" element={<ManageResourcesPage />} />
             <Route path="/instructor/courses/:id/analytics" element={<CourseAnalyticsPage />} />
             <Route path="/instructor/students" element={<InstructorStudentsPage />} />
+            <Route path="/instructor/students/:id" element={<StudentProfilePage />} />
             <Route path="/instructor/attendance" element={<InstructorAttendancePage />} />
             <Route path="/instructor/analytics" element={<InstructorSelfAnalyticsPage />} />
             <Route path="/instructor/performance" element={<InstructorSelfAnalyticsPage />} />

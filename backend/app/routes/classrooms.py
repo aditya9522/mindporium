@@ -1,7 +1,7 @@
 import uuid
 from typing import Any, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from sqlalchemy.orm import selectinload
@@ -12,6 +12,9 @@ from app.models.class_message import ClassMessage
 from app.models.user import User
 from app.schemas.classroom import ClassroomCreate, ClassroomResponse, ClassroomUpdate, ClassMessageCreate, ClassMessageResponse
 from app.models.enums import RoleEnum, ClassroomProviderEnum
+from app.services.notification_service import notification_service
+from app.models.subject import Subject
+from app.models.enrollment import Enrollment
 
 router = APIRouter()
 
@@ -21,6 +24,7 @@ async def create_classroom(
     *,
     db: AsyncSession = Depends(deps.get_db),
     classroom_in: ClassroomCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -37,6 +41,25 @@ async def create_classroom(
     db.add(classroom)
     await db.commit()
     await db.refresh(classroom)
+
+    # Notify students if linked to subject
+    if classroom.subject_id:
+        res = await db.execute(select(Subject.course_id).where(Subject.id == classroom.subject_id))
+        course_id = res.scalar()
+        if course_id:
+            enrollments_result = await db.execute(
+                select(Enrollment.user_id).where(Enrollment.course_id == course_id)
+            )
+            student_ids = [row[0] for row in enrollments_result.all()]
+            if student_ids:
+                background_tasks.add_task(
+                    notification_service.create_bulk_notifications,
+                    user_ids=student_ids,
+                    title="New Class Scheduled",
+                    message=f"A new class '{classroom.title}' has been scheduled for {classroom.start_time}.",
+                    notification_type="class"
+                )
+
     return classroom
 
 
@@ -203,6 +226,7 @@ async def join_classroom(
 async def start_classroom(
     classroom_id: int,
     db: AsyncSession = Depends(deps.get_db),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -221,6 +245,24 @@ async def start_classroom(
     db.add(classroom)
     await db.commit()
     await db.refresh(classroom)
+
+    # Notify students that class is starting
+    if classroom.subject_id:
+        res = await db.execute(select(Subject.course_id).where(Subject.id == classroom.subject_id))
+        course_id = res.scalar()
+        if course_id:
+            enrollments_result = await db.execute(
+                select(Enrollment.user_id).where(Enrollment.course_id == course_id)
+            )
+            student_ids = [row[0] for row in enrollments_result.all()]
+            if student_ids:
+                background_tasks.add_task(
+                    notification_service.notify_class_starting,
+                    classroom_id=classroom.id,
+                    classroom_title=classroom.title,
+                    user_ids=student_ids
+                )
+
     return classroom
 
 

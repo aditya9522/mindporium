@@ -112,6 +112,7 @@ async def update_course(
     db: AsyncSession = Depends(deps.get_db),
     course_id: int,
     course_in: CourseUpdate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -153,12 +154,27 @@ async def update_course(
              
              course.instructors = instructors
 
+    was_published = course.is_published
+    
     for field, value in update_data.items():
         setattr(course, field, value)
 
     db.add(course)
     await db.commit()
     await db.refresh(course)
+
+    # Notify students if it was just published
+    if not was_published and course.is_published:
+        students_result = await db.execute(select(User).where(User.role == RoleEnum.student))
+        students = students_result.scalars().all()
+        if students:
+            background_tasks.add_task(
+                notification_service.notify_course_created,
+                user_ids=[s.id for s in students],
+                course_title=course.title,
+                instructor_name=current_user.full_name
+            )
+    
     return course
 
 

@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from sqlalchemy.orm import selectinload
@@ -10,6 +10,7 @@ from app.models.submission import Submission
 from app.models.test import Test, TestQuestion
 from app.models.user import User
 from app.schemas.submission import SubmissionCreate, SubmissionResponse
+from app.services.notification_service import notification_service
 
 router = APIRouter()
 
@@ -19,6 +20,7 @@ async def submit_test(
     *,
     db: AsyncSession = Depends(deps.get_db),
     submission_in: SubmissionCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -72,6 +74,15 @@ async def submit_test(
     db.add(submission)
     await db.commit()
     await db.refresh(submission)
+
+    # Notify student of their grade
+    background_tasks.add_task(
+        notification_service.notify_grade_posted,
+        user_id=current_user.id,
+        test_title=test.title,
+        score=round((obtained_marks / sum(q.marks for q in test.questions)) * 100, 2) if test.questions else 0
+    )
+
     return submission
 
 

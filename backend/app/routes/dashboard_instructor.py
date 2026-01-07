@@ -60,13 +60,16 @@ async def get_my_course_analytics(
     from app.models.course import Course
     
     # Verify ownership
-    course_query = await db.execute(select(Course).where(Course.id == course_id))
+    course_query = await db.execute(
+        select(Course).options(selectinload(Course.instructors)).where(Course.id == course_id)
+    )
     course = course_query.scalars().first()
     
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
         
-    if course.created_by != current_user.id:
+    is_assigned = any(instructor.id == current_user.id for instructor in (course.instructors or []))
+    if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
         raise HTTPException(status_code=403, detail="Access denied")
     
     analytics = await classroom_analytics_service.get_course_classroom_analytics(db, course_id)
@@ -152,14 +155,15 @@ async def get_course_overview(
     
     # Validate ownership
     course_result = await db.execute(
-        select(Course).where(Course.id == course_id)
+        select(Course).options(selectinload(Course.instructors)).where(Course.id == course_id)
     )
     course = course_result.scalar()
     
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
         
-    if course.created_by != current_user.id:
+    is_assigned = any(instructor.id == current_user.id for instructor in (course.instructors or []))
+    if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
         raise HTTPException(status_code=403, detail="Access denied")
     
     # Basic course info

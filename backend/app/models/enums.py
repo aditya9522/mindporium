@@ -36,6 +36,7 @@ class ReactionTypeEnum(str, Enum):
 class CategoryEnum(str, Enum):
     free = "free"
     paid = "paid"
+    subscription = "subscription"
 
 
 class ClassroomTypeEnum(str, Enum):

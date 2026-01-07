@@ -20,8 +20,10 @@ export interface UpcomingClass {
     title: string;
     subject_title: string;
     scheduled_at: string;
+    start_time?: string;
     duration_minutes: number;
-    type: string;
+    class_type: 'trial' | 'free' | 'regular' | 'extra';
+    status?: string;
 }
 
 export interface CourseStats {

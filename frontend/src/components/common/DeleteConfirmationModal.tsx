@@ -57,12 +57,6 @@ export const DeleteConfirmationModal = ({
                         </div>
                     )}
 
-                    <div className="bg-amber-50 dark:bg-amber-900/10 rounded-xl p-3 mb-8 flex gap-3 items-start border border-amber-100/50 dark:border-amber-900/20 text-center justify-center">
-                        <p className="text-sm text-amber-700 dark:text-amber-400 font-medium italic">
-                            "This action is permanent and cannot be reversed."
-                        </p>
-                    </div>
-
                     {/* Actions */}
                     <div className="grid grid-cols-2 gap-4">
                         <button

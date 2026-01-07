@@ -71,7 +71,7 @@ export const DashboardPage = () => {
     return (
         <div className="space-y-8 px-8 py-8">
             {/* Welcome Section */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-10 text-white shadow-2xl shadow-indigo-200 animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="relative overflow-hidden bg-gradient-to-r from-primary-600 to-primary-400 rounded-3xl p-10 text-white shadow-2xl shadow-primary-200 animate-in fade-in slide-in-from-top-4 duration-500">
                 <div className="absolute top-0 right-0 p-12 opacity-10 transform translate-x-12 -translate-y-12">
                     <Award className="w-56 h-56 text-white" />
                 </div>
@@ -79,7 +79,7 @@ export const DashboardPage = () => {
                     <h1 className="text-4xl font-extrabold mb-3 tracking-tight">
                         Welcome back, {user?.full_name?.split(' ')[0]}! 👋
                     </h1>
-                    <p className="text-indigo-100 text-lg font-medium opacity-90 max-w-xl">
+                    <p className="text-primary-100 text-lg font-medium opacity-90 max-w-xl">
                         You're making great progress. Keep up the momentum and reach your goals today!
                     </p>
                 </div>
@@ -99,7 +99,7 @@ export const DashboardPage = () => {
                                     <p className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">{stat.label}</p>
                                     <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{stat.value}</p>
                                 </div>
-                                <div className={`${stat.color} p-3.5 rounded-xl shadow-lg shadow-indigo-100/50`}>
+                                <div className={`${stat.color} p-3.5 rounded-xl shadow-lg shadow-primary-100/50`}>
                                     <Icon className="h-6 w-6 text-white" />
                                 </div>
                             </div>
@@ -113,7 +113,7 @@ export const DashboardPage = () => {
                 {/* Activity Chart */}
                 <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-indigo-600" />
+                        <TrendingUp className="w-5 h-5 text-primary-600" />
                         Learning Activity (Last 30 Days)
                     </h2>
                     <div className="h-80">
@@ -133,9 +133,9 @@ export const DashboardPage = () => {
                                 <Line
                                     type="monotone"
                                     dataKey="count"
-                                    stroke="#4F46E5"
+                                    stroke="var(--primary-600)"
                                     strokeWidth={3}
-                                    dot={{ r: 4, fill: '#4F46E5' }}
+                                    dot={{ r: 4, fill: 'var(--primary-600)' }}
                                     activeDot={{ r: 6 }}
                                 />
                             </LineChart>
@@ -146,7 +146,7 @@ export const DashboardPage = () => {
                 {/* Performance Chart */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <Award className="w-5 h-5 text-indigo-600" />
+                        <Award className="w-5 h-5 text-primary-600" />
                         Performance Overview
                     </h2>
                     <div className="h-80 relative">
@@ -185,14 +185,14 @@ export const DashboardPage = () => {
                 {/* Recent Activity List */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <Calendar className="w-5 h-5 text-indigo-600" />
+                        <Calendar className="w-5 h-5 text-primary-600" />
                         Recent Activity
                     </h2>
                     <div className="space-y-6">
                         {dashboardData?.recent_activity?.length > 0 ? (
                             dashboardData.recent_activity.map((activity: any, index: number) => (
                                 <div key={index} className="flex gap-4 items-start">
-                                    <div className="w-2 h-2 mt-2 rounded-full bg-indigo-600 flex-shrink-0" />
+                                    <div className="w-2 h-2 mt-2 rounded-full bg-primary-600 flex-shrink-0" />
                                     <div>
                                         <p className="text-gray-900 font-medium">{activity.title}</p>
                                         <p className="text-sm text-gray-500">
@@ -217,7 +217,7 @@ export const DashboardPage = () => {
                 {/* Course Progress */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <BookOpen className="w-5 h-5 text-indigo-600" />
+                        <BookOpen className="w-5 h-5 text-primary-600" />
                         My Courses
                     </h2>
                     <div className="space-y-4">
@@ -230,13 +230,13 @@ export const DashboardPage = () => {
                                 >
                                     <div className="flex justify-between items-center mb-2">
                                         <span className="font-medium text-gray-900">{course.title}</span>
-                                        <span className="text-sm text-indigo-600 font-semibold">
+                                        <span className="text-sm text-primary-600 font-semibold">
                                             {course.progress_percent}%
                                         </span>
                                     </div>
                                     <div className="w-full bg-gray-200 rounded-full h-2">
                                         <div
-                                            className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                                            className="bg-primary-600 h-2 rounded-full transition-all duration-300"
                                             style={{ width: `${course.progress_percent}%` }}
                                         />
                                     </div>
@@ -245,7 +245,7 @@ export const DashboardPage = () => {
                         ) : (
                             <div className="text-center py-8">
                                 <p className="text-gray-500 mb-4">You haven't enrolled in any courses yet.</p>
-                                <Link to="/courses" className="text-indigo-600 font-medium hover:text-indigo-700">
+                                <Link to="/courses" className="text-primary-600 font-medium hover:text-primary-700">
                                     Browse Courses &rarr;
                                 </Link>
                             </div>

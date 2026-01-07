@@ -58,8 +58,8 @@ export const RegisterPage = () => {
             <BackgroundAnimation />
             <div className="w-full max-w-md p-8 space-y-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 relative z-10 animate-in fade-in zoom-in duration-500">
                 <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-200 mb-6 transform -rotate-6">
-                        <BookOpen className="h-8 w-8 text-white" />
+                    <div className="inline-flex items-center justify-center mb-6">
+                        <BookOpen className="h-12 w-12 text-primary-600" />
                     </div>
                     <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Create an account</h2>
                     <p className="mt-2 text-gray-500 font-medium">Join Mindporium to start learning</p>
@@ -111,7 +111,7 @@ export const RegisterPage = () => {
                         {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
                     </div>
 
-                    <Button type="submit" className="w-full flex items-center justify-center gap-2 h-12 rounded-xl text-base font-semibold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all transform hover:-translate-y-0.5" disabled={isSubmitting}>
+                    <Button type="submit" className="w-full flex items-center justify-center gap-2 h-12 rounded-xl text-base font-semibold shadow-lg shadow-primary-200 hover:shadow-primary-300 transition-all transform hover:-translate-y-0.5" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin" />

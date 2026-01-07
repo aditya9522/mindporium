@@ -147,9 +147,9 @@ class AnalyticsService:
             combined_feedback = "\n".join(feedback_comments[:20])  # Limit for API
             prompt = f"""Analyze the following instructor feedback and provide:
             1. Overall sentiment (Positive/Neutral/Negative)
-            2. Key strengths (3 points)
-            3. Areas for improvement (3 points)
-            4. Summary in 2-3 sentences
+            2. Key strengths (3 points) single line each
+            3. Areas for improvement (3 points) single line each
+            4. Summary in 1 sentence
 
             Feedback:
             {combined_feedback}
@@ -258,6 +258,7 @@ class AnalyticsService:
                 Classroom.title,
                 Classroom.start_time,
                 Classroom.class_type,
+                Classroom.status,
                 Subject.title.label('subject_title')
             )
             .join(Subject, Classroom.subject_id == Subject.id)
@@ -275,7 +276,8 @@ class AnalyticsService:
                 "title": row[1],
                 "start_time": row[2].isoformat() if row[2] else None,
                 "class_type": row[3],
-                "subject_title": row[4]
+                "status": row[4],
+                "subject_title": row[5]
             }
             for row in upcoming_classes_query.all()
         ]
@@ -359,8 +361,37 @@ class AnalyticsService:
             .where(Enrollment.course_id.in_(course_ids))
             .order_by(User.full_name)
         )
-        
         results = students_query.all()
+
+        # Get attendance counts for these students across these courses
+        attendance_query = await db.execute(
+            select(
+                Attendance.user_id,
+                func.count(Attendance.id).label('attended_count')
+            )
+            .join(Classroom, Attendance.classroom_id == Classroom.id)
+            .join(Subject, Classroom.subject_id == Subject.id)
+            .where(
+                and_(
+                    Subject.course_id.in_(course_ids),
+                    Attendance.status == AttendanceStatusEnum.present.value
+                )
+            )
+            .group_by(Attendance.user_id)
+        )
+        attendance_map = {row.user_id: row.attended_count for row in attendance_query.all()}
+
+        # Get total classes count per course
+        classes_query = await db.execute(
+            select(
+                Subject.course_id,
+                func.count(Classroom.id).label('class_count')
+            )
+            .join(Classroom, Subject.id == Classroom.subject_id)
+            .where(Subject.course_id.in_(course_ids))
+            .group_by(Subject.course_id)
+        )
+        course_classes_map = {row.course_id: row.class_count for row in classes_query.all()}
         
         students_map = {}
         for row in results:
@@ -391,11 +422,17 @@ class AnalyticsService:
                 if not current_last or row[7] > current_last:
                     student["last_active"] = row[7].isoformat()
         
-        # Calculate average progress
+        # Calculate average progress and attendance
         final_students = []
         for student in students_map.values():
             total_prog = sum(c["progress_percent"] for c in student["courses"])
             student["total_progress"] = total_prog / student["enrolled_courses"] if student["enrolled_courses"] > 0 else 0
+            
+            # Attendance
+            total_attended = attendance_map.get(student["user_id"], 0)
+            total_possible = sum(course_classes_map.get(c["course_id"], 0) for c in student["courses"])
+            student["attendance_percent"] = (total_attended / total_possible * 100) if total_possible > 0 else 0
+            
             final_students.append(student)
             
         return final_students

@@ -41,7 +41,6 @@ export const ProfilePage = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Banner Section */}
-            {/* Banner Section */}
             <div className="relative h-80 bg-slate-900 group overflow-hidden">
                 {instructor.banner_image ? (
                     <div className="absolute inset-0">
@@ -167,7 +166,6 @@ export const ProfilePage = () => {
                 </div>
 
                 {/* Stats Cards */}
-                {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
                         <div className="flex items-center gap-4">
@@ -248,6 +246,86 @@ export const ProfilePage = () => {
                                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{instructor.experience}</p>
                             </div>
                         )}
+
+                        {/* Courses Section */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <BookOpen className="w-5 h-5 text-green-600" />
+                                Courses Taught
+                            </h2>
+                            {stats?.course_stats && stats.course_stats.length > 0 ? (
+                                <div className="space-y-3">
+                                    {stats.course_stats.map((course: any, index: number) => (
+                                        <div key={index} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                            <h3 className="font-semibold text-gray-900 mb-1">{course.title}</h3>
+                                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                                                <span className="flex items-center gap-1">
+                                                    <Users className="w-4 h-4" />
+                                                    {course.enrollments} students
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-gray-500 text-center py-8">No courses available</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right Column - Quick Info */}
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Info</h2>
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                                    <span className="text-gray-600">Verification</span>
+                                    <span className={`font-semibold ${instructor.is_verified ? 'text-green-600' : 'text-amber-600'}`}>
+                                        {instructor.is_verified ? 'Verified' : 'Pending'}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                                    <span className="text-gray-600">Role</span>
+                                    <span className="font-semibold text-indigo-600 uppercase tracking-wider text-xs">
+                                        {instructor.role}
+                                    </span>
+                                </div>
+                                {instructor.language && (
+                                    <div className="flex items-center justify-between py-2">
+                                        <span className="text-gray-600">Language</span>
+                                        <span className="font-semibold text-gray-900">{instructor.language}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Recent Performance */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h2 className="text-xl font-bold text-gray-900 mb-4">Performance</h2>
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="text-gray-600">Rating</span>
+                                        <span className="font-bold">{stats?.average_rating?.toFixed(1) || '0.0'}/5.0</span>
+                                    </div>
+                                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                        <div
+                                            className="bg-amber-400 h-full rounded-full"
+                                            style={{ width: `${(stats?.average_rating || 0) * 20}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="text-gray-600">Student Satisfaction</span>
+                                        <span className="font-bold">95%</span>
+                                    </div>
+                                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                        <div className="bg-green-500 h-full rounded-full" style={{ width: '95%' }}></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

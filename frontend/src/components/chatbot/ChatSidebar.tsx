@@ -10,6 +10,7 @@ interface ChatSidebarProps {
     onUpdateSession: (sessionId: number, title: string) => void;
     onDeleteSession: (sessionId: number) => void;
     loading: boolean;
+    onClose?: () => void;
 }
 
 export const ChatSidebar: React.FC<ChatSidebarProps> = ({
@@ -19,7 +20,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
     onNewChat,
     onUpdateSession,
     onDeleteSession,
-    loading
+    loading,
+    onClose
 }) => {
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editTitle, setEditTitle] = useState('');
@@ -76,16 +78,41 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         setDeleteConfirmId(null);
     };
     return (
-        <div className="w-80 bg-white border-r border-gray-200 h-full flex flex-col">
+        <div className="w-full bg-white h-full flex flex-col border-r border-gray-100">
             {/* Header */}
-            <div className="px-4 py-4.5 border-b border-gray-200">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">
+                    History
+                </h2>
+                <div className="flex items-center gap-1">
+                    <button
+                        onClick={onNewChat}
+                        disabled={loading}
+                        className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                        title="New Chat"
+                    >
+                        <Plus className="w-5 h-5" />
+                    </button>
+                    {onClose && (
+                        <button
+                            onClick={onClose}
+                            className="p-2 text-gray-400 hover:text-gray-600 lg:hidden rounded-lg hover:bg-gray-100"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Action Bar */}
+            <div className="p-4">
                 <button
                     onClick={onNewChat}
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary-50 hover:text-primary-600 text-gray-700 px-4 py-3 rounded-xl transition-all font-semibold border border-gray-100 hover:border-primary-100 disabled:opacity-50 group"
                 >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                    New Chat
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />}
+                    Start Fresh
                 </button>
             </div>
 
@@ -101,12 +128,12 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                             <button
                                 onClick={() => onSelectSession(session.id)}
                                 className={`w-full text-left p-3 rounded-lg transition-all border ${currentSessionId === session.id
-                                    ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm'
+                                    ? 'bg-primary-50 border-primary-200 text-primary-700 shadow-sm'
                                     : 'hover:bg-gray-50 border-transparent text-gray-700'
                                     }`}
                             >
                                 <div className="flex items-start gap-3">
-                                    <MessageSquare className={`w-5 h-5 mt-0.5 flex-shrink-0 ${currentSessionId === session.id ? 'text-indigo-600' : 'text-gray-400'
+                                    <MessageSquare className={`w-5 h-5 mt-0.5 flex-shrink-0 ${currentSessionId === session.id ? 'text-primary-600' : 'text-gray-400'
                                         }`} />
                                     <div className="flex-1 min-w-0">
                                         {editingId === session.id ? (
@@ -115,7 +142,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                                     type="text"
                                                     value={editTitle}
                                                     onChange={(e) => setEditTitle(e.target.value)}
-                                                    className="w-full px-2 py-1 text-sm border border-indigo-300 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                    className="w-full px-2 py-1 text-sm border border-primary-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
                                                     autoFocus
                                                 />
                                                 <button onClick={handleEditSave} className="p-1 text-green-600 hover:bg-green-50 rounded">
@@ -127,11 +154,11 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                             </div>
                                         ) : (
                                             <>
-                                                <h3 className={`font-medium text-sm truncate pr-6 ${currentSessionId === session.id ? 'text-indigo-900' : 'text-gray-900'
+                                                <h3 className={`font-medium text-sm truncate pr-6 ${currentSessionId === session.id ? 'text-primary-900' : 'text-gray-900'
                                                     }`}>
                                                     {session.title || 'New Chat'}
                                                 </h3>
-                                                <p className={`text-xs mt-1 truncate ${currentSessionId === session.id ? 'text-indigo-500' : 'text-gray-500'
+                                                <p className={`text-xs mt-1 truncate ${currentSessionId === session.id ? 'text-primary-500' : 'text-gray-500'
                                                     }`}>
                                                     {new Date(session.updated_at || session.created_at).toLocaleDateString()}
                                                 </p>

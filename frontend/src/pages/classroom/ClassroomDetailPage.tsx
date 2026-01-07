@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { classroomService, type Classroom, type ClassMessage } from '../../services/classroom.service';
 import { PageLoader } from '../../components/common/PageLoader';
 import { useAuthStore } from '../../store/auth.store';
-import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Send, Hand, Monitor, X, Calendar, Clock, User as UserIcon, Maximize, Minimize } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Send, Hand, Monitor, X, Calendar, Clock, User as UserIcon, Maximize, Minimize, Volume2, VolumeX, Copy } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
@@ -15,6 +15,7 @@ interface Peer {
         name: string;
         photo?: string;
     };
+    handRaised?: boolean;
 }
 
 export const ClassroomDetailPage = () => {
@@ -33,6 +34,7 @@ export const ClassroomDetailPage = () => {
     // Media Controls
     const [micOn, setMicOn] = useState(true);
     const [cameraOn, setCameraOn] = useState(true);
+    const [isAudioMuted, setIsAudioMuted] = useState(false); // Global audio out mute
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [handRaised, setHandRaised] = useState(false);
     const [showChat, setShowChat] = useState(false); // Default hidden for full screen
@@ -43,6 +45,7 @@ export const ClassroomDetailPage = () => {
     const wsRef = useRef<WebSocket | null>(null);
     const pcsRef = useRef<{ [key: string]: RTCPeerConnection }>({});
     const localStreamRef = useRef<MediaStream | null>(null);
+    const candidateQueueRef = useRef<{ [key: string]: RTCIceCandidateInit[] }>({});
 
     // Media State
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -258,15 +261,17 @@ export const ClassroomDetailPage = () => {
     };
 
     const toggleHandRaise = () => {
-        setHandRaised(!handRaised);
+        const newState = !handRaised;
+        setHandRaised(newState);
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             wsRef.current.send(JSON.stringify({
                 type: 'hand_raise',
                 user_id: user?.id,
-                user_name: user?.full_name
+                user_name: user?.full_name,
+                raised: newState
             }));
         }
-        toast.success(handRaised ? 'Hand lowered' : 'Hand raised');
+        toast.success(newState ? 'Hand raised' : 'Hand lowered');
     };
 
     // --- Signaling ---
@@ -366,7 +371,17 @@ export const ClassroomDetailPage = () => {
                 }
                 break;
             case 'hand_raise':
-                if (data.user_id !== user?.id) toast(`${data.user_name} raised hand!`);
+                if (data.user_id !== user?.id) {
+                    if (data.raised) toast(`${data.user_name} raised hand!`);
+                    setRemotePeers(prev => {
+                        const next = new Map(prev);
+                        const peer = next.get(String(data.user_id));
+                        if (peer) {
+                            next.set(String(data.user_id), { ...peer, handRaised: !!data.raised });
+                        }
+                        return next;
+                    });
+                }
                 break;
         }
     };
@@ -389,13 +404,21 @@ export const ClassroomDetailPage = () => {
             });
         };
 
+        pc.oniceconnectionstatechange = () => {
+            console.log(`ICE Connection State for ${targetId}: ${pc.iceConnectionState}`);
+            if (pc.iceConnectionState === 'failed') {
+                pc.restartIce();
+            }
+        };
+
         pc.onicecandidate = (event) => {
             if (event.candidate && wsRef.current) {
                 wsRef.current.send(JSON.stringify({
                     type: 'candidate',
                     target_user_id: targetId,
                     candidate: event.candidate,
-                    sender_user_id: user?.id
+                    sender_user_id: user?.id,
+                    user_info: { id: user?.id, full_name: user?.full_name, role: user?.role }
                 }));
             }
         };
@@ -414,7 +437,8 @@ export const ClassroomDetailPage = () => {
                     type: 'offer',
                     target_user_id: targetId,
                     sender_user_id: user?.id,
-                    sdp: pc.localDescription
+                    sdp: pc.localDescription,
+                    user_info: { id: user?.id, full_name: user?.full_name, role: user?.role }
                 }));
             });
         }
@@ -426,12 +450,12 @@ export const ClassroomDetailPage = () => {
         const pc = createPeerConnection(senderId, false, iceServers);
         await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
-        // Add any queued candidates
-        const queued = (pc as any)._queuedCandidates || [];
+        // Add any queued candidates for this specific PC
+        const queued = candidateQueueRef.current[senderId] || [];
         for (const candidate of queued) {
             await pc.addIceCandidate(new RTCIceCandidate(candidate)).catch(console.error);
         }
-        (pc as any)._queuedCandidates = [];
+        delete candidateQueueRef.current[senderId];
 
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
@@ -439,7 +463,8 @@ export const ClassroomDetailPage = () => {
             type: 'answer',
             target_user_id: senderId,
             sender_user_id: user?.id,
-            sdp: answer
+            sdp: answer,
+            user_info: { id: user?.id, full_name: user?.full_name, role: user?.role }
         }));
     };
 
@@ -451,19 +476,19 @@ export const ClassroomDetailPage = () => {
     const handleCandidate = async (data: any) => {
         const senderId = String(data.sender_user_id);
         const pc = pcsRef.current[senderId];
-        if (pc) {
+
+        if (pc && pc.remoteDescription && pc.remoteDescription.type) {
             try {
-                // Only add candidate if remote description is already set
-                if (pc.remoteDescription && pc.remoteDescription.type) {
-                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-                } else {
-                    // Queue candidate (simplified: store on pc object for now)
-                    (pc as any)._queuedCandidates = (pc as any)._queuedCandidates || [];
-                    (pc as any)._queuedCandidates.push(data.candidate);
-                }
+                await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
             } catch (e) {
                 console.error("Error adding ice candidate", e);
             }
+        } else {
+            // Queue candidate for later
+            if (!candidateQueueRef.current[senderId]) {
+                candidateQueueRef.current[senderId] = [];
+            }
+            candidateQueueRef.current[senderId].push(data.candidate);
         }
     };
 
@@ -522,7 +547,7 @@ export const ClassroomDetailPage = () => {
                             <video
                                 ref={mainVideoRef}
                                 autoPlay
-                                muted={isInstructor}
+                                muted={isInstructor || isAudioMuted}
                                 playsInline
                                 className={`w-full h-full object-cover ${isInstructor && !isScreenSharing ? 'transform scale-x-[-1]' : ''}`}
                                 style={isScreenSharing && isInstructor ? { objectFit: 'contain' } : {}}
@@ -565,6 +590,7 @@ export const ClassroomDetailPage = () => {
                                             <video
                                                 ref={el => { if (el) el.srcObject = peer.stream!; }}
                                                 autoPlay playsInline
+                                                muted={isAudioMuted}
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
@@ -572,6 +598,13 @@ export const ClassroomDetailPage = () => {
                                                 No Video
                                             </div>
                                         )}
+                                        <div className="absolute top-1 right-1 flex gap-1">
+                                            {peer.handRaised && (
+                                                <div className="bg-yellow-500 p-1 rounded-full shadow-lg animate-bounce">
+                                                    <Hand className="w-3 h-3 text-black" />
+                                                </div>
+                                            )}
+                                        </div>
                                         <div className="absolute bottom-1 left-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white">
                                             {peer.user?.name || `User ${uid}`}
                                         </div>
@@ -611,44 +644,57 @@ export const ClassroomDetailPage = () => {
                 </div>
 
                 {/* Controls */}
-                <div className="h-20 bg-gray-800 border-t border-gray-700 flex items-center justify-between px-8 z-10">
-                    <div className="text-white">
-                        <h2 className="font-bold">{classroom.title}</h2>
-                        <div className="flex gap-2 text-xs text-gray-400">
+                <div className="h-20 bg-gray-800 border-t border-gray-700 flex items-center justify-between px-4 sm:px-8 z-10">
+                    <div className="text-white hidden lg:block max-w-[200px]">
+                        <h2 className="font-bold text-sm truncate">{classroom.title}</h2>
+                        <div className="flex gap-2 text-[10px] text-gray-400">
                             <span>Connected</span>
-                            {classroom.subject_id && (
-                                <>
-                                    <span className="text-gray-600">|</span>
-                                    <button onClick={() => navigate(`/communities/${classroom.subject_id}`)} className="hover:text-white transition-colors">
-                                        Community
-                                    </button>
-                                </>
-                            )}
                         </div>
                     </div>
-                    <div className="flex gap-4">
-                        <Button onClick={toggleMic} variant={micOn ? 'secondary' : 'destructive'} className="rounded-full w-12 h-12 p-0 shadow-lg">
-                            {micOn ? <Mic /> : <MicOff />}
+                    <div className="flex gap-1.5 sm:gap-4 flex-1 justify-center">
+                        <Button onClick={toggleMic} variant={micOn ? 'secondary' : 'destructive'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg">
+                            {micOn ? <Mic className="w-4 h-4 sm:w-5 sm:h-5" /> : <MicOff className="w-4 h-4 sm:w-5 sm:h-5" />}
                         </Button>
-                        <Button onClick={toggleCamera} variant={cameraOn ? 'secondary' : 'destructive'} className="rounded-full w-12 h-12 p-0 shadow-lg">
-                            {cameraOn ? <Video /> : <VideoOff />}
+                        <Button onClick={toggleCamera} variant={cameraOn ? 'secondary' : 'destructive'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg">
+                            {cameraOn ? <Video className="w-4 h-4 sm:w-5 sm:h-5" /> : <VideoOff className="w-4 h-4 sm:w-5 sm:h-5" />}
                         </Button>
-                        <Button onClick={isScreenSharing ? stopScreenShare : startScreenShare} variant={isScreenSharing ? 'default' : 'secondary'} className="rounded-full w-12 h-12 p-0 shadow-lg">
-                            {isScreenSharing ? <X /> : <Monitor />}
+                        <Button onClick={isScreenSharing ? stopScreenShare : startScreenShare} variant={isScreenSharing ? 'default' : 'secondary'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg">
+                            {isScreenSharing ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />}
                         </Button>
-                        <Button onClick={toggleHandRaise} variant={handRaised ? 'default' : 'secondary'} className={`rounded-full w-12 h-12 p-0 shadow-lg ${handRaised ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-600' : ''}`}>
-                            <Hand />
+                        <Button onClick={toggleHandRaise} variant={handRaised ? 'default' : 'secondary'} className={`rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg ${handRaised ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-600' : ''}`}>
+                            <Hand className="w-4 h-4 sm:w-5 sm:h-5" />
                         </Button>
-                        <Button onClick={() => setShowChat(!showChat)} variant={showChat ? 'default' : 'secondary'} className="rounded-full w-12 h-12 p-0 shadow-lg">
-                            <MessageSquare />
+                        <Button
+                            onClick={() => setIsAudioMuted(!isAudioMuted)}
+                            variant={isAudioMuted ? 'destructive' : 'secondary'}
+                            className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg"
+                        >
+                            {isAudioMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
                         </Button>
-                        <div className="w-px h-8 bg-gray-600 mx-2 self-center"></div>
-                        <Button onClick={handleLeave} variant="destructive" className="rounded-full w-12 h-12 p-0 shadow-lg hover:brightness-110">
-                            <PhoneOff />
+                        <Button
+                            onClick={() => {
+                                navigator.clipboard.writeText(window.location.href);
+                                toast.success('Class link copied');
+                            }}
+                            variant="secondary"
+                            className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg"
+                        >
+                            <Copy className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </Button>
+                        <Button onClick={() => setShowChat(!showChat)} variant={showChat ? 'default' : 'secondary'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg" title="Toggle Chat">
+                            <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </Button>
+                        <div className="hidden sm:block w-px h-8 bg-gray-600 mx-1 self-center"></div>
+                        <Button onClick={handleLeave} variant="destructive" className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg hover:brightness-110">
+                            <PhoneOff className="w-4 h-4 sm:w-5 sm:h-5" />
                         </Button>
                     </div>
                     <div className="flex items-center gap-4">
-                        {user?.role === 'instructor' && isInstructor && <Button variant="destructive" size="sm" onClick={handleEndClass} isLoading={actionLoading} className="shadow-lg hover:brightness-110">End Class</Button>}
+                        {user?.role === 'instructor' && isInstructor && (
+                            <Button variant="destructive" size="sm" onClick={handleEndClass} isLoading={actionLoading} className="shadow-lg hover:brightness-110 h-9 px-3 text-xs sm:h-10 sm:px-4 sm:text-sm">
+                                End Class
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>

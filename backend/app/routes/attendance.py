@@ -107,7 +107,7 @@ async def get_classroom_attendance(
         .where(Attendance.classroom_id == classroom_id)
         .options(
             selectinload(Attendance.user),
-            selectinload(Attendance.classroom).selectinload(Classroom.subject).selectinload("course")
+            selectinload(Attendance.classroom).selectinload(Classroom.subject).selectinload(Subject.course)
         )
         .order_by(desc(Attendance.joined_at))
     )

@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
 from app.ws.manager import manager
+from app.ws.notifications import notification_ws_manager
 from app.services.attendance_service import attendance_service
 
 router = APIRouter()
@@ -74,3 +75,34 @@ async def websocket_endpoint(
                 "type": "user_left",
                 "user_id": user_id
             })
+
+@router.websocket("/notifications")
+async def notification_endpoint(
+    websocket: WebSocket,
+    user_id: str = None
+):
+    """
+    WebSocket endpoint for real-time notifications.
+    """
+    try:
+        # Identification via payload since some WS clients don't support headers well
+        await websocket.accept()
+        data = await websocket.receive_json()
+        
+        if data.get("type") == "auth":
+            user_id = str(data.get("user_id"))
+            await notification_ws_manager.connect(websocket, user_id)
+            
+            # Keep-alive loop
+            while True:
+                await websocket.receive_text() # Wait for client messages or keep open
+        else:
+            await websocket.close(code=4001)
+            
+    except WebSocketDisconnect:
+        if user_id:
+            notification_ws_manager.disconnect(websocket, user_id)
+    except Exception as e:
+        print(f"Notification WS error: {e}")
+        if user_id:
+            notification_ws_manager.disconnect(websocket, user_id)

@@ -19,6 +19,8 @@ import { AnnouncementsTab } from './course-detail-tabs/AnnouncementsTab';
 import { CommunityTab } from './course-detail-tabs/CommunityTab';
 import { InstructorsTab } from './course-detail-tabs/InstructorsTab';
 import { SettingsTab } from './course-detail-tabs/SettingsTab';
+import { TrackingTab } from './course-detail-tabs/TrackingTab';
+import { AnalyticsTab } from './course-detail-tabs/AnalyticsTab';
 
 export const AdminCourseDetailViewPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -95,12 +97,12 @@ export const AdminCourseDetailViewPage = () => {
             icon: MessageSquare
         },
         {
-            path: `${basePath}/courses/${id}/analytics`,
+            path: `${basePath}/courses/${id}/view/analytics`,
             label: 'Analytics',
             icon: BarChart3
         },
         {
-            path: `${basePath}/courses/${id}/tracking`,
+            path: `${basePath}/courses/${id}/view/tracking`,
             label: 'Tracking',
             icon: Activity
         },
@@ -221,6 +223,8 @@ export const AdminCourseDetailViewPage = () => {
                             <Route path="community" element={<CommunityTab courseData={courseData} />} />
                             <Route path="instructors" element={<InstructorsTab courseData={courseData} refreshData={() => fetchCourseData(parseInt(id!))} />} />
                             <Route path="settings" element={<SettingsTab courseData={courseData} refreshData={() => fetchCourseData(parseInt(id!))} />} />
+                            <Route path="tracking" element={<TrackingTab courseId={parseInt(id!)} />} />
+                            <Route path="analytics" element={<AnalyticsTab courseId={parseInt(id!)} />} />
                         </Routes>
                     </div>
                 </div>

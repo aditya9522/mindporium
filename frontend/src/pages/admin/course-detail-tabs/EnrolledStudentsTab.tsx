@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Users, Search, TrendingUp, Award, Clock, Mail, Loader2 } from 'lucide-react';
+import { Users, Search, TrendingUp, Award, Clock, Mail, Loader2, User as UserIcon } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
@@ -9,6 +10,7 @@ interface EnrolledStudentsTabProps {
 }
 
 export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) => {
+    const location = useLocation();
     const [students, setStudents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -159,6 +161,9 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                         Status
                                     </th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -215,6 +220,18 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                                         ? 'In Progress'
                                                         : 'Not Started'}
                                             </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Link
+                                                to={location.pathname.startsWith('/instructor')
+                                                    ? `/instructor/students/${enrollment.user.id}`
+                                                    : `/admin/users/${enrollment.user.id}`
+                                                }
+                                                className="text-indigo-600 hover:text-indigo-800 font-bold text-sm flex items-center gap-1 transition-colors"
+                                            >
+                                                <UserIcon className="w-3.5 h-3.5" />
+                                                View Profile
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}

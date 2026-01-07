@@ -1,23 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { notificationService } from '../../services/notification.service';
+import { useNotifications } from '../../hooks/useNotifications';
 import type { Notification } from '../../types/notification';
 import { Bell, Check, CheckCheck, Info, AlertTriangle, XCircle, CheckCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 
 export const NotificationDropdown = () => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [unreadCount, setUnreadCount] = useState(0);
+    const { notifications, unreadCount, isLoading: loading, markAsRead: handleMarkAsRead, markAllAsRead: handleMarkAllAsRead } = useNotifications();
     const [isOpen, setIsOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    // Poll for notifications every 30 seconds
-    useEffect(() => {
-        fetchNotifications();
-        const interval = setInterval(fetchNotifications, 30000);
-        return () => clearInterval(interval);
-    }, []);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -29,41 +20,6 @@ export const NotificationDropdown = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-
-    const fetchNotifications = async () => {
-        try {
-            const data = await notificationService.getNotifications(0, 10);
-            setNotifications(data);
-            setUnreadCount(data.filter(n => !n.is_read).length);
-        } catch (error) {
-            console.error('Failed to fetch notifications:', error);
-        }
-    };
-
-    const handleMarkAsRead = async (id: number) => {
-        try {
-            await notificationService.markAsRead(id);
-            setNotifications(notifications.map(n =>
-                n.id === id ? { ...n, is_read: true } : n
-            ));
-            setUnreadCount(prev => Math.max(0, prev - 1));
-        } catch (error) {
-            console.error('Failed to mark as read:', error);
-        }
-    };
-
-    const handleMarkAllAsRead = async () => {
-        try {
-            setLoading(true);
-            await notificationService.markAllAsRead();
-            setNotifications(notifications.map(n => ({ ...n, is_read: true })));
-            setUnreadCount(0);
-        } catch (error) {
-            console.error('Failed to mark all as read:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const getIcon = (type: string) => {
         switch (type) {
@@ -112,7 +68,7 @@ export const NotificationDropdown = () => {
                             </div>
                         ) : (
                             <div className="divide-y divide-gray-50">
-                                {notifications.map((notification) => (
+                                {notifications.map((notification: Notification) => (
                                     <div
                                         key={notification.id}
                                         className={`p-4 hover:bg-gray-50 transition-colors ${!notification.is_read ? 'bg-blue-50/50' : ''

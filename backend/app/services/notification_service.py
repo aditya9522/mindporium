@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.notification import Notification
 from app.db.database import get_sessionmaker
+from app.ws.notifications import notification_ws_manager
 import logging
 
 logger = logging.getLogger("app.services.notification")
@@ -26,6 +27,20 @@ class NotificationService:
             )
             db.add(notification)
             await db.commit()
+            
+            # Broadcast real-time
+            await notification_ws_manager.broadcast_notification(
+                user_ids=[user_id],
+                notification_data={
+                    "id": notification.id,
+                    "title": title,
+                    "message": message,
+                    "notification_type": notification_type,
+                    "created_at": notification.created_at.isoformat() if notification.created_at else None,
+                    "is_read": False
+                }
+            )
+            
             logger.info(f"Notification created for user {user_id}: {title}")
     
     async def create_bulk_notifications(self, user_ids: list, title: str, message: str, notification_type: str = "info"):
@@ -43,6 +58,18 @@ class NotificationService:
             ]
             db.add_all(notifications)
             await db.commit()
+            
+            # Broadcast real-time
+            await notification_ws_manager.broadcast_notification(
+                user_ids=user_ids,
+                notification_data={
+                    "title": title,
+                    "message": message,
+                    "notification_type": notification_type,
+                    "is_realtime_bulk": True
+                }
+            )
+            
             logger.info(f"Bulk notifications created for {len(user_ids)} users: {title}")
             
     async def notify_class_starting(self, classroom_id: int, classroom_title: str, user_ids: list):

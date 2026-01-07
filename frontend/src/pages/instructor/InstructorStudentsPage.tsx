@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Search, Users, BookOpen, TrendingUp, Mail } from 'lucide-react';
+import { Search, Users, BookOpen, TrendingUp, Mail, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
 import { PageLoader } from '../../components/common/PageLoader';
@@ -10,6 +11,7 @@ interface StudentData {
     email: string;
     enrolled_courses: number;
     total_progress: number;
+    attendance_percent?: number;
     last_active?: string;
     courses: Array<{
         course_id: number;
@@ -142,6 +144,7 @@ export const InstructorStudentsPage = () => {
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Enrolled Courses</th>
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Avg. Progress</th>
+                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Attendance</th>
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Last Active</th>
                                 </tr>
                             </thead>
@@ -154,7 +157,13 @@ export const InstructorStudentsPage = () => {
                                                     {student.full_name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div className="ml-4">
-                                                    <p className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{student.full_name}</p>
+                                                    <Link
+                                                        to={`/instructor/students/${student.user_id}`}
+                                                        className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors flex items-center gap-2"
+                                                    >
+                                                        {student.full_name}
+                                                        <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                    </Link>
                                                     <p className="text-sm text-gray-500 flex items-center gap-1.5 mt-0.5 font-medium">
                                                         <Mail className="w-3.5 h-3.5" />
                                                         {student.email}
@@ -180,6 +189,16 @@ export const InstructorStudentsPage = () => {
                                                     />
                                                 </div>
                                                 <span className="text-sm font-bold text-gray-700 w-10">{Math.round(student.total_progress)}%</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-2">
+                                                <span className={`px-2 py-0.5 rounded text-xs font-bold ${(student as any).attendance_percent >= 75 ? 'bg-green-50 text-green-700' :
+                                                    (student as any).attendance_percent >= 50 ? 'bg-yellow-50 text-yellow-700' :
+                                                        'bg-red-50 text-red-700'
+                                                    }`}>
+                                                    {Math.round((student as any).attendance_percent || 0)}%
+                                                </span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-5 text-sm font-medium text-gray-500">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Video, Calendar, Clock, CheckCircle, Users, Plus, Edit, Trash2, X, Loader2 } from 'lucide-react';
+import { Video, Calendar, Clock, CheckCircle, Users, Plus, Edit, Trash2, X, Loader2, Copy } from 'lucide-react';
 import api from '../../../lib/axios';
 import { classroomService } from '../../../services/classroom.service';
 import { subjectService } from '../../../services/subject.service';
@@ -306,6 +306,17 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => {
+                                                const url = `${window.location.origin}/classroom/${classroom.id}`;
+                                                navigator.clipboard.writeText(url);
+                                                toast.success('Class link copied');
+                                            }}
+                                            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                            title="Copy Class Link"
+                                        >
+                                            <Copy className="w-4 h-4" />
+                                        </button>
                                         <button
                                             onClick={() => openEditModal(classroom)}
                                             className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"

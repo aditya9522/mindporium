@@ -8,6 +8,7 @@ import { Input } from '../../components/ui/Input';
 import { Lock, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
+import { BackgroundAnimation } from '../../components/common/BackgroundAnimation';
 
 const resetPasswordSchema = z.object({
     newPassword: z.string().min(6, "Password must be at least 6 characters"),
@@ -53,14 +54,15 @@ export const ResetPasswordPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[80vh] py-12">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <div className="relative min-h-[90vh] flex items-center justify-center py-12 px-4">
+            <BackgroundAnimation />
+            <div className="w-full max-w-md p-8 space-y-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 relative z-10 animate-in fade-in zoom-in duration-500">
                 <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100 mb-4">
-                        <Lock className="h-6 w-6 text-primary-600" />
+                    <div className="inline-flex items-center justify-center mb-6">
+                        <Lock className="h-12 w-12 text-primary-600" />
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900">Reset Password</h2>
-                    <p className="mt-2 text-gray-600">Enter your new password</p>
+                    <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Reset Password</h2>
+                    <p className="mt-2 text-gray-500 font-medium">Enter your new password</p>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -86,7 +88,7 @@ export const ResetPasswordPage = () => {
                         {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
                     </div>
 
-                    <Button type="submit" className="w-full flex items-center justify-center gap-2" size="lg" disabled={isLoading}>
+                    <Button type="submit" className="w-full flex items-center justify-center gap-2 h-12 rounded-xl text-base font-semibold shadow-lg shadow-primary-200 hover:shadow-primary-300 transition-all transform hover:-translate-y-0.5" size="lg" disabled={isLoading}>
                         {isLoading ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin" />

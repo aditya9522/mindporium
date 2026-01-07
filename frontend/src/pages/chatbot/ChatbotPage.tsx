@@ -3,7 +3,7 @@ import { ChatSidebar } from '../../components/chatbot/ChatSidebar';
 import { MessageBubble } from '../../components/chatbot/MessageBubble';
 import { chatbotService } from '../../services/chatbot.service';
 import type { ChatSession, ChatMessage } from '../../types/chatbot';
-import { Send, Loader2, Bot } from 'lucide-react';
+import { Send, Loader2, Bot, PanelLeftOpen, MessageSquarePlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PageLoader } from '../../components/common/PageLoader';
 
@@ -13,6 +13,7 @@ export const ChatbotPage = () => {
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
     const [input, setInput] = useState('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Fetch sessions on mount
@@ -151,34 +152,73 @@ export const ChatbotPage = () => {
 
     return (
         <div className="p-0">
-            <div className="flex h-[calc(100vh-64px)] bg-gray-50">
+            <div className="flex h-[calc(100vh-64px)] bg-white relative overflow-hidden">
+                {/* Sidebar Overlay for Mobile */}
+                {isSidebarOpen && (
+                    <div
+                        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-20 lg:hidden"
+                        onClick={() => setIsSidebarOpen(false)}
+                    />
+                )}
+
                 {/* Sidebar */}
-                <ChatSidebar
-                    sessions={sessions}
-                    currentSessionId={currentSession?.id || null}
-                    onSelectSession={loadSession}
-                    onNewChat={handleNewChat}
-                    onUpdateSession={handleUpdateSession}
-                    onDeleteSession={handleDeleteSession}
-                    loading={loading}
-                />
+                <div className={`
+                    fixed inset-y-0 left-0 z-30 w-80 bg-white transform transition-all duration-300 ease-in-out lg:relative 
+                    ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:ml-[-20rem]'}
+                    border-r border-gray-100
+                `}>
+                    <ChatSidebar
+                        sessions={sessions}
+                        currentSessionId={currentSession?.id || null}
+                        onSelectSession={(id) => {
+                            loadSession(id);
+                            if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                        }}
+                        onNewChat={handleNewChat}
+                        onUpdateSession={handleUpdateSession}
+                        onDeleteSession={handleDeleteSession}
+                        loading={loading}
+                        onClose={() => setIsSidebarOpen(false)}
+                    />
+                </div>
 
                 {/* Main Chat Area */}
-                <div className="flex-1 flex flex-col h-full">
+                <div className="flex-1 flex flex-col h-full min-w-0 bg-gray-50/30">
                     {currentSession ? (
                         <>
                             {/* Chat Header */}
-                            <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
+                            <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 p-4 flex items-center justify-between z-10 sticky top-0">
                                 <div className="flex items-center gap-3">
-                                    <div className="bg-indigo-100 p-2 rounded-lg">
-                                        <Bot className="w-6 h-6 text-indigo-600" />
+                                    <button
+                                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                        className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+                                        title="Toggle Sidebar"
+                                    >
+                                        <PanelLeftOpen className={`w-5 h-5 transition-transform ${isSidebarOpen ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    <div className="h-6 w-px bg-gray-200 mx-1 hidden sm:block"></div>
+                                    <div className="bg-primary-600 p-2 rounded-xl shadow-lg shadow-primary-200">
+                                        <Bot className="w-5 h-5 text-white" />
                                     </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-900">
+                                    <div className="overflow-hidden">
+                                        <h2 className="text-base font-bold text-gray-900 truncate">
                                             {currentSession.title || 'AI Assistant'}
                                         </h2>
-                                        <p className="text-sm text-gray-500">Always here to help you learn</p>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Online</p>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={handleNewChat}
+                                        className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors sm:hidden"
+                                        title="New Chat"
+                                    >
+                                        <MessageSquarePlus className="w-5 h-5" />
+                                    </button>
                                 </div>
                             </div>
 
@@ -191,7 +231,7 @@ export const ChatbotPage = () => {
                                 ) : (
                                     <div className="h-full flex flex-col items-center justify-center text-gray-400 space-y-4">
                                         <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm">
-                                            <Bot className="w-8 h-8 text-indigo-400" />
+                                            <Bot className="w-8 h-8 text-primary-400" />
                                         </div>
                                         <div className="text-center">
                                             <h3 className="text-lg font-medium text-gray-900">How can I help you today?</h3>
@@ -204,13 +244,13 @@ export const ChatbotPage = () => {
                                 {sending && (
                                     <div className="flex justify-start w-full mb-6">
                                         <div className="flex max-w-[80%] flex-row">
-                                            <div className="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center bg-indigo-100 text-indigo-600 mr-3">
+                                            <div className="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center bg-primary-100 text-primary-600 mr-3">
                                                 <Bot size={20} />
                                             </div>
                                             <div className="bg-white border border-gray-100 p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-2">
-                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                                                <span className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                                                <span className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                                                <span className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                                             </div>
                                         </div>
                                     </div>
@@ -221,21 +261,21 @@ export const ChatbotPage = () => {
                             {/* Input Area */}
                             <div className="bg-white border-t border-gray-200 p-4">
                                 <div className="max-w-4xl mx-auto">
-                                    <form onSubmit={handleSendMessage} className="relative flex items-center gap-2">
+                                    <form onSubmit={handleSendMessage} className="relative">
                                         <input
                                             type="text"
                                             value={input}
                                             onChange={(e) => setInput(e.target.value)}
                                             placeholder="Type your message..."
-                                            className="w-full pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none text-gray-900"
+                                            className="w-full pl-4 pr-14 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none text-gray-900 shadow-inner"
                                             disabled={sending}
                                         />
                                         <button
                                             type="submit"
                                             disabled={!input.trim() || sending}
-                                            className="absolute right-2 p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                            className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all shadow-md shadow-primary-100 disabled:opacity-50 disabled:shadow-none flex items-center justify-center group"
                                         >
-                                            {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                                            {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />}
                                         </button>
                                     </form>
                                     <p className="text-xs text-center text-gray-400 mt-2">

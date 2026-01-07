@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from sqlalchemy.orm import selectinload
@@ -11,6 +11,8 @@ from app.models.course import Course
 from app.models.user import User
 from app.schemas.subject import SubjectCreate, SubjectResponse, SubjectUpdate
 from app.models.enums import RoleEnum
+from app.services.notification_service import notification_service
+from app.models.enrollment import Enrollment
 
 router = APIRouter()
 
@@ -20,6 +22,7 @@ async def create_subject(
     *,
     db: AsyncSession = Depends(deps.get_db),
     subject_in: SubjectCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -39,6 +42,20 @@ async def create_subject(
     db.add(subject)
     await db.commit()
     await db.refresh(subject)
+
+    # Notify students enrolled in the course
+    enrollments_result = await db.execute(
+        select(Enrollment.user_id).where(Enrollment.course_id == course.id)
+    )
+    student_ids = [row[0] for row in enrollments_result.all()]
+    if student_ids:
+        background_tasks.add_task(
+            notification_service.notify_subject_added,
+            user_ids=student_ids,
+            subject_title=subject.title,
+            course_title=course.title
+        )
+
     return subject
 
 

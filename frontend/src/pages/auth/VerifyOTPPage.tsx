@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Shield, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
+import { BackgroundAnimation } from '../../components/common/BackgroundAnimation';
 
 export const VerifyOTPPage = () => {
     const navigate = useNavigate();
@@ -94,16 +95,17 @@ export const VerifyOTPPage = () => {
     if (!email) return null;
 
     return (
-        <div className="flex items-center justify-center min-h-[80vh] py-12">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <div className="relative min-h-[90vh] flex items-center justify-center py-12 px-4">
+            <BackgroundAnimation />
+            <div className="w-full max-w-md p-8 space-y-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 relative z-10 animate-in fade-in zoom-in duration-500">
                 <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100 mb-4 animate-bounce">
-                        <Shield className="h-6 w-6 text-primary-600" />
+                    <div className="inline-flex items-center justify-center mb-6">
+                        <Shield className="h-12 w-12 text-primary-600" />
                     </div>
                     <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Verify Identity</h2>
-                    <p className="mt-2 text-gray-600">
+                    <p className="mt-2 text-gray-500 font-medium">
                         Enter the 6-digit code sent to <br />
-                        <span className="font-semibold text-gray-800">{email}</span>
+                        <span className="font-bold text-gray-800">{email}</span>
                     </p>
                 </div>
 
@@ -119,12 +121,12 @@ export const VerifyOTPPage = () => {
                                 onChange={(e) => handleChange(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(index, e)}
                                 onPaste={handlePaste}
-                                className="w-12 h-12 sm:w-14 sm:h-14 text-center text-2xl font-bold text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all shadow-sm focus:shadow-md"
+                                className="w-12 h-12 sm:w-14 sm:h-14 text-center text-2xl font-bold text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all shadow-sm focus:shadow-md"
                             />
                         ))}
                     </div>
 
-                    <Button type="submit" className="w-full py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all" size="lg" disabled={isLoading}>
+                    <Button type="submit" className="w-full flex items-center justify-center gap-2 h-12 rounded-xl text-base font-semibold shadow-lg shadow-primary-200 hover:shadow-primary-300 transition-all transform hover:-translate-y-0.5" size="lg" disabled={isLoading}>
                         {isLoading ? (
                             <div className="flex items-center gap-2">
                                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -140,7 +142,7 @@ export const VerifyOTPPage = () => {
                     <button
                         type="button"
                         onClick={handleResendOTP}
-                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+                        className="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors"
                     >
                         Resend Code
                     </button>

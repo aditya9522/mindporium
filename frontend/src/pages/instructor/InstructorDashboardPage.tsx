@@ -119,23 +119,49 @@ export const InstructorDashboardPage = () => {
                         </h2>
                         {dashboard.upcoming_classes && dashboard.upcoming_classes.length > 0 ? (
                             <div className="space-y-4">
-                                {dashboard.upcoming_classes.slice(0, 5).map((classroom) => (
-                                    <div key={classroom.id} className="flex items-start justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="flex-1">
-                                            <p className="font-bold text-gray-900">{classroom.title}</p>
-                                            <p className="text-sm text-gray-500 font-medium">{classroom.subject_title}</p>
-                                            <p className="text-xs text-indigo-600 font-semibold mt-1.5 flex items-center gap-1">
-                                                <Calendar className="w-3 h-3" />
-                                                {(classroom.scheduled_at || (classroom as any).start_time) && !isNaN(new Date(classroom.scheduled_at || (classroom as any).start_time).getTime())
-                                                    ? format(new Date(classroom.scheduled_at || (classroom as any).start_time), 'MMM d, h:mm a')
-                                                    : 'Date not set'}
-                                            </p>
+                                {dashboard.upcoming_classes.slice(0, 5).map((classroom) => {
+                                    const typeStyles: Record<string, string> = {
+                                        trial: 'bg-orange-50 text-orange-600 border-orange-100',
+                                        free: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+                                        regular: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+                                        extra: 'bg-purple-50 text-purple-600 border-purple-100',
+                                    };
+
+                                    const typeLabels: Record<string, string> = {
+                                        trial: 'Trial',
+                                        free: 'Free',
+                                        regular: 'Regular',
+                                        extra: 'Extra',
+                                    };
+
+                                    const type = classroom.class_type || 'regular';
+                                    const isLive = classroom.status === 'live';
+
+                                    return (
+                                        <div key={classroom.id} className="flex items-start justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                            <div className="flex-1">
+                                                <p className="font-bold text-gray-900">{classroom.title}</p>
+                                                <p className="text-sm text-gray-500 font-medium">{classroom.subject_title}</p>
+                                                <p className="text-xs text-indigo-600 font-semibold mt-1.5 flex items-center gap-1">
+                                                    <Calendar className="w-3 h-3" />
+                                                    {(classroom.scheduled_at || classroom.start_time) && !isNaN(new Date(classroom.scheduled_at || classroom.start_time || '').getTime())
+                                                        ? format(new Date(classroom.scheduled_at || classroom.start_time || ''), 'MMM d, h:mm a')
+                                                        : 'Date not set'}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col items-end gap-2">
+                                                {isLive && (
+                                                    <span className="text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter bg-red-500 text-white animate-pulse shadow-sm shadow-red-200">
+                                                        Live Now
+                                                    </span>
+                                                )}
+                                                <span className={`text-xs px-2.5 py-1 rounded-full font-bold shadow-sm border ${typeStyles[type] || typeStyles.regular}`}>
+                                                    {typeLabels[type] || 'Class'}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <span className={`text-xs px-2.5 py-1 rounded-full font-bold capitalize shadow-sm ${(classroom as any).status === 'live' ? 'bg-red-50 text-red-600 border border-red-100 animate-pulse' : 'bg-indigo-50 text-indigo-600 border border-indigo-100'}`}>
-                                            {(classroom as any).status === 'live' ? 'Live' : classroom.type}
-                                        </span>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div className="text-center py-10">

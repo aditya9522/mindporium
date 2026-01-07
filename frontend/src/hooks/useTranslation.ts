@@ -7,7 +7,7 @@ export const useTranslation = () => {
 
     const t = (key: TranslationKey): string => {
         const langCode = (language || 'en') as Language;
-        const dict = translations[langCode] || translations['en'];
+        const dict = (translations[langCode] || translations['en']) as any;
         return dict[key] || key;
     };
 

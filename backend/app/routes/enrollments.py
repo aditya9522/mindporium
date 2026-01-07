@@ -12,10 +12,13 @@ from app.models.course import Course
 from app.models.user import User
 from app.schemas.enrollment import EnrollmentCreate, EnrollmentResponse
 from app.schemas.enrollment import EnrollmentCreate, EnrollmentResponse
+from app.models.progress import UserProgress
 from app.services.progress_service import progress_service
 from app.models.resource import Resource
 from app.models.resource_completion import ResourceCompletion
 from app.models.subject import Subject
+from app.services.notification_service import notification_service
+from app.models.enums import RoleEnum
 
 router = APIRouter()
 
@@ -25,6 +28,7 @@ async def enroll_course(
     *,
     db: AsyncSession = Depends(deps.get_db),
     enrollment_in: EnrollmentCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -69,6 +73,23 @@ async def enroll_course(
         .where(Enrollment.id == enrollment.id)
     )
     enrollment = result.scalars().first()
+    
+    # Notify student and instructor
+    if enrollment:
+        background_tasks.add_task(
+            notification_service.notify_enrollment_success,
+            user_id=current_user.id,
+            course_title=enrollment.course.title
+        )
+        
+        # Notify course creator/instructors
+        background_tasks.add_task(
+            notification_service.create_notification,
+            user_id=enrollment.course.created_by,
+            title="New Student Enrolled",
+            message=f"{current_user.full_name} has enrolled in your course '{enrollment.course.title}'",
+            notification_type="enrollment"
+        )
     
     return enrollment
 

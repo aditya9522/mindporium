@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
@@ -18,6 +18,8 @@ from app.schemas.system_setting import (
 )
 from app.schemas.user import UserCreateInstructor, UserResponse, UserCreateAdmin
 from app.services.user_service import user_service
+from app.services.notification_service import notification_service
+from app.models.enums import RoleEnum
 
 router = APIRouter()
 
@@ -27,6 +29,7 @@ async def create_instructor(
     *,
     db: AsyncSession = Depends(deps.get_db),
     user_in: UserCreateInstructor,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
@@ -34,6 +37,17 @@ async def create_instructor(
     """
     try:
         user = await user_service.create_instructor(db, user_in)
+        
+        # Notify all students about the new instructor
+        students_result = await db.execute(select(User).where(User.role == RoleEnum.student))
+        students = students_result.scalars().all()
+        if students:
+            background_tasks.add_task(
+                notification_service.notify_instructor_joined,
+                user_ids=[s.id for s in students],
+                instructor_name=user.full_name
+            )
+            
         return user
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

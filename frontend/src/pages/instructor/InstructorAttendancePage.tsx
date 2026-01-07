@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Loader2, Clock, ChevronDown, Monitor, Globe, Search, BookOpen, GraduationCap } from 'lucide-react';
+import { Loader2, Clock, ChevronDown, Monitor, Globe, Search, BookOpen, GraduationCap, Copy } from 'lucide-react';
 import { VoiceInput } from '../../components/common/VoiceInput';
 import api from '../../lib/axios';
 import { classroomService } from '../../services/classroom.service';
 import { format } from 'date-fns';
 import { PageLoader } from '../../components/common/PageLoader';
+import toast from 'react-hot-toast';
+import { getImageUrl } from '../../lib/utils';
 
 interface Classroom {
     id: number;
@@ -95,7 +97,7 @@ export const InstructorAttendancePage = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="w-full space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 tracking-tight">
@@ -110,7 +112,7 @@ export const InstructorAttendancePage = () => {
                         <select
                             value={selectedClassId}
                             onChange={(e) => setSelectedClassId(Number(e.target.value))}
-                            className="appearance-none bg-white/80 backdrop-blur-md pl-6 pr-12 py-4 rounded-2xl border border-gray-200 text-gray-700 font-semibold hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer shadow-sm hover:shadow-md min-w-[280px]"
+                            className="appearance-none bg-white/80 backdrop-blur-md pl-6 pr-12 py-4 rounded-lg border border-gray-200 text-gray-700 font-semibold hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer shadow-sm hover:shadow-md min-w-[280px]"
                         >
                             {classrooms.map(cls => (
                                 <option key={cls.id} value={cls.id}>{cls.title}</option>
@@ -204,15 +206,29 @@ export const InstructorAttendancePage = () => {
                                         <td className="px-8 py-5">
                                             <div className="flex items-center gap-4">
                                                 {record.user?.photo ? (
-                                                    <img src={record.user.photo} alt={record.user.full_name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm" />
+                                                    <img src={getImageUrl(record.user.photo)} alt={record.user.full_name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm" />
                                                 ) : (
                                                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-700 font-bold text-sm ring-2 ring-white shadow-sm">
                                                         {record.user?.full_name?.charAt(0).toUpperCase() || '?'}
                                                     </div>
                                                 )}
-                                                <div>
-                                                    <div className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{record.user?.full_name || 'Unknown User'}</div>
-                                                    <div className="text-gray-500 text-xs font-medium">{record.user?.email || 'No email provided'}</div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{record.user?.full_name || 'Unknown User'}</div>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="text-gray-500 text-xs font-medium truncate">{record.user?.email || 'No email provided'}</div>
+                                                        {record.user?.email && (
+                                                            <button
+                                                                onClick={() => {
+                                                                    navigator.clipboard.writeText(record.user?.email!);
+                                                                    toast.success('Email copied');
+                                                                }}
+                                                                className="text-gray-400 hover:text-indigo-600 transition-colors"
+                                                                title="Copy Email"
+                                                            >
+                                                                <Copy className="w-3 h-3" />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>

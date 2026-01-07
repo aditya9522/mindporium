@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 
@@ -11,6 +11,8 @@ from app.models.subject import Subject
 from app.models.user import User
 from app.schemas.resource import ResourceCreate, ResourceResponse, ResourceUpdate
 from app.models.enums import RoleEnum
+from app.services.notification_service import notification_service
+from app.models.enrollment import Enrollment
 
 router = APIRouter()
 
@@ -20,6 +22,7 @@ async def create_resource(
     *,
     db: AsyncSession = Depends(deps.get_db),
     resource_in: ResourceCreate,
+    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_instructor),
 ) -> Any:
     """
@@ -42,6 +45,28 @@ async def create_resource(
     db.add(resource)
     await db.commit()
     await db.refresh(resource)
+
+    # Notify enrolled students
+    if resource.subject_id:
+        # We need subject title and student ids
+        res = await db.execute(
+            select(Subject.title, Subject.course_id).where(Subject.id == resource.subject_id)
+        )
+        row = res.first()
+        if row:
+            subject_title, course_id = row
+            enrollments_result = await db.execute(
+                select(Enrollment.user_id).where(Enrollment.course_id == course_id)
+            )
+            student_ids = [r[0] for r in enrollments_result.all()]
+            if student_ids:
+                background_tasks.add_task(
+                    notification_service.notify_resource_added,
+                    user_ids=student_ids,
+                    resource_title=resource.title,
+                    subject_title=subject_title
+                )
+
     return resource
 
 
