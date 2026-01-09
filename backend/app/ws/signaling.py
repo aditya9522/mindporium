@@ -1,3 +1,4 @@
+import logging
 import json
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,6 +7,8 @@ from app.api import deps
 from app.ws.manager import manager
 from app.ws.notifications import notification_ws_manager
 from app.services.attendance_service import attendance_service
+
+logger = logging.getLogger("app.ws.signaling")
 
 router = APIRouter()
 
@@ -84,9 +87,11 @@ async def notification_endpoint(
     """
     WebSocket endpoint for real-time notifications.
     """
+    logger.info(f"Incoming notification WS connection")
     try:
         # Identification via payload since some WS clients don't support headers well
         await websocket.accept()
+        logger.info("Notification WS accepted, waiting for auth message")
         data = await websocket.receive_json()
         
         if data.get("type") == "auth":
