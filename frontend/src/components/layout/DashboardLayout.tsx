@@ -103,7 +103,7 @@ export const DashboardLayout = () => {
     const menuItems = getMenuItems();
 
     const SidebarContent = () => (
-        <div className="h-full flex flex-col py-0 bg-white">
+        <div className="h-full flex flex-col py-0 bg-white dark:bg-gray-900 transition-colors duration-300">
             <div className="h-4" /> {/* Spacer */}
 
 
@@ -122,8 +122,8 @@ export const DashboardLayout = () => {
                                 to={item.path}
                                 onClick={() => window.innerWidth < 1024 && toggleSidebar()}
                                 className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${isActive
-                                    ? 'bg-primary-50 text-primary-700 shadow-sm font-semibold'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'
+                                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 shadow-sm font-semibold'
+                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
                                     }`}
                             >
                                 <Icon className={`h-5 w-5 transition-colors ${isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
@@ -138,9 +138,9 @@ export const DashboardLayout = () => {
             )}
 
             {/* Profile Section (Bottom) */}
-            <div className="mt-auto pt-4 border-t border-gray-100 mb-2">
+            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-800 mb-2">
                 {user ? (
-                    <div className="flex items-center gap-3 p-3 mx-2 bg-gray-50 rounded-lg border border-gray-100 group hover:bg-white hover:shadow-md transition-all duration-200 cursor-pointer" onClick={() => navigate('/settings')}>
+                    <div className="flex items-center gap-3 p-3 mx-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:shadow-md transition-all duration-200 cursor-pointer" onClick={() => navigate('/settings')}>
                         {user.photo ? (
                             <img
                                 src={getImageUrl(user.photo)}
@@ -155,10 +155,10 @@ export const DashboardLayout = () => {
                             </div>
                         )}
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm font-bold text-gray-900 truncate group-hover:text-primary-700 transition-colors">
+                            <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors">
                                 {user.full_name}
                             </p>
-                            <p className="text-[10px] sm:text-xs text-gray-500 capitalize font-medium">{user.role}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 capitalize font-medium">{user.role}</p>
                         </div>
                         <Settings className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-500 transition-all" />
                     </div>
@@ -190,9 +190,9 @@ export const DashboardLayout = () => {
                 {/* Mobile Sidebar Overlay */}
                 {isSidebarOpen && (
                     <div className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={toggleSidebar}>
-                        <aside className="fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out" onClick={e => e.stopPropagation()}>
+                        <aside className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-xl z-50 transform transition-transform duration-300 ease-in-out" onClick={e => e.stopPropagation()}>
                             <div className="flex justify-end p-2 lg:hidden">
-                                <button onClick={toggleSidebar} className="p-2 text-gray-500 hover:text-gray-700"><X className="w-5 h-5" /></button>
+                                <button onClick={toggleSidebar} className="p-2 text-gray-500 hover:text-gray-300"><X className="w-5 h-5" /></button>
                             </div>
                             <SidebarContent />
                         </aside>
@@ -201,7 +201,7 @@ export const DashboardLayout = () => {
 
                 {/* Desktop Sidebar (Sticky) */}
                 {isSidebarOpen && (
-                    <aside className="hidden lg:block w-64 bg-white border-r border-gray-200 sticky top-16 h-[calc(100vh-4rem)] overflow-hidden">
+                    <aside className="hidden lg:block w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 sticky top-16 h-[calc(100vh-4rem)] overflow-hidden transition-colors duration-300">
                         <SidebarContent />
                     </aside>
                 )}

@@ -93,12 +93,12 @@ export const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Profile Settings</h1>
-                    <p className="text-lg text-gray-500 font-medium">Manage your personal information and account preferences</p>
+                    <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight mb-2">Profile Settings</h1>
+                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">Manage your personal information and account preferences</p>
                 </div>
 
                 {/* Tabs */}
@@ -107,7 +107,7 @@ export const ProfilePage = () => {
                         onClick={() => setActiveTab('profile')}
                         className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'profile'
                             ? 'bg-indigo-600 text-white shadow-md'
-                            : 'text-gray-500 hover:bg-gray-50'
+                            : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
                             }`}
                     >
                         <User className="w-4 h-4" />
@@ -117,7 +117,7 @@ export const ProfilePage = () => {
                         onClick={() => setActiveTab('appearance')}
                         className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'appearance'
                             ? 'bg-indigo-600 text-white shadow-md'
-                            : 'text-gray-500 hover:bg-gray-50'
+                            : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
                             }`}
                     >
                         <Palette className="w-4 h-4" />
@@ -129,7 +129,7 @@ export const ProfilePage = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* Profile Card */}
                         <div className="lg:col-span-1">
-                            <div className="bg-white rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8 sticky top-8">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 p-8 sticky top-8 transition-colors duration-300">
                                 <div className="text-center">
                                     <div className="mb-6 flex justify-center">
                                         <div className="relative group">
@@ -146,24 +146,24 @@ export const ProfilePage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <h2 className="text-2xl font-bold text-gray-900 mb-1">{user?.full_name}</h2>
-                                    <div className="flex items-center justify-center gap-2 mb-4 text-gray-500 font-medium bg-gray-50 py-1 px-3 rounded-full inline-flex mx-auto border border-gray-100">
+                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user?.full_name}</h2>
+                                    <div className="flex items-center justify-center gap-2 mb-4 text-gray-500 dark:text-gray-400 font-medium bg-gray-50 dark:bg-gray-800/50 py-1 px-3 rounded-full inline-flex mx-auto border border-gray-100 dark:border-gray-700">
                                         <Mail className="w-3.5 h-3.5" />
                                         <span className="text-sm">{user?.email}</span>
                                     </div>
                                     <div className="mt-4 flex justify-center">
                                         {getRoleBadge(user?.role)}
                                     </div>
-                                    <div className="mt-8 pt-8 border-t border-gray-100 space-y-3">
+                                    <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-800 space-y-3">
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500 font-medium">Account Status</span>
-                                            <span className={`font-bold px-2 py-0.5 rounded ${user?.is_active ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                                            <span className="text-gray-500 dark:text-gray-400 font-medium">Account Status</span>
+                                            <span className={`font-bold px-2 py-0.5 rounded ${user?.is_active ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-800'}`}>
                                                 {user?.is_active ? 'Active' : 'Inactive'}
                                             </span>
                                         </div>
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500 font-medium">Member Since</span>
-                                            <span className="font-bold text-gray-900">
+                                            <span className="text-gray-500 dark:text-gray-400 font-medium">Member Since</span>
+                                            <span className="font-bold text-gray-900 dark:text-gray-100">
                                                 {user?.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                                             </span>
                                         </div>
@@ -174,8 +174,8 @@ export const ProfilePage = () => {
 
                         {/* Edit Form */}
                         <div className="lg:col-span-2">
-                            <div className="bg-white rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
-                                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
                                     <User className="w-5 h-5 text-indigo-600" />
                                     Personal Information
                                 </h3>
@@ -226,22 +226,22 @@ export const ProfilePage = () => {
                                     {(user?.role === 'instructor' || user?.role === 'admin') && (
                                         <>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium text-gray-700">Bio</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Bio</label>
                                                 <textarea
                                                     {...register('bio')}
                                                     rows={4}
                                                     placeholder="Tell us about yourself..."
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-colors"
                                                 />
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium text-gray-700">Experience</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Experience</label>
                                                 <textarea
                                                     {...register('experience')}
                                                     rows={3}
                                                     placeholder="Your professional experience..."
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-colors"
                                                 />
                                             </div>
                                         </>
@@ -249,10 +249,10 @@ export const ProfilePage = () => {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700">Timezone</label>
+                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Timezone</label>
                                             <select
                                                 {...register('timezone')}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                                             >
                                                 <option value="UTC">UTC</option>
                                                 <option value="America/New_York">Eastern Time</option>
@@ -265,10 +265,10 @@ export const ProfilePage = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700">Language</label>
+                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Language</label>
                                             <select
                                                 {...register('language')}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                                             >
                                                 <option value="en">English</option>
                                                 <option value="es">Spanish</option>
@@ -280,13 +280,13 @@ export const ProfilePage = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Role</label>
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
                                         <Input
                                             value={user?.role || 'student'}
                                             disabled
-                                            className="bg-gray-50 capitalize"
+                                            className="bg-gray-50 dark:bg-gray-800 capitalize"
                                         />
-                                        <p className="text-xs text-gray-500">Contact an administrator to change your role</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Contact an administrator to change your role</p>
                                     </div>
 
                                     <div className="flex justify-end gap-3 pt-4">
@@ -324,8 +324,8 @@ export const ProfilePage = () => {
                     <div className="max-w-4xl mx-auto md:mx-0">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Theme Mode */}
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
                                     <Layout className="w-5 h-5 text-indigo-600" />
                                     Display Mode
                                 </h3>
@@ -339,11 +339,11 @@ export const ProfilePage = () => {
                                             key={m.id}
                                             onClick={() => setMode(m.id as any)}
                                             className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all group ${mode === m.id
-                                                ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                                                : 'border-gray-50 hover:border-gray-100 text-gray-500'
+                                                ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400'
+                                                : 'border-gray-50 dark:border-gray-800 hover:border-gray-100 dark:hover:border-gray-700 text-gray-500'
                                                 }`}
                                         >
-                                            <m.icon className={`w-6 h-6 mb-2 transition-transform group-hover:scale-110 ${mode === m.id ? 'text-indigo-600' : 'text-gray-400'}`} />
+                                            <m.icon className={`w-6 h-6 mb-2 transition-transform group-hover:scale-110 ${mode === m.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`} />
                                             <span className="font-bold text-xs">{m.label}</span>
                                         </button>
                                     ))}
@@ -351,7 +351,7 @@ export const ProfilePage = () => {
                             </div>
 
                             {/* Theme Color */}
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
                                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
                                     <Palette className="w-5 h-5 text-indigo-600" />
                                     Accent Color
@@ -368,20 +368,20 @@ export const ProfilePage = () => {
                                             key={theme.id}
                                             onClick={() => setThemeColor(theme.id as any)}
                                             className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${themeColor === theme.id
-                                                ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-200'
-                                                : 'border-gray-50 hover:bg-gray-50'
+                                                ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 ring-1 ring-indigo-200 dark:ring-indigo-800'
+                                                : 'border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800'
                                                 }`}
                                         >
-                                            <div className={`w-5 h-5 rounded-full ${theme.class} shadow-sm border-2 border-white`}></div>
-                                            <span className={`font-bold text-xs ${themeColor === theme.id ? 'text-indigo-900' : 'text-gray-600'}`}>{theme.name}</span>
-                                            {themeColor === theme.id && <Check className="w-3 h-3 text-indigo-600 ml-auto" />}
+                                            <div className={`w-5 h-5 rounded-full ${theme.class} shadow-sm border-2 border-white dark:border-gray-800`}></div>
+                                            <span className={`font-bold text-xs ${themeColor === theme.id ? 'text-indigo-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400'}`}>{theme.name}</span>
+                                            {themeColor === theme.id && <Check className="w-3 h-3 text-indigo-600 dark:text-indigo-400 ml-auto" />}
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
                             {/* Localization */}
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:col-span-2">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 md:col-span-2 transition-colors duration-300">
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
                                     <Globe className="w-5 h-5 text-primary-600" />
                                     Localization & Language
@@ -405,7 +405,7 @@ export const ProfilePage = () => {
                                                         console.error('Failed to sync language:', err);
                                                     }
                                                 }}
-                                                className="block w-full pl-11 pr-10 py-3.5 text-base border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent rounded-2xl appearance-none bg-gray-50/50 hover:bg-white transition-all font-semibold text-gray-700 shadow-sm"
+                                                className="block w-full pl-11 pr-10 py-3.5 text-base border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent rounded-2xl appearance-none bg-gray-50/50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 transition-all font-semibold text-gray-700 dark:text-gray-200 shadow-sm"
                                             >
                                                 <option value="en">English (US)</option>
                                                 <option value="es">Español (Spanish)</option>
@@ -417,8 +417,8 @@ export const ProfilePage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="bg-gray-50 rounded-2xl p-6 flex flex-col justify-center">
-                                        <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-6 flex flex-col justify-center">
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
                                             Changing your language settings will update the system interface.
                                             Course content will remain in its original language.
                                         </p>
