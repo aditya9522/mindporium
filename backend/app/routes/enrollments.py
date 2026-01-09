@@ -11,8 +11,6 @@ from app.models.enrollment import Enrollment
 from app.models.course import Course
 from app.models.user import User
 from app.schemas.enrollment import EnrollmentCreate, EnrollmentResponse
-from app.schemas.enrollment import EnrollmentCreate, EnrollmentResponse
-from app.models.progress import UserProgress
 from app.services.progress_service import progress_service
 from app.models.resource import Resource
 from app.models.resource_completion import ResourceCompletion

@@ -47,10 +47,21 @@ async def mark_attendance(
     )
     db.add(attendance)
     await db.commit()
-    await db.refresh(attendance)
+    
+    # Reload with relationships for schema response
+    result = await db.execute(
+        select(Attendance)
+        .where(Attendance.id == attendance.id)
+        .options(
+            selectinload(Attendance.classroom).selectinload(Classroom.instructor),
+            selectinload(Attendance.user)
+        )
+    )
+    attendance = result.scalars().first()
     
     # Populate helper title
-    attendance.classroom_title = classroom.title
+    if attendance and attendance.classroom:
+        attendance.classroom_title = attendance.classroom.title
     
     return attendance
 
@@ -68,7 +79,9 @@ async def read_my_attendance(
     query = (
         select(Attendance)
         .where(Attendance.user_id == current_user.id)
-        .options(selectinload(Attendance.classroom))
+        .options(
+            selectinload(Attendance.classroom).selectinload(Classroom.instructor)
+        )
         .order_by(desc(Attendance.joined_at))
         .offset(skip).limit(limit)
     )
@@ -107,6 +120,7 @@ async def get_classroom_attendance(
         .where(Attendance.classroom_id == classroom_id)
         .options(
             selectinload(Attendance.user),
+            selectinload(Attendance.classroom).selectinload(Classroom.instructor),
             selectinload(Attendance.classroom).selectinload(Classroom.subject).selectinload(Subject.course)
         )
         .order_by(desc(Attendance.joined_at))

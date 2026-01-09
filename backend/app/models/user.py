@@ -44,7 +44,6 @@ class User(TimestampMixin, Base):
     chat_sessions = relationship("ChatSession", back_populates="user")
     submissions = relationship("Submission", back_populates="user")
     community_posts = relationship("CommunityPost", back_populates="user")
-    instructor_feedbacks = relationship("InstructorFeedback", back_populates="instructor")
     teaching_courses = relationship("Course", secondary=CourseInstructor.__tablename__, back_populates="instructors")
     community_bans = relationship("CommunityBan", back_populates="banned_user", foreign_keys="CommunityBan.user_id")
     bans_issued = relationship("CommunityBan", back_populates="banned_by_user", foreign_keys="CommunityBan.banned_by")
