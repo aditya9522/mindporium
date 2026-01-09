@@ -32,7 +32,7 @@ export const useNotifications = () => {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
         const protocol = apiUrl.startsWith('https') ? 'wss' : 'ws';
         const host = apiUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
-        const wsUrl = `${protocol}://${host}/notifications/`;
+        const wsUrl = `${protocol}://${host}/ws/notifications`;
 
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;

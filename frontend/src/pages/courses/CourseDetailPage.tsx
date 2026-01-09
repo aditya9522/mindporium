@@ -7,6 +7,7 @@ import type { Course } from '../../types/course';
 import type { Subject } from '../../types/enrollment';
 import { useAuthStore } from '../../store/auth.store';
 import { Button } from '../../components/ui/Button';
+import { SpeakerButton } from '../../components/ui/SpeakerButton';
 import {
     Clock, Users, CheckCircle,
     PlayCircle, FileText, ArrowLeft, Star,
@@ -94,7 +95,7 @@ export const CourseDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 relative pb-20">
+        <div className="min-h-screen bg-slate-50 dark:bg-gray-950 relative pb-20 transition-colors duration-300 text-gray-900 dark:text-gray-100">
             {/* Hero Section */}
             <div className="relative h-[500px] w-full bg-slate-900 overflow-hidden group">
                 {course.thumbnail ? (
@@ -165,14 +166,17 @@ export const CourseDetailPage = () => {
                     {/* Main Content */}
                     <div className="lg:col-span-2 space-y-8">
                         {/* About Course */}
-                        <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                                <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
-                                    <FileText className="w-6 h-6" />
-                                </div>
-                                About this course
-                            </h2>
-                            <p className="text-gray-600 leading-relaxed text-lg whitespace-pre-line">
+                        <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 transition-colors duration-300">
+                            <div className="flex justify-between items-start mb-6">
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+                                    <div className="p-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl">
+                                        <FileText className="w-6 h-6" />
+                                    </div>
+                                    About this course
+                                </h2>
+                                <SpeakerButton text={course.description || ""} />
+                            </div>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg whitespace-pre-line">
                                 {course.description || "No description provided."}
                             </p>
                         </div>
@@ -192,8 +196,8 @@ export const CourseDetailPage = () => {
                         )}
 
                         {/* Course Curriculum */}
-                        <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-8">Course Curriculum</h2>
+                        <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 transition-colors duration-300">
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Course Curriculum</h2>
                             {subjects.length === 0 ? (
                                 <div className="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
                                     <p className="text-gray-500 font-medium">No content uploaded yet.</p>
@@ -267,7 +271,7 @@ export const CourseDetailPage = () => {
                     {/* Sidebar */}
                     <div className="lg:col-span-1 space-y-6">
                         {/* Card for Enroll/Price */}
-                        <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white sticky top-24 z-20">
+                        <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white dark:border-gray-800 sticky top-24 z-20 transition-colors duration-300">
                             {/* Instructor Actions */}
                             {(user?.role === 'admin' || (user?.role === 'instructor' && user.id === course.created_by)) && (
                                 <div className="mb-8 pb-8 border-b border-gray-100">

@@ -4,6 +4,7 @@ import { MessageBubble } from '../../components/chatbot/MessageBubble';
 import { chatbotService } from '../../services/chatbot.service';
 import type { ChatSession, ChatMessage } from '../../types/chatbot';
 import { Send, Loader2, Bot, PanelLeftOpen, MessageSquarePlus } from 'lucide-react';
+import { VoiceInput } from '../../components/ui/VoiceInput';
 import toast from 'react-hot-toast';
 import { PageLoader } from '../../components/common/PageLoader';
 
@@ -152,7 +153,7 @@ export const ChatbotPage = () => {
 
     return (
         <div className="p-0">
-            <div className="flex h-[calc(100vh-64px)] bg-white relative overflow-hidden">
+            <div className="flex h-[calc(100vh-64px)] bg-white dark:bg-gray-950 relative overflow-hidden transition-colors duration-300">
                 {/* Sidebar Overlay for Mobile */}
                 {isSidebarOpen && (
                     <div
@@ -163,9 +164,9 @@ export const ChatbotPage = () => {
 
                 {/* Sidebar */}
                 <div className={`
-                    fixed inset-y-0 left-0 z-30 w-80 bg-white transform transition-all duration-300 ease-in-out lg:relative 
+                    fixed inset-y-0 left-0 z-30 w-80 bg-white dark:bg-gray-900 transform transition-all duration-300 ease-in-out lg:relative 
                     ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:ml-[-20rem]'}
-                    border-r border-gray-100
+                    border-r border-gray-100 dark:border-gray-800
                 `}>
                     <ChatSidebar
                         sessions={sessions}
@@ -183,11 +184,11 @@ export const ChatbotPage = () => {
                 </div>
 
                 {/* Main Chat Area */}
-                <div className="flex-1 flex flex-col h-full min-w-0 bg-gray-50/30">
+                <div className="flex-1 flex flex-col h-full min-w-0 bg-gray-50/30 dark:bg-gray-900/10">
                     {currentSession ? (
                         <>
                             {/* Chat Header */}
-                            <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 p-4 flex items-center justify-between z-10 sticky top-0">
+                            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 p-4 flex items-center justify-between z-10 sticky top-0 transition-colors">
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -201,12 +202,12 @@ export const ChatbotPage = () => {
                                         <Bot className="w-5 h-5 text-white" />
                                     </div>
                                     <div className="overflow-hidden">
-                                        <h2 className="text-base font-bold text-gray-900 truncate">
+                                        <h2 className="text-base font-bold text-gray-900 dark:text-gray-100 truncate">
                                             {currentSession.title || 'AI Assistant'}
                                         </h2>
                                         <div className="flex items-center gap-1.5">
                                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Online</p>
+                                            <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Online</p>
                                         </div>
                                     </div>
                                 </div>
@@ -223,7 +224,7 @@ export const ChatbotPage = () => {
                             </div>
 
                             {/* Messages Area */}
-                            <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50/50">
+                            <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50/50 dark:bg-gray-950/20 transition-colors">
                                 {currentSession.messages && currentSession.messages.length > 0 ? (
                                     currentSession.messages.map((msg) => (
                                         <MessageBubble key={msg.id} message={msg} />
@@ -259,7 +260,7 @@ export const ChatbotPage = () => {
                             </div>
 
                             {/* Input Area */}
-                            <div className="bg-white border-t border-gray-200 p-4">
+                            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 transition-colors">
                                 <div className="max-w-4xl mx-auto">
                                     <form onSubmit={handleSendMessage} className="relative">
                                         <input
@@ -267,9 +268,12 @@ export const ChatbotPage = () => {
                                             value={input}
                                             onChange={(e) => setInput(e.target.value)}
                                             placeholder="Type your message..."
-                                            className="w-full pl-4 pr-14 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none text-gray-900 shadow-inner"
+                                            className="w-full pl-4 pr-24 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100 shadow-inner"
                                             disabled={sending}
                                         />
+                                        <div className="absolute right-14 top-1/2 -translate-y-1/2">
+                                            <VoiceInput onResult={(text) => setInput(text)} />
+                                        </div>
                                         <button
                                             type="submit"
                                             disabled={!input.trim() || sending}

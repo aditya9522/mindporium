@@ -9,8 +9,9 @@ import { User, Mail, Shield, Loader2, Save, Palette, Layout, Globe, Moon, Sun, M
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
 import { ImageUpload } from '../../components/common/ImageUpload';
-import { userService } from '../../services/user.service';
 import { useThemeStore } from '../../store/theme.store';
+import { SpeakerButton } from '../../components/ui/SpeakerButton';
+import { userService } from '../../services/user.service';
 
 const profileSchema = z.object({
     full_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -84,11 +85,11 @@ export const ProfilePage = () => {
     const getRoleBadge = (role?: string) => {
         switch (role) {
             case 'admin':
-                return <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold flex items-center gap-1"><Shield className="w-4 h-4" /> Admin</span>;
+                return <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 rounded-full text-sm font-semibold flex items-center gap-1 border border-purple-200 dark:border-purple-800"><Shield className="w-4 h-4" /> Admin</span>;
             case 'instructor':
-                return <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold flex items-center gap-1"><User className="w-4 h-4" /> Instructor</span>;
+                return <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold flex items-center gap-1 border border-blue-200 dark:border-blue-800"><User className="w-4 h-4" /> Instructor</span>;
             default:
-                return <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold flex items-center gap-1"><User className="w-4 h-4" /> Student</span>;
+                return <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-400 rounded-full text-sm font-semibold flex items-center gap-1 border border-gray-200 dark:border-gray-700"><User className="w-4 h-4" /> Student</span>;
         }
     };
 
@@ -102,7 +103,7 @@ export const ProfilePage = () => {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex space-x-1 bg-white p-1 rounded-xl shadow-sm border border-gray-100 mb-8 w-fit mx-auto md:mx-0">
+                <div className="flex space-x-1 bg-white dark:bg-gray-900 p-1 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8 w-fit mx-auto md:mx-0 transition-all">
                     <button
                         onClick={() => setActiveTab('profile')}
                         className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'profile'
@@ -134,7 +135,7 @@ export const ProfilePage = () => {
                                     <div className="mb-6 flex justify-center">
                                         <div className="relative group">
                                             <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
-                                            <div className="relative bg-white rounded-full p-1">
+                                            <div className="relative bg-white dark:bg-gray-800 rounded-full p-1 transition-colors">
                                                 <ImageUpload
                                                     value={watch('photo')}
                                                     onChange={(url) => setValue('photo', url, { shouldDirty: true })}
@@ -157,7 +158,7 @@ export const ProfilePage = () => {
                                     <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-800 space-y-3">
                                         <div className="flex justify-between text-sm">
                                             <span className="text-gray-500 dark:text-gray-400 font-medium">Account Status</span>
-                                            <span className={`font-bold px-2 py-0.5 rounded ${user?.is_active ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-800'}`}>
+                                            <span className={`font-bold px-2 py-0.5 rounded border ${user?.is_active ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-100 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-100 dark:border-red-800'}`}>
                                                 {user?.is_active ? 'Active' : 'Inactive'}
                                             </span>
                                         </div>
@@ -194,7 +195,7 @@ export const ProfilePage = () => {
 
                                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Full Name</label>
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
                                         <Input
                                             {...register('full_name')}
                                             placeholder="John Doe"
@@ -204,7 +205,7 @@ export const ProfilePage = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Email Address</label>
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
                                         <Input
                                             {...register('email')}
                                             type="email"
@@ -215,7 +216,7 @@ export const ProfilePage = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Phone Number</label>
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
                                         <Input
                                             {...register('phone_number')}
                                             type="tel"
@@ -352,7 +353,7 @@ export const ProfilePage = () => {
 
                             {/* Theme Color */}
                             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
-                                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
                                     <Palette className="w-5 h-5 text-indigo-600" />
                                     Accent Color
                                 </h3>
@@ -363,18 +364,18 @@ export const ProfilePage = () => {
                                         { id: 'midnight', name: 'Purple', class: 'bg-purple-500' },
                                         { id: 'forest', name: 'Green', class: 'bg-emerald-500' },
                                         { id: 'sunset', name: 'Orange', class: 'bg-orange-500' },
-                                    ].map((theme) => (
+                                    ].map((t) => (
                                         <button
-                                            key={theme.id}
-                                            onClick={() => setThemeColor(theme.id as any)}
-                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${themeColor === theme.id
+                                            key={t.id}
+                                            onClick={() => setThemeColor(t.id as any)}
+                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${themeColor === t.id
                                                 ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 ring-1 ring-indigo-200 dark:ring-indigo-800'
-                                                : 'border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                                : 'border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-400'
                                                 }`}
                                         >
-                                            <div className={`w-5 h-5 rounded-full ${theme.class} shadow-sm border-2 border-white dark:border-gray-800`}></div>
-                                            <span className={`font-bold text-xs ${themeColor === theme.id ? 'text-indigo-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400'}`}>{theme.name}</span>
-                                            {themeColor === theme.id && <Check className="w-3 h-3 text-indigo-600 dark:text-indigo-400 ml-auto" />}
+                                            <div className={`w-5 h-5 rounded-full ${t.class} shadow-sm border-2 border-white dark:border-gray-800`}></div>
+                                            <span className={`font-bold text-xs ${themeColor === t.id ? 'text-indigo-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400'}`}>{t.name}</span>
+                                            {themeColor === t.id && <Check className="w-3 h-3 text-indigo-600 dark:text-indigo-400 ml-auto" />}
                                         </button>
                                     ))}
                                 </div>
@@ -382,16 +383,19 @@ export const ProfilePage = () => {
 
                             {/* Localization */}
                             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 md:col-span-2 transition-colors duration-300">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
-                                    <Globe className="w-5 h-5 text-primary-600" />
-                                    Localization & Language
-                                </h3>
+                                <div className="flex justify-between items-start mb-6">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
+                                        <Globe className="w-5 h-5 text-indigo-600" />
+                                        Localization & Language
+                                    </h3>
+                                    <SpeakerButton text="Localization and Language settings. Change your preferred system language here." />
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div>
                                         <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Preferred Language</label>
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                                <Globe className="h-5 w-5 text-gray-400 group-hover:text-primary-500 transition-colors" />
+                                                <Globe className="h-5 w-5 text-gray-400 group-hover:text-indigo-500 transition-colors" />
                                             </div>
                                             <select
                                                 value={language}
@@ -405,7 +409,7 @@ export const ProfilePage = () => {
                                                         console.error('Failed to sync language:', err);
                                                     }
                                                 }}
-                                                className="block w-full pl-11 pr-10 py-3.5 text-base border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent rounded-2xl appearance-none bg-gray-50/50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 transition-all font-semibold text-gray-700 dark:text-gray-200 shadow-sm"
+                                                className="block w-full pl-11 pr-10 py-3.5 text-base border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent rounded-2xl appearance-none bg-gray-50/50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 transition-all font-semibold text-gray-700 dark:text-gray-200 shadow-sm"
                                             >
                                                 <option value="en">English (US)</option>
                                                 <option value="es">Español (Spanish)</option>
@@ -422,7 +426,7 @@ export const ProfilePage = () => {
                                             Changing your language settings will update the system interface.
                                             Course content will remain in its original language.
                                         </p>
-                                        <div className="mt-4 flex items-center gap-2 text-primary-600">
+                                        <div className="mt-4 flex items-center gap-2 text-indigo-600">
                                             <Globe className="w-4 h-4" />
                                             <span className="text-xs font-bold uppercase tracking-wider">Applied Everywhere</span>
                                         </div>

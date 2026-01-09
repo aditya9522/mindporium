@@ -78,9 +78,9 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         setDeleteConfirmId(null);
     };
     return (
-        <div className="w-full bg-white h-full flex flex-col border-r border-gray-100">
+        <div className="w-full bg-white dark:bg-gray-900 h-full flex flex-col border-r border-gray-100 dark:border-gray-800 transition-colors">
             {/* Header */}
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">
                     History
                 </h2>
@@ -96,7 +96,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                     {onClose && (
                         <button
                             onClick={onClose}
-                            className="p-2 text-gray-400 hover:text-gray-600 lg:hidden rounded-lg hover:bg-gray-100"
+                            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 lg:hidden rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -109,7 +109,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 <button
                     onClick={onNewChat}
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary-50 hover:text-primary-600 text-gray-700 px-4 py-3 rounded-xl transition-all font-semibold border border-gray-100 hover:border-primary-100 disabled:opacity-50 group"
+                    className="w-full flex items-center justify-center gap-2 bg-gray-50 dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-xl transition-all font-semibold border border-gray-100 dark:border-gray-700 hover:border-primary-100 dark:hover:border-primary-800 disabled:opacity-50 group"
                 >
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />}
                     Start Fresh
@@ -128,8 +128,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                             <button
                                 onClick={() => onSelectSession(session.id)}
                                 className={`w-full text-left p-3 rounded-lg transition-all border ${currentSessionId === session.id
-                                    ? 'bg-primary-50 border-primary-200 text-primary-700 shadow-sm'
-                                    : 'hover:bg-gray-50 border-transparent text-gray-700'
+                                    ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-400 shadow-sm'
+                                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border-transparent text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                                     }`}
                             >
                                 <div className="flex items-start gap-3">
@@ -142,7 +142,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                                     type="text"
                                                     value={editTitle}
                                                     onChange={(e) => setEditTitle(e.target.value)}
-                                                    className="w-full px-2 py-1 text-sm border border-primary-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+                                                    className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-800 border border-primary-300 dark:border-primary-700 rounded text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-primary-500"
                                                     autoFocus
                                                 />
                                                 <button onClick={handleEditSave} className="p-1 text-green-600 hover:bg-green-50 rounded">
@@ -154,11 +154,11 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                             </div>
                                         ) : (
                                             <>
-                                                <h3 className={`font-medium text-sm truncate pr-6 ${currentSessionId === session.id ? 'text-primary-900' : 'text-gray-900'
+                                                <h3 className={`font-medium text-sm truncate pr-6 ${currentSessionId === session.id ? 'text-primary-900 dark:text-primary-200' : 'text-gray-900 dark:text-gray-200'
                                                     }`}>
                                                     {session.title || 'New Chat'}
                                                 </h3>
-                                                <p className={`text-xs mt-1 truncate ${currentSessionId === session.id ? 'text-primary-500' : 'text-gray-500'
+                                                <p className={`text-xs mt-1 truncate ${currentSessionId === session.id ? 'text-primary-500 dark:text-primary-400/80' : 'text-gray-500 dark:text-gray-500'
                                                     }`}>
                                                     {new Date(session.updated_at || session.created_at).toLocaleDateString()}
                                                 </p>
@@ -176,7 +176,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                             e.stopPropagation();
                                             setShowOptionsId(showOptionsId === session.id ? null : session.id);
                                         }}
-                                        className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
+                                        className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                                     >
                                         <MoreVertical className="w-4 h-4" />
                                     </button>
@@ -185,16 +185,16 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
                             {/* Options Dropdown */}
                             {showOptionsId === session.id && (
-                                <div ref={optionsRef} className="absolute top-8 right-2 w-32 bg-white rounded-lg shadow-lg border border-gray-100 z-10 py-1">
+                                <div ref={optionsRef} className="absolute top-8 right-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 z-10 py-1 transition-colors">
                                     <button
                                         onClick={(e) => handleEditStart(session, e)}
-                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
                                     >
                                         <Edit2 className="w-4 h-4" /> Rename
                                     </button>
                                     <button
                                         onClick={(e) => handleDeleteClick(session.id, e)}
-                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                        className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
                                     >
                                         <Trash2 className="w-4 h-4" /> Delete
                                     </button>
@@ -203,7 +203,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
                             {/* Delete Confirmation Overlay */}
                             {deleteConfirmId === session.id && (
-                                <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-2 rounded-lg z-20">
+                                <div className="absolute inset-0 bg-white/90 dark:bg-gray-900/90 flex items-center justify-center gap-2 rounded-lg z-20">
                                     <span className="text-xs font-medium text-red-600">Delete?</span>
                                     <button
                                         onClick={handleDeleteConfirm}
