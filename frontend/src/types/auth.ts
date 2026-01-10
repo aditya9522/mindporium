@@ -20,7 +20,6 @@ export interface User {
     social_links?: Record<string, string>;
     banner_image?: string;
     timezone?: string;
-    language?: string;
     created_at?: string;
 }
 

@@ -37,9 +37,9 @@ export const MyLearningPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="relative bg-gradient-to-r from-indigo-700 to-purple-800 rounded-3xl p-10 text-white shadow-2xl shadow-indigo-200 lg:mb-12 mb-8 overflow-hidden">
+                <div className="relative bg-gradient-to-r from-indigo-700 to-purple-800 rounded-3xl p-10 text-white shadow-2xl shadow-indigo-200 dark:shadow-none lg:mb-12 mb-8 overflow-hidden transition-all">
                     <div className="absolute top-0 right-0 p-12 opacity-10 transform translate-x-12 -translate-y-12 pointer-events-none">
                         <BookOpen className="w-64 h-64 text-white" />
                     </div>
@@ -77,16 +77,16 @@ export const MyLearningPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-24 bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-gray-300">
-                        <div className="bg-indigo-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                            <BookOpen className="w-10 h-10 text-indigo-600" />
+                    <div className="text-center py-24 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-3xl border border-dashed border-gray-300 dark:border-gray-800 transition-colors">
+                        <div className="bg-indigo-50 dark:bg-indigo-900/30 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <BookOpen className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-3">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                             {filter === 'all'
                                 ? "You haven't enrolled in any courses yet"
                                 : `No ${filter.replace('-', ' ')} courses found`}
                         </h3>
-                        <p className="text-gray-500 mb-8 max-w-sm mx-auto font-medium">
+                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto font-medium">
                             {filter === 'all'
                                 ? "Explore our catalog to find your next learning adventure."
                                 : "Keep learning to see courses here!"}

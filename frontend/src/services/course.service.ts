@@ -10,7 +10,7 @@ export const courseService = {
         if (filters?.skip) params.append('skip', filters.skip.toString());
         if (filters?.limit) params.append('limit', filters.limit.toString());
 
-        const response = await api.get<Course[]>(`/courses?${params.toString()}`);
+        const response = await api.get<Course[]>(`/courses/?${params.toString()}`);
         return response.data;
     },
 

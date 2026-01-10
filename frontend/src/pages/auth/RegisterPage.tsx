@@ -56,33 +56,33 @@ export const RegisterPage = () => {
     return (
         <div className="relative min-h-[90vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <BackgroundAnimation />
-            <div className="w-full max-w-md p-8 space-y-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 relative z-10 animate-in fade-in zoom-in duration-500">
+            <div className="w-full max-w-md p-8 space-y-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-white/50 dark:border-gray-800 relative z-10 animate-in fade-in zoom-in duration-500">
                 <div className="text-center">
                     <div className="inline-flex items-center justify-center mb-6">
                         <BookOpen className="h-12 w-12 text-primary-600" />
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Create an account</h2>
-                    <p className="mt-2 text-gray-500 font-medium">Join Mindporium to start learning</p>
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Create an account</h2>
+                    <p className="mt-2 text-gray-500 dark:text-gray-400 font-medium">Join Mindporium to start learning</p>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Full Name</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
                         <Input
                             {...register('fullName')}
                             placeholder="John Doe"
-                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.fullName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.fullName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.fullName && <p className="text-sm text-red-500">{errors.fullName.message}</p>}
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Email</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
                         <Input
                             {...register('email')}
                             type="email"
                             placeholder="you@example.com"
-                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
                     </div>
@@ -90,23 +90,23 @@ export const RegisterPage = () => {
 
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Password</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                         <Input
                             {...register('password')}
                             type="password"
                             placeholder="••••••••"
-                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Confirm Password</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
                         <Input
                             {...register('confirmPassword')}
                             type="password"
                             placeholder="••••••••"
-                            className={`h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white transition-all ${errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                         />
                         {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
                     </div>
@@ -124,8 +124,8 @@ export const RegisterPage = () => {
                 </form>
 
                 <div className="text-center text-sm">
-                    <span className="text-gray-600">Already have an account? </span>
-                    <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
+                    <span className="text-gray-600 dark:text-gray-400">Already have an account? </span>
+                    <Link to="/login" className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500">
                         Sign in
                     </Link>
                 </div>

@@ -37,6 +37,11 @@ export const feedbackService = {
         return response.data;
     },
 
+    getSpecificInstructorFeedbacks: async (instructorId: number, skip: number = 0, limit: number = 100): Promise<FeedbackResponse[]> => {
+        const response = await api.get<FeedbackResponse[]>(`/feedback/instructor/${instructorId}`, { params: { skip, limit } });
+        return response.data;
+    },
+
     getCourseFeedbacks: async (courseId: number, skip: number = 0, limit: number = 100): Promise<FeedbackResponse[]> => {
         const response = await api.get<FeedbackResponse[]>(`/feedback/course/${courseId}`, { params: { skip, limit } });
         return response.data;

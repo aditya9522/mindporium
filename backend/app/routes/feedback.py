@@ -320,10 +320,6 @@ async def read_app_feedback_analysis(
         if f.rating in dist:
             dist[f.rating] += 1
             
-    # Simple rule-based sentiment (mocking LLM for now)
-    # 4-5 stars: Positive
-    # 3 stars: Neutral
-    # 1-2 stars: Negative
     sentiment = {"positive": 0, "neutral": 0, "negative": 0}
     for f in feedbacks:
         if f.rating >= 4:
@@ -361,6 +357,27 @@ async def read_instructor_feedbacks(
     return result.scalars().all()
 
 
+@router.get("/instructor/{instructor_id}", response_model=List[FeedbackResponse])
+async def read_specific_instructor_feedbacks(
+    instructor_id: int,
+    db: AsyncSession = Depends(deps.get_db),
+    skip: int = 0,
+    limit: int = 100,
+    current_user: User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get feedbacks for a specific instructor.
+    """
+    result = await db.execute(
+        select(InstructorFeedback)
+        .options(selectinload(InstructorFeedback.user))
+        .where(InstructorFeedback.instructor_id == instructor_id)
+        .offset(skip)
+        .limit(limit)
+    )
+    return result.scalars().all()
+
+
 @router.get("/course/{course_id}", response_model=List[FeedbackResponse])
 async def read_course_feedbacks(
     course_id: int,
@@ -372,8 +389,6 @@ async def read_course_feedbacks(
     """
     Get feedbacks for a specific course.
     """
-    # Check permissions (Instructor of course or Admin or enrolled student?)
-    # For now, allow all authenticated users to see reviews (like Udemy)
     result = await db.execute(
         select(CourseFeedback)
         .options(selectinload(CourseFeedback.user))

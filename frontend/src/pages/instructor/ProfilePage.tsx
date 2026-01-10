@@ -290,12 +290,6 @@ export const ProfilePage = () => {
                                         {instructor.role}
                                     </span>
                                 </div>
-                                {instructor.language && (
-                                    <div className="flex items-center justify-between py-2">
-                                        <span className="text-gray-600">Language</span>
-                                        <span className="font-semibold text-gray-900">{instructor.language}</span>
-                                    </div>
-                                )}
                             </div>
                         </div>
 

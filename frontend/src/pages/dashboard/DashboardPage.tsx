@@ -69,7 +69,7 @@ export const DashboardPage = () => {
     ].filter(item => item.value > 0) : [];
 
     return (
-        <div className="space-y-8 px-8 py-8">
+        <div className="space-y-8 px-8 py-8 transition-colors">
             {/* Welcome Section */}
             <div className="relative overflow-hidden bg-gradient-to-r from-primary-600 to-primary-400 rounded-3xl p-10 text-white shadow-2xl shadow-primary-200 animate-in fade-in slide-in-from-top-4 duration-500">
                 <div className="absolute top-0 right-0 p-12 opacity-10 transform translate-x-12 -translate-y-12">
@@ -92,12 +92,12 @@ export const DashboardPage = () => {
                     return (
                         <div
                             key={index}
-                            className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1"
+                            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1"
                         >
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">{stat.label}</p>
-                                    <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{stat.value}</p>
+                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">{stat.value}</p>
                                 </div>
                                 <div className={`${stat.color} p-3.5 rounded-xl shadow-lg shadow-primary-100/50`}>
                                     <Icon className="h-6 w-6 text-white" />
@@ -111,9 +111,9 @@ export const DashboardPage = () => {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Activity Chart */}
-                <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-primary-600" />
+                <div className="lg:col-span-2 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         Learning Activity (Last 30 Days)
                     </h2>
                     <div className="h-80">
@@ -144,9 +144,9 @@ export const DashboardPage = () => {
                 </div>
 
                 {/* Performance Chart */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <Award className="w-5 h-5 text-primary-600" />
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <Award className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         Performance Overview
                     </h2>
                     <div className="h-80 relative">
@@ -183,19 +183,19 @@ export const DashboardPage = () => {
             {/* Recent Activity & Enrolled Courses */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Recent Activity List */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <Calendar className="w-5 h-5 text-primary-600" />
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 transition-colors">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         Recent Activity
                     </h2>
                     <div className="space-y-6">
                         {dashboardData?.recent_activity?.length > 0 ? (
                             dashboardData.recent_activity.map((activity: any, index: number) => (
                                 <div key={index} className="flex gap-4 items-start">
-                                    <div className="w-2 h-2 mt-2 rounded-full bg-primary-600 flex-shrink-0" />
+                                    <div className="w-2 h-2 mt-2 rounded-full bg-primary-600 dark:bg-primary-400 flex-shrink-0" />
                                     <div>
-                                        <p className="text-gray-900 font-medium">{activity.title}</p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-gray-900 dark:text-gray-100 font-medium">{activity.title}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
                                             {new Date(activity.timestamp).toLocaleDateString(undefined, {
                                                 weekday: 'long',
                                                 year: 'numeric',
@@ -215,9 +215,9 @@ export const DashboardPage = () => {
                 </div>
 
                 {/* Course Progress */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <BookOpen className="w-5 h-5 text-primary-600" />
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 transition-colors">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         My Courses
                     </h2>
                     <div className="space-y-4">
@@ -226,15 +226,15 @@ export const DashboardPage = () => {
                                 <Link
                                     key={course.course_id}
                                     to={`/courses/${course.course_id}`}
-                                    className="block p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                                    className="block p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                 >
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="font-medium text-gray-900">{course.title}</span>
-                                        <span className="text-sm text-primary-600 font-semibold">
+                                        <span className="font-medium text-gray-900 dark:text-gray-100">{course.title}</span>
+                                        <span className="text-sm text-primary-600 dark:text-primary-400 font-semibold">
                                             {course.progress_percent}%
                                         </span>
                                     </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                         <div
                                             className="bg-primary-600 h-2 rounded-full transition-all duration-300"
                                             style={{ width: `${course.progress_percent}%` }}

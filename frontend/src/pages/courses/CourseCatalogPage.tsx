@@ -43,7 +43,7 @@ export const CourseCatalogPage = () => {
     };
 
     return (
-        <div className="py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 {/* Header */}
                 <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl p-10 text-white overflow-hidden shadow-2xl">

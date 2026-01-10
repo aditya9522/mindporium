@@ -5,13 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { User, Mail, Shield, Loader2, Save, Palette, Layout, Globe, Moon, Sun, Monitor, Check, ChevronDown } from 'lucide-react';
+import { User, Mail, Shield, Loader2, Save, Palette, Layout, Moon, Sun, Monitor, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { useThemeStore } from '../../store/theme.store';
-import { SpeakerButton } from '../../components/ui/SpeakerButton';
-import { userService } from '../../services/user.service';
 
 const profileSchema = z.object({
     full_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -20,7 +18,6 @@ const profileSchema = z.object({
     bio: z.string().optional(),
     experience: z.string().optional(),
     timezone: z.string().optional(),
-    language: z.string().optional(),
     photo: z.string().optional(),
     banner_image: z.string().optional(),
 });
@@ -35,7 +32,6 @@ export const ProfilePage = () => {
     const {
         themeColor, setThemeColor,
         mode, setMode,
-        language, setLanguage
     } = useThemeStore();
 
     const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<ProfileFormValues>({
@@ -47,7 +43,6 @@ export const ProfilePage = () => {
             bio: user?.bio || '',
             experience: user?.experience || '',
             timezone: user?.timezone || 'UTC',
-            language: user?.language || 'en',
             photo: user?.photo || '',
             banner_image: user?.banner_image || '',
         }
@@ -62,7 +57,6 @@ export const ProfilePage = () => {
                 bio: user.bio || '',
                 experience: user.experience || '',
                 timezone: user.timezone || 'UTC',
-                language: user.language || 'en',
                 photo: user.photo || '',
                 banner_image: user.banner_image || '',
             });
@@ -248,36 +242,20 @@ export const ProfilePage = () => {
                                         </>
                                     )}
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Timezone</label>
-                                            <select
-                                                {...register('timezone')}
-                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
-                                            >
-                                                <option value="UTC">UTC</option>
-                                                <option value="America/New_York">Eastern Time</option>
-                                                <option value="America/Chicago">Central Time</option>
-                                                <option value="America/Denver">Mountain Time</option>
-                                                <option value="America/Los_Angeles">Pacific Time</option>
-                                                <option value="Europe/London">London</option>
-                                                <option value="Asia/Kolkata">India</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Language</label>
-                                            <select
-                                                {...register('language')}
-                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
-                                            >
-                                                <option value="en">English</option>
-                                                <option value="es">Spanish</option>
-                                                <option value="fr">French</option>
-                                                <option value="de">German</option>
-                                                <option value="hi">Hindi</option>
-                                            </select>
-                                        </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Timezone</label>
+                                        <select
+                                            {...register('timezone')}
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                                        >
+                                            <option value="UTC">UTC</option>
+                                            <option value="America/New_York">Eastern Time</option>
+                                            <option value="America/Chicago">Central Time</option>
+                                            <option value="America/Denver">Mountain Time</option>
+                                            <option value="America/Los_Angeles">Pacific Time</option>
+                                            <option value="Europe/London">London</option>
+                                            <option value="Asia/Kolkata">India</option>
+                                        </select>
                                     </div>
 
                                     <div className="space-y-2">
@@ -378,59 +356,6 @@ export const ProfilePage = () => {
                                             {themeColor === t.id && <Check className="w-3 h-3 text-indigo-600 dark:text-indigo-400 ml-auto" />}
                                         </button>
                                     ))}
-                                </div>
-                            </div>
-
-                            {/* Localization */}
-                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 md:col-span-2 transition-colors duration-300">
-                                <div className="flex justify-between items-start mb-6">
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
-                                        <Globe className="w-5 h-5 text-indigo-600" />
-                                        Localization & Language
-                                    </h3>
-                                    <SpeakerButton text="Localization and Language settings. Change your preferred system language here." />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Preferred Language</label>
-                                        <div className="relative group">
-                                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                                <Globe className="h-5 w-5 text-gray-400 group-hover:text-indigo-500 transition-colors" />
-                                            </div>
-                                            <select
-                                                value={language}
-                                                onChange={async (e) => {
-                                                    const newLang = e.target.value as any;
-                                                    setLanguage(newLang);
-                                                    try {
-                                                        await userService.updateProfile({ language: newLang });
-                                                        toast.success(`Language changed to ${newLang.toUpperCase()}`);
-                                                    } catch (err) {
-                                                        console.error('Failed to sync language:', err);
-                                                    }
-                                                }}
-                                                className="block w-full pl-11 pr-10 py-3.5 text-base border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent rounded-2xl appearance-none bg-gray-50/50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 transition-all font-semibold text-gray-700 dark:text-gray-200 shadow-sm"
-                                            >
-                                                <option value="en">English (US)</option>
-                                                <option value="es">Español (Spanish)</option>
-                                                <option value="fr">Français (French)</option>
-                                                <option value="hi">हिन्दी (Hindi)</option>
-                                            </select>
-                                            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
-                                                <ChevronDown className="h-5 w-5 text-gray-400" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-6 flex flex-col justify-center">
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
-                                            Changing your language settings will update the system interface.
-                                            Course content will remain in its original language.
-                                        </p>
-                                        <div className="mt-4 flex items-center gap-2 text-indigo-600">
-                                            <Globe className="w-4 h-4" />
-                                            <span className="text-xs font-bold uppercase tracking-wider">Applied Everywhere</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

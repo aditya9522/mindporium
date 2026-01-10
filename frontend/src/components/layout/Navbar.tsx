@@ -8,7 +8,6 @@ import { NotificationDropdown } from '../notifications/NotificationDropdown';
 import { FeedbackModal } from '../feedback/FeedbackModal';
 import { useThemeStore } from '../../store/theme.store';
 import { getImageUrl } from '../../lib/utils';
-import { useTranslation } from '../../hooks/useTranslation';
 
 interface NavbarProps {
     showSidebarToggle?: boolean;
@@ -21,7 +20,6 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
     const [showFeedback, setShowFeedback] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
     const { appName, appIcon } = useThemeStore();
-    const { t } = useTranslation();
     const menuRef = React.useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -60,24 +58,31 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                     <Menu className="w-5 h-5" />
                                 </button>
                             )}
-                            <Link to="/" className="flex items-center gap-2">
-                                {appIcon ? (
-                                    <img src={getImageUrl(appIcon)} alt={appName} className="h-8 w-8 object-contain" />
-                                ) : (
-                                    <BookOpen className="h-8 w-8 text-primary-600 dark:text-primary-400" />
-                                )}
-                                <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">{appName}</span>
+                            <Link to="/" className="flex items-center gap-3 group">
+                                <div className="flex items-center justify-center">
+                                    {appIcon ? (
+                                        <img
+                                            src={appIcon.startsWith('/') ? appIcon : getImageUrl(appIcon)}
+                                            alt={appName}
+                                            className="h-12 w-12 object-contain group-hover:scale-110 transition-transform duration-300"
+                                        />
+                                    ) : (
+                                        <BookOpen className="h-10 w-10 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300" />
+                                    )}
+                                </div>
+                                <span className="text-2xl font-black text-gray-900 dark:text-white hidden sm:block tracking-tighter transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                                    {appName}
+                                </span>
                             </Link>
                             <div className="hidden md:flex ml-10 space-x-1">
-                                <Link to="/courses" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">{t('nav.courses')}</Link>
-                                <Link to="/instructors" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">{t('nav.instructors')}</Link>
-                                <Link to="/community" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">{t('nav.community')}</Link>
-                                <Link to="/news" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">{t('nav.news')}</Link>
+                                <Link to="/courses" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Courses</Link>
+                                <Link to="/instructors" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Instructors</Link>
+                                <Link to="/community" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Community</Link>
+                                <Link to="/news" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">News</Link>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4">
-
                             {isAuthenticated && user ? (
                                 <>
                                     <button
@@ -117,7 +122,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                                     onClick={() => setShowUserMenu(false)}
                                                 >
                                                     <LayoutDashboard className="w-4 h-4 mr-3 text-gray-400" />
-                                                    {t('nav.dashboard')}
+                                                    Dashboard
                                                 </Link>
                                                 <Link
                                                     to="/settings"
@@ -125,7 +130,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                                     onClick={() => setShowUserMenu(false)}
                                                 >
                                                     <Settings className="w-4 h-4 mr-3 text-gray-400 group-hover:text-gray-300" />
-                                                    {t('nav.settings')}
+                                                    Settings
                                                 </Link>
                                                 {user.role === 'student' && (
                                                     <Link

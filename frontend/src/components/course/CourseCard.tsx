@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
 import type { Course } from '../../types/course';
-import { BookOpen, Clock, DollarSign, Users } from 'lucide-react';
+import { BookOpen, Clock, DollarSign, Users, Star } from 'lucide-react';
 
 interface CourseCardProps {
     course: Course;
@@ -78,9 +78,17 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                                     <span>{course.duration_weeks}w</span>
                                 </div>
                             )}
-                            <div className="flex items-center gap-1">
-                                <Users className="h-4 w-4" />
-                                <span>{course.enrollments_count || 0}</span>
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1" title="Enrollments">
+                                    <Users className="h-4 w-4" />
+                                    <span>{course.enrollments_count || 0}</span>
+                                </div>
+                                <div className="flex items-center gap-1" title="Course Rating">
+                                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                                    <span className="font-bold text-gray-700 dark:text-gray-300">
+                                        {course.rating ? course.rating.toFixed(1) : 'N/A'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

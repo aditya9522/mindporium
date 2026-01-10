@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day by default
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
-    ALLOWED_ORIGINS: str = "http://localhost:5173"
+    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:5174"
     
     UPLOADS_DIR: str = Field(default="uploads")
     MAX_UPLOAD_SIZE_BYTES: int = 25 * 1024 * 1024  # 25MB default

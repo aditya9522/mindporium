@@ -27,7 +27,12 @@ export const useNotifications = () => {
     }, [isAuthenticated]);
 
     const connectWebSocket = useCallback(() => {
-        if (!isAuthenticated || !user || wsRef.current?.readyState === WebSocket.OPEN) return;
+        if (!isAuthenticated || !user) return;
+
+        // Don't connect if already connecting or open
+        if (wsRef.current && (wsRef.current.readyState === WebSocket.OPEN || wsRef.current.readyState === WebSocket.CONNECTING)) {
+            return;
+        }
 
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
         const protocol = apiUrl.startsWith('https') ? 'wss' : 'ws';
@@ -39,11 +44,12 @@ export const useNotifications = () => {
 
         ws.onopen = () => {
             console.log('Notification WS Connected');
-            // Authenticate
-            ws.send(JSON.stringify({
-                type: 'auth',
-                user_id: user.id
-            }));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'auth',
+                    user_id: user.id
+                }));
+            }
         };
 
         ws.onmessage = (event) => {
@@ -54,7 +60,6 @@ export const useNotifications = () => {
                     setNotifications(prev => [newNotification, ...prev].slice(0, 50));
                     setUnreadCount(prev => prev + 1);
 
-                    // Show toast for new notification
                     toast.success(newNotification.title, {
                         icon: '🔔',
                         position: 'bottom-right'
@@ -65,15 +70,18 @@ export const useNotifications = () => {
             }
         };
 
-        ws.onclose = () => {
-            console.log('Notification WS Disconnected');
-            // Try to reconnect after 5 seconds
-            reconnectTimeoutRef.current = setTimeout(connectWebSocket, 5000);
+        ws.onclose = (event) => {
+            console.log('Notification WS Disconnected', event.code);
+            wsRef.current = null;
+            // Only reconnect if we didn't close it intentionally (like logout)
+            if (isAuthenticated && event.code !== 1000) {
+                reconnectTimeoutRef.current = setTimeout(connectWebSocket, 5000);
+            }
         };
 
         ws.onerror = (err) => {
             console.error('Notification WS Error:', err);
-            ws.close();
+            // onclose will handle reconnection
         };
     }, [isAuthenticated, user]);
 
@@ -85,7 +93,8 @@ export const useNotifications = () => {
             setNotifications([]);
             setUnreadCount(0);
             if (wsRef.current) {
-                wsRef.current.close();
+                wsRef.current.close(1000); // Normal closure
+                wsRef.current = null;
             }
         }
 
@@ -94,7 +103,14 @@ export const useNotifications = () => {
                 clearTimeout(reconnectTimeoutRef.current);
             }
             if (wsRef.current) {
-                wsRef.current.close();
+                // If it's connecting, we shouldn't close it to avoid the error,
+                // but we also don't want it to linger.
+                // However, Vite/React Fast Refresh can cause this.
+                const currentWs = wsRef.current;
+                if (currentWs.readyState === WebSocket.OPEN || currentWs.readyState === WebSocket.CONNECTING) {
+                    currentWs.close(1000);
+                }
+                wsRef.current = null;
             }
         };
     }, [isAuthenticated, fetchNotifications, connectWebSocket]);

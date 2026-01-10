@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { systemService } from '../../services/system.service';
 import type { SystemSetting } from '../../services/system.service';
-import { Loader2, Save, Settings, Globe, Lock, Plus, X, Monitor, Moon, Sun, LayoutTemplate, Power, Trash } from 'lucide-react';
+import { Loader2, Save, Settings, Lock, Plus, X, Monitor, Moon, Sun, LayoutTemplate, Power, Trash } from 'lucide-react';
 // ... imports
 
 import { PageLoader } from '../../components/common/PageLoader';
 import toast from 'react-hot-toast';
 import { useThemeStore } from '../../store/theme.store';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 
@@ -27,13 +26,11 @@ export const SystemSettingsPage = () => {
     const {
         themeColor, setThemeColor,
         mode, setMode,
-        language, setLanguage,
         appIcon, setAppIcon,
         appName, setAppName,
         maintenanceMode, setMaintenanceMode,
         allowRegistration, setAllowRegistration
     } = useThemeStore();
-    const { t } = useTranslation();
 
     // Advanced Settings State (Backend)
     const [loading, setLoading] = useState(true);
@@ -52,8 +49,6 @@ export const SystemSettingsPage = () => {
 
     useEffect(() => {
         fetchSettings();
-        // Since we are using a store for the main UI, we don't strictly *need* to wait for backend 
-        // for the first 3 tabs, but we'll keep the loader for the "Advanced" data.
     }, []);
 
     // Apply theme effect (Visual simulation for now)
@@ -91,9 +86,6 @@ export const SystemSettingsPage = () => {
 
             const syncedReg = data.find(s => s.key === 'site.allow_registration')?.value;
             if (syncedReg) setAllowRegistration(syncedReg === 'true');
-
-            const syncedLang = data.find(s => s.key === 'site.language')?.value;
-            if (syncedLang) setLanguage(syncedLang as any);
 
         } catch (error) {
             console.error('Failed to fetch settings:', error);
@@ -186,23 +178,6 @@ export const SystemSettingsPage = () => {
         }
     };
 
-    const saveLocalizationSettings = async () => {
-        const toastId = toast.loading('Saving localization settings...');
-        try {
-            await systemService.createSetting({
-                key: 'site.language',
-                value: language,
-                description: 'Default System Language',
-                is_public: true
-            }).catch(() => systemService.updateSetting('site.language', { value: language }));
-
-            toast.success('Localization settings saved', { id: toastId });
-            fetchSettings();
-        } catch (error) {
-            console.error('Failed to save localization:', error);
-            toast.error('Failed to save settings', { id: toastId });
-        }
-    };
 
     const renderInput = (setting: SystemSetting) => {
         const isSecret = setting.key.toLowerCase().includes('secret') || setting.key.toLowerCase().includes('key') || setting.key.toLowerCase().includes('password');
@@ -246,9 +221,6 @@ export const SystemSettingsPage = () => {
         groups[groupName].push(setting);
     });
     if (Object.keys(groups).length === 0 && settings.length > 0) {
-        // If search results exist but logic failed to group (unlikely if logic is consistent), or if no search results.
-        // Actually, if filteredSettings is empty, groups will be empty.
-        // If filteredSettings has items but they don't have dots, put in General.
         if (filteredSettings.length > 0) {
             groups["General Configuration"] = filteredSettings;
         }
@@ -263,17 +235,16 @@ export const SystemSettingsPage = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">{t('settings.title')}</h1>
-                    <p className="mt-2 text-gray-600">{t('settings.subtitle')}</p>
+                    <h1 className="text-3xl font-bold text-gray-900">System Settings</h1>
+                    <p className="mt-2 text-gray-600">Configure global application behavior and appearance.</p>
                 </div>
 
                 {/* Tabs */}
                 <div className="flex space-x-1 bg-white p-1 rounded-xl shadow-sm border border-gray-200 mb-8 overflow-x-auto">
                     {[
-                        { id: 'general', label: t('settings.tabs.general'), icon: Settings },
-                        { id: 'appearance', label: t('settings.tabs.appearance'), icon: LayoutTemplate },
-                        { id: 'localization', label: t('settings.tabs.localization'), icon: Globe },
-                        { id: 'advanced', label: t('settings.tabs.advanced'), icon: Lock },
+                        { id: 'general', label: 'General', icon: Settings },
+                        { id: 'appearance', label: 'Appearance', icon: LayoutTemplate },
+                        { id: 'advanced', label: 'Advanced', icon: Lock },
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -440,52 +411,6 @@ export const SystemSettingsPage = () => {
                         </div>
                     )}
 
-                    {/* --- LOCALIZATION TAB --- */}
-                    {activeTab === 'localization' && (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6 max-w-2xl">
-                            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
-                                <Globe className="w-5 h-5 text-indigo-600" />
-                                Language & Region
-                            </h2>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.localization.language')}</label>
-                                    <select
-                                        value={language}
-                                        onChange={(e) => setLanguage(e.target.value as any)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
-                                    >
-                                        <option value="en">English (United States)</option>
-                                        <option value="es">Español (Spanish)</option>
-                                        <option value="fr">Français (French)</option>
-                                    </select>
-                                    <p className="text-xs text-gray-500 mt-2">The default language for the system interface.</p>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.localization.timezone')}</label>
-                                    <select
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
-                                        disabled
-                                    >
-                                        <option>UTC (Coordinated Universal Time)</option>
-                                    </select>
-                                    <p className="text-xs text-gray-500 mt-2">Server timezone settings coming soon.</p>
-                                </div>
-                            </div>
-
-                            <div className="pt-4 border-t border-gray-100 flex justify-end">
-                                <button
-                                    onClick={saveLocalizationSettings}
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-sm font-medium"
-                                >
-                                    <Save className="w-4 h-4" />
-                                    {t('common.save')}
-                                </button>
-                            </div>
-                        </div>
-                    )}
 
 
                     {/* --- ADVANCED TAB --- */}

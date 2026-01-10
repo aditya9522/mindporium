@@ -9,7 +9,6 @@ import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot,
 import { Link, useLocation } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
 import { useThemeStore } from '../../store/theme.store';
-import { useTranslation } from '../../hooks/useTranslation';
 
 export const DashboardLayout = () => {
     const { isAuthenticated, checkAuth, isLoading, user } = useAuthStore();
@@ -17,7 +16,6 @@ export const DashboardLayout = () => {
     const { } = useThemeStore();
     const navigate = useNavigate();
     const location = useLocation();
-    const { t } = useTranslation();
 
     const isPublicRoute = (path: string) => {
         const publicPaths = ['/courses', '/instructors', '/news'];
@@ -46,57 +44,57 @@ export const DashboardLayout = () => {
     const getMenuItems = () => {
         if (!user) {
             return [
-                { icon: Home, label: t('nav.dashboard'), path: '/' },
-                { icon: BookOpen, label: t('nav.courses'), path: '/courses' },
-                { icon: GraduationCap, label: t('nav.instructors'), path: '/instructors' },
+                { icon: Home, label: 'Dashboard', path: '/' },
+                { icon: BookOpen, label: 'Courses', path: '/courses' },
+                { icon: GraduationCap, label: 'Instructors', path: '/instructors' },
             ];
         }
 
         if (user?.role === 'admin') {
             return [
-                { icon: Home, label: t('nav.dashboard'), path: '/admin/dashboard' },
-                { icon: Users, label: t('nav.users'), path: '/admin/users' },
-                { icon: GraduationCap, label: t('nav.instructors'), path: '/admin/instructors' },
-                { icon: BookOpen, label: t('nav.courses'), path: '/admin/courses' },
-                { icon: Megaphone, label: t('nav.announcements'), path: '/admin/announcements' },
-                { icon: Shield, label: t('nav.system'), path: '/admin/system' },
-                { icon: MessageSquare, label: t('nav.feedback'), path: '/admin/feedback' },
-                { icon: Users, label: t('nav.community'), path: '/community' },
-                { icon: Bot, label: t('nav.ai_assistant'), path: '/chatbot' },
-                { icon: Settings, label: t('nav.settings'), path: '/settings' },
+                { icon: Home, label: 'Dashboard', path: '/admin/dashboard' },
+                { icon: Users, label: 'Users', path: '/admin/users' },
+                { icon: GraduationCap, label: 'Instructors', path: '/admin/instructors' },
+                { icon: BookOpen, label: 'Courses', path: '/admin/courses' },
+                { icon: Megaphone, label: 'Announcements', path: '/admin/announcements' },
+                { icon: Shield, label: 'System', path: '/admin/system' },
+                { icon: MessageSquare, label: 'Feedback', path: '/admin/feedback' },
+                { icon: Users, label: 'Community', path: '/community' },
+                { icon: Bot, label: 'AI Assistant', path: '/chatbot' },
+                { icon: Settings, label: 'Settings', path: '/settings' },
             ];
         }
 
         if (user?.role === 'instructor') {
             return [
-                { icon: Home, label: t('nav.dashboard'), path: '/instructor/dashboard' },
-                { icon: BookOpen, label: t('nav.my_learning'), path: '/instructor/courses' },
+                { icon: Home, label: 'Dashboard', path: '/instructor/dashboard' },
+                { icon: BookOpen, label: 'My Courses', path: '/instructor/courses' },
                 { icon: Users, label: 'Students', path: '/instructor/students' },
-                { icon: FileText, label: t('nav.tests'), path: '/instructor/tests' },
-                { icon: Video, label: t('nav.classrooms'), path: '/classrooms' },
-                { icon: Calendar, label: t('nav.attendance'), path: '/instructor/attendance' },
-                { icon: Users, label: t('nav.community'), path: '/community' },
-                { icon: BarChart3, label: t('nav.analytics'), path: '/instructor/analytics' },
-                { icon: MessageSquare, label: t('nav.feedback'), path: '/instructor/feedback' },
-                { icon: User, label: t('nav.my_profile'), path: '/instructor/profile' },
-                { icon: Bot, label: t('nav.ai_assistant'), path: '/chatbot' },
-                { icon: Settings, label: t('nav.settings'), path: '/settings' },
+                { icon: FileText, label: 'Tests', path: '/instructor/tests' },
+                { icon: Video, label: 'Classrooms', path: '/classrooms' },
+                { icon: Calendar, label: 'Attendance', path: '/instructor/attendance' },
+                { icon: Users, label: 'Community', path: '/community' },
+                { icon: BarChart3, label: 'Analytics', path: '/instructor/analytics' },
+                { icon: MessageSquare, label: 'Feedback', path: '/instructor/feedback' },
+                { icon: User, label: 'My Profile', path: '/instructor/profile' },
+                { icon: Bot, label: 'AI Assistant', path: '/chatbot' },
+                { icon: Settings, label: 'Settings', path: '/settings' },
             ];
         }
         // Student menu
         return [
-            { icon: Home, label: t('nav.dashboard'), path: '/dashboard' },
-            { icon: BookOpen, label: t('nav.courses'), path: '/courses' },
-            { icon: BookOpen, label: t('nav.my_learning'), path: '/my-learning' },
-            { icon: FileText, label: t('nav.tests'), path: '/tests' },
-            { icon: Video, label: t('nav.classrooms'), path: '/classrooms' },
-            { icon: Calendar, label: t('nav.attendance'), path: '/student/attendance' },
-            { icon: Users, label: t('nav.community'), path: '/community' },
-            { icon: GraduationCap, label: t('nav.instructors'), path: '/instructors' },
-            { icon: MessageSquare, label: t('nav.feedback'), path: '/feedback' },
-            { icon: Bell, label: t('nav.notifications'), path: '/notifications' },
-            { icon: Bot, label: t('nav.ai_assistant'), path: '/chatbot' },
-            { icon: Settings, label: t('nav.settings'), path: '/settings' },
+            { icon: Home, label: 'Dashboard', path: '/dashboard' },
+            { icon: BookOpen, label: 'Courses', path: '/courses' },
+            { icon: BookOpen, label: 'My Learning', path: '/my-learning' },
+            { icon: FileText, label: 'Tests', path: '/tests' },
+            { icon: Video, label: 'Classrooms', path: '/classrooms' },
+            { icon: Calendar, label: 'Attendance', path: '/student/attendance' },
+            { icon: Users, label: 'Community', path: '/community' },
+            { icon: GraduationCap, label: 'Instructors', path: '/instructors' },
+            { icon: MessageSquare, label: 'Feedback', path: '/feedback' },
+            { icon: Bell, label: 'Notifications', path: '/notifications' },
+            { icon: Bot, label: 'AI Assistant', path: '/chatbot' },
+            { icon: Settings, label: 'Settings', path: '/settings' },
         ];
     };
 

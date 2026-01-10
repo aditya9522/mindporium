@@ -3,7 +3,7 @@ import type { Enrollment, EnrollmentCreate } from '../types/enrollment';
 
 export const enrollmentService = {
     enroll: async (data: EnrollmentCreate): Promise<Enrollment> => {
-        const response = await api.post<Enrollment>('/enrollments', data);
+        const response = await api.post<Enrollment>('/enrollments/', data);
         return response.data;
     },
 

@@ -7,9 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getImageUrl(path: string | undefined | null) {
     if (!path) return '';
-    if (path.startsWith('http') || path.startsWith('blob:')) {
+    if (path.startsWith('http') || path.startsWith('blob:') || path.startsWith('/')) {
         return path;
     }
     const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
-    return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+    return `${baseUrl}/${path}`;
 }

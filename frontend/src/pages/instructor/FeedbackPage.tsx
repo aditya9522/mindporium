@@ -78,51 +78,53 @@ export const FeedbackPage = () => {
     };
 
     const FeedbackCard = ({ feedback }: { feedback: FeedbackResponse }) => (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] group">
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gray-100 p-2 rounded-full">
-                        <UserIcon className="w-6 h-6 text-gray-500" />
+                    <div className="bg-indigo-50 dark:bg-indigo-900/30 p-2.5 rounded-full">
+                        <UserIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
                     <div>
-                        <p className="font-medium text-gray-900">{feedback.user?.full_name || 'Anonymous'}</p>
-                        <p className="text-sm text-gray-500">{new Date(feedback.created_at || '').toLocaleDateString()}</p>
+                        <p className="font-bold text-gray-900 dark:text-gray-100">{feedback.user?.full_name || 'Anonymous'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{new Date(feedback.created_at || '').toLocaleDateString()}</p>
                     </div>
                 </div>
                 {renderStars(feedback.rating || 0)}
             </div>
-            <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
-                {feedback.comments || feedback.review_text || feedback.message || 'No written feedback provided.'}
-            </p>
+            <div className="relative">
+                <p className="text-gray-600 dark:text-gray-400 bg-gray-50/50 dark:bg-gray-800/30 p-4 rounded-xl text-sm leading-relaxed italic border border-gray-100 dark:border-gray-800">
+                    "{feedback.comments || feedback.review_text || feedback.message || 'No written feedback provided.'}"
+                </p>
+            </div>
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Feedback & Reviews</h1>
-                        <p className="mt-2 text-gray-600">See what your students are saying about you and your courses.</p>
+                        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Feedback & Reviews</h1>
+                        <p className="mt-2 text-lg text-gray-500 dark:text-gray-400 font-medium">See what your students are saying about you and your courses.</p>
                     </div>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex space-x-1 bg-white p-1 rounded-xl shadow-sm border border-gray-100 w-fit mb-6">
+                <div className="flex space-x-1 bg-white dark:bg-gray-900 p-1.5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 w-fit mb-8">
                     <button
                         onClick={() => setActiveTab('instructor')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === 'instructor'
-                            ? 'bg-indigo-600 text-white'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'instructor'
+                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
                             }`}
                     >
                         Instructor Feedback
                     </button>
                     <button
                         onClick={() => setActiveTab('course')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === 'course'
-                            ? 'bg-indigo-600 text-white'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'course'
+                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
                             }`}
                     >
                         Course Feedback
@@ -131,18 +133,23 @@ export const FeedbackPage = () => {
 
                 {/* Content */}
                 {activeTab === 'course' && (
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Select Course</label>
-                        <select
-                            value={selectedCourseId || ''}
-                            onChange={(e) => setSelectedCourseId(Number(e.target.value))}
-                            className="block w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm"
-                        >
-                            <option value="" disabled>Select a course</option>
-                            {courses.map(course => (
-                                <option key={course.id} value={course.id}>{course.title}</option>
-                            ))}
-                        </select>
+                    <div className="mb-10 animate-in fade-in slide-in-from-left-4 duration-300">
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">Select Course</label>
+                        <div className="relative max-w-sm">
+                            <select
+                                value={selectedCourseId || ''}
+                                onChange={(e) => setSelectedCourseId(Number(e.target.value))}
+                                className="block w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none shadow-sm dark:text-gray-100 font-medium appearance-none transition-all"
+                            >
+                                <option value="" disabled className="dark:bg-gray-900">Select a course</option>
+                                {courses.map(course => (
+                                    <option key={course.id} value={course.id} className="dark:bg-gray-900">{course.title}</option>
+                                ))}
+                            </select>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                            </div>
+                        </div>
                     </div>
                 )}
 

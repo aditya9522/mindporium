@@ -110,12 +110,12 @@ export const AdminDashboardPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700 tracking-tight">Admin Overview</h1>
-                    <p className="mt-2 text-lg text-gray-500 font-medium">Platform insights and performance metrics</p>
+                <div className="mb-10">
+                    <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-400 tracking-tight">Admin Overview</h1>
+                    <p className="mt-2 text-lg text-gray-500 dark:text-gray-400 font-medium tracking-tight">Platform insights and performance metrics</p>
                 </div>
 
                 {/* Stats Grid */}
@@ -123,127 +123,150 @@ export const AdminDashboardPage = () => {
                     {statsCards.map((stat, index) => {
                         const Icon = stat.icon;
                         return (
-                            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className={`w-14 h-14 ${stat.color} rounded-xl shadow-lg shadow-indigo-100/50 flex items-center justify-center`}>
+                            <div key={index} className="bg-white dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:shadow-none border border-gray-100 dark:border-gray-800 p-8 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:hover:shadow-indigo-900/10 transition-all duration-300 transform hover:-translate-y-1 group">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className={`w-14 h-14 ${stat.color} rounded-2xl shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
                                         <Icon className="w-7 h-7 text-white" />
                                     </div>
-                                    <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${stat.changeType === 'positive' ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' :
-                                        stat.changeType === 'negative' ? 'text-red-700 bg-red-50 border border-red-100' :
-                                            'text-gray-600 bg-gray-50 border border-gray-100'
+                                    <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg ${stat.changeType === 'positive' ? 'text-emerald-700 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800' :
+                                        stat.changeType === 'negative' ? 'text-red-700 bg-red-50 dark:bg-red-900/20 dark:text-red-400 border border-red-100 dark:border-red-800' :
+                                            'text-gray-600 bg-gray-50 dark:bg-gray-800/30 dark:text-gray-400 border border-gray-100 dark:border-gray-700'
                                         }`}>
                                         {stat.change}
                                     </span>
                                 </div>
-                                <h3 className="text-3xl font-extrabold text-gray-900 mb-1 tracking-tight">{stat.value}</h3>
-                                <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
+                                <h3 className="text-3xl font-black text-gray-900 dark:text-white mb-1 tracking-tight">{stat.value}</h3>
+                                <p className="text-sm text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">{stat.title}</p>
                             </div>
                         );
                     })}
                 </div>
 
                 {/* Charts Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* User Distribution Pie Chart */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-bold text-gray-900 mb-4">User Distribution</h2>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                                <Pie
-                                    data={userDistribution}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
-                                    outerRadius={80}
-                                    fill="#8884d8"
-                                    dataKey="value"
-                                >
-                                    {userDistribution.map((_, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
+                    <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight uppercase tracking-widest text-sm">User Distribution</h2>
+                        <div className="h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={userDistribution}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
+                                        outerRadius={100}
+                                        innerRadius={60}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                    >
+                                        {userDistribution.map((_, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }}
+                                        itemStyle={{ color: '#fff' }}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
 
                     {/* Top Courses Bar Chart */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-bold text-gray-900 mb-4">Top Courses by Enrollment</h2>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={topCourses}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="title" angle={-45} textAnchor="end" height={100} />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="enrollments" fill="#6366f1" radius={[8, 8, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                    <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight uppercase tracking-widest text-sm">Top Courses</h2>
+                        <div className="h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={topCourses}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.1} />
+                                    <XAxis
+                                        dataKey="title"
+                                        angle={-45}
+                                        textAnchor="end"
+                                        height={80}
+                                        stroke="#9ca3af"
+                                        fontSize={10}
+                                        fontWeight="bold"
+                                    />
+                                    <YAxis stroke="#9ca3af" fontSize={10} fontWeight="bold" />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }}
+                                        itemStyle={{ color: '#fff' }}
+                                    />
+                                    <Bar dataKey="enrollments" fill="#6366f1" radius={[6, 6, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </div>
 
                 {/* Platform Activity */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Activity className="w-5 h-5 text-indigo-600" />
-                        <h2 className="text-lg font-bold text-gray-900">Platform Activity</h2>
+                <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400">
+                            <Activity className="w-5 h-5" />
+                        </div>
+                        <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Platform Activity</h2>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-                            <p className="text-sm text-indigo-600 font-medium mb-1">New Enrollments (7 days)</p>
-                            <p className="text-2xl font-bold text-indigo-900">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 group hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all">
+                            <p className="text-xs text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-widest mb-2">New Enrollments (7d)</p>
+                            <p className="text-3xl font-black text-indigo-900 dark:text-indigo-100">
                                 {dashboardData?.recent_activity?.enrollments_last_7_days || 0}
                             </p>
                         </div>
-                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
-                            <p className="text-sm text-purple-600 font-medium mb-1">Active Instructors</p>
-                            <p className="text-2xl font-bold text-purple-900">{overview.active_instructors || 0}</p>
+                        <div className="p-6 bg-purple-50/50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-900/30 group hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all">
+                            <p className="text-xs text-purple-600 dark:text-purple-400 font-black uppercase tracking-widest mb-2">Active Instructors</p>
+                            <p className="text-3xl font-black text-purple-900 dark:text-purple-100">{overview.active_instructors || 0}</p>
                         </div>
-                        <div className="p-4 bg-green-50 rounded-lg border border-green-100">
-                            <p className="text-sm text-green-600 font-medium mb-1">Live Classes Now</p>
-                            <p className="text-2xl font-bold text-green-900">{overview.live_classes || 0}</p>
+                        <div className="p-6 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 group hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-widest mb-2">Live Classes Now</p>
+                            <p className="text-3xl font-black text-emerald-900 dark:text-emerald-100">{overview.live_classes || 0}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* System Health */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h2 className="text-lg font-bold text-gray-900 mb-4">System Health</h2>
-                    <div className="space-y-4">
-                        <div className={`flex items-center justify-between p-4 rounded-lg border ${systemHealth.status === 'operational' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'
+                <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">System Health</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className={`p-6 rounded-2xl border transition-all ${systemHealth.status === 'operational'
+                            ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-900/30'
+                            : 'bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30'
                             }`}>
-                            <div className="flex items-center gap-3">
-                                <div className={`w-2 h-2 rounded-full ${systemHealth.status === 'operational' ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className={`w-2.5 h-2.5 rounded-full ${systemHealth.status === 'operational' ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'
                                     }`}></div>
-                                <span className={`font-medium ${systemHealth.status === 'operational' ? 'text-green-900' : 'text-red-900'
-                                    }`}>
-                                    {systemHealth.status === 'operational' ? 'All Systems Operational' : 'System Issues Detected'}
-                                </span>
+                                <span className="text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white">Status</span>
                             </div>
-                            <span className={`text-sm ${systemHealth.status === 'operational' ? 'text-green-700' : 'text-red-700'
+                            <p className={`text-lg font-bold ${systemHealth.status === 'operational' ? 'text-emerald-900 dark:text-emerald-400' : 'text-red-900 dark:text-red-400'
                                 }`}>
-                                Updated {systemHealth.lastUpdated.toLocaleTimeString()}
-                            </span>
+                                {systemHealth.status === 'operational' ? 'Operational' : 'Issues Detected'}
+                            </p>
+                            <p className="text-[10px] text-gray-400 font-bold mt-2">Updated {systemHealth.lastUpdated.toLocaleTimeString()}</p>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                            <div className="flex items-center gap-3">
-                                <div className={`w-2 h-2 rounded-full ${systemHealth.dbStatus === 'healthy' ? 'bg-blue-500' : 'bg-yellow-500'
+
+                        <div className="p-6 bg-gray-50 dark:bg-gray-800/20 rounded-2xl border border-gray-100 dark:border-gray-700/50">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className={`w-2.5 h-2.5 rounded-full ${systemHealth.dbStatus === 'healthy' ? 'bg-blue-500' : 'bg-amber-500'
                                     }`}></div>
-                                <span className="font-medium text-gray-900">Database Status</span>
+                                <span className="text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white">Database</span>
                             </div>
-                            <span className="text-sm text-gray-600">
+                            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {systemHealth.dbStatus === 'healthy' ? 'Healthy' : 'Unknown'}
-                            </span>
+                            </p>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                            <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                                <span className="font-medium text-gray-900">API Response Time</span>
+
+                        <div className="p-6 bg-gray-50 dark:bg-gray-800/20 rounded-2xl border border-gray-100 dark:border-gray-700/50">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full"></div>
+                                <span className="text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white">API Latecy</span>
                             </div>
-                            <span className="text-sm text-gray-600">
+                            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {systemHealth.responseTime > 0 ? `${systemHealth.responseTime}ms` : 'Measuring...'}
-                            </span>
+                            </p>
                         </div>
                     </div>
                 </div>

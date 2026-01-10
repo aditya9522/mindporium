@@ -13,7 +13,7 @@ export const subjectService = {
     },
 
     createSubject: async (data: SubjectCreate): Promise<Subject> => {
-        const response = await api.post<Subject>('/subjects', data);
+        const response = await api.post<Subject>('/subjects/', data);
         return response.data;
     },
 

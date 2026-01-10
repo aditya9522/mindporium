@@ -25,7 +25,6 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
     const [hoverRating, setHoverRating] = useState(0);
     const [submitting, setSubmitting] = useState(false);
 
-    // Populate form when editing
     useEffect(() => {
         if (existingFeedback) {
             setRating(existingFeedback.rating || 0);
@@ -41,13 +40,11 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // For app feedback, rating is optional but subject and message are required
         if (type === 'app' && !comment.trim()) {
             toast.error('Please enter your feedback message');
             return;
         }
 
-        // For course and instructor feedback, rating is required
         if ((type === 'course' || type === 'instructor') && rating === 0) {
             toast.error('Please select a rating');
             return;
@@ -57,7 +54,6 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
             setSubmitting(true);
 
             if (existingFeedback) {
-                // Update existing feedback
                 if (type === 'app') {
                     await feedbackService.updateAppFeedback(existingFeedback.id, {
                         subject: 'General Feedback',
@@ -72,7 +68,6 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                 }
                 toast.success('Feedback updated successfully!');
             } else {
-                // Create new feedback
                 if (type === 'app') {
                     await feedbackService.submitAppFeedback({
                         subject: 'General Feedback',
@@ -111,28 +106,28 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl animate-in zoom-in-95 duration-200 relative">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
+            <div className="bg-white dark:bg-gray-900 rounded-3xl w-full max-w-md p-8 shadow-2xl animate-in zoom-in-95 duration-300 relative border border-gray-100 dark:border-gray-800 transition-colors">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1"
                 >
                     <X className="w-5 h-5" />
                 </button>
 
-                <div className="text-center mb-6">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-3 text-indigo-600">
-                        <MessageSquare className="w-6 h-6" />
+                <div className="text-center mb-8">
+                    <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 text-indigo-600 dark:text-indigo-400 shadow-sm">
+                        <MessageSquare className="w-7 h-7" />
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900">{getTitle()}</h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{getTitle()}</h2>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">
                         Your feedback helps us improve the experience for everyone.
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Star Rating */}
-                    <div className="flex justify-center gap-2 mb-6">
+                    <div className="flex justify-center gap-3">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <button
                                 key={star}
@@ -140,12 +135,12 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                                 onClick={() => setRating(star)}
                                 onMouseEnter={() => setHoverRating(star)}
                                 onMouseLeave={() => setHoverRating(0)}
-                                className="focus:outline-none transition-transform hover:scale-110"
+                                className="focus:outline-none transition-all hover:scale-125 group active:scale-95"
                             >
                                 <Star
-                                    className={`w-8 h-8 ${star <= (hoverRating || rating)
-                                        ? 'fill-amber-400 text-amber-400'
-                                        : 'text-gray-300'
+                                    className={`w-10 h-10 transition-all duration-200 ${star <= (hoverRating || rating)
+                                        ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
+                                        : 'text-gray-200 dark:text-gray-800'
                                         }`}
                                 />
                             </button>
@@ -153,34 +148,37 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                     </div>
 
                     {/* Comment */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 px-1">
                             Comments (Optional)
                         </label>
                         <textarea
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             rows={4}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-500 outline-none resize-none text-gray-900 dark:text-gray-100 transition-all placeholder:text-gray-400"
                             placeholder="Tell us what you think..."
                         />
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium transition-colors"
+                            className="flex-1 px-4 py-3.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 font-bold transition-all active:scale-95"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={submitting || (type === 'app' ? !comment.trim() : rating === 0)}
-                            className="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                            className="flex-1 px-4 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-200 dark:shadow-none flex items-center justify-center gap-2 active:scale-95 translate-y-0 hover:-translate-y-0.5"
                         >
-                            {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                            Submit Feedback
+                            {submitting ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                                'Submit'
+                            )}
                         </button>
                     </div>
                 </form>
