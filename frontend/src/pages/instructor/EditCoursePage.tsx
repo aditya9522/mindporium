@@ -171,33 +171,33 @@ export const EditCoursePage = () => {
     if (!course) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <p className="text-gray-500">Course not found</p>
+                <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Course not found</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
                     <button
                         onClick={() => navigate('/instructor/courses')}
-                        className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+                        className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 mb-4 transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back to My Courses
                     </button>
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Edit Course</h1>
-                            <p className="mt-2 text-gray-600">Update your course details and curriculum.</p>
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Course</h1>
+                            <p className="mt-2 text-gray-600 dark:text-gray-400 dark:text-gray-500">Update your course details and curriculum.</p>
                         </div>
                         <a
                             href={`/courses/${id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                            className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         >
                             <Eye className="w-4 h-4 mr-2" />
                             Preview
@@ -206,19 +206,19 @@ export const EditCoursePage = () => {
                 </div>
 
                 {/* Basic Information */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-6">Basic Information</h2>
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 mb-6 transition-colors duration-300">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Basic Information</h2>
 
                     <div className="space-y-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Course Title *
                             </label>
                             <input
                                 type="text"
                                 value={formData.title}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                             />
                         </div>
 
@@ -230,7 +230,7 @@ export const EditCoursePage = () => {
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 rows={4}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                             />
                         </div>
 
@@ -242,7 +242,7 @@ export const EditCoursePage = () => {
                                 <select
                                     value={formData.level}
                                     onChange={(e) => setFormData({ ...formData, level: e.target.value as LevelEnum })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                 >
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
@@ -257,7 +257,7 @@ export const EditCoursePage = () => {
                                 <select
                                     value={formData.category}
                                     onChange={(e) => setFormData({ ...formData, category: e.target.value as CategoryEnum })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                 >
                                     <option value="free">Free</option>
                                     <option value="paid">Paid</option>
@@ -274,7 +274,7 @@ export const EditCoursePage = () => {
                                     type="number"
                                     value={formData.price}
                                     onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     min="0"
                                     step="0.01"
                                 />
@@ -291,13 +291,13 @@ export const EditCoursePage = () => {
                                     value={tagInput}
                                     onChange={(e) => setTagInput(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="flex-1 px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="Add a tag and press Enter"
                                 />
                                 <button
                                     type="button"
                                     onClick={handleAddTag}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                                 >
                                     Add
                                 </button>
@@ -306,12 +306,12 @@ export const EditCoursePage = () => {
                                 {formData.tags.map((tag) => (
                                     <span
                                         key={tag}
-                                        className="inline-flex items-center px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm"
+                                        className="inline-flex items-center px-3 py-1 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full text-sm"
                                     >
                                         {tag}
                                         <button
                                             onClick={() => handleRemoveTag(tag)}
-                                            className="ml-2 text-indigo-600 hover:text-indigo-800"
+                                            className="ml-2 text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200"
                                         >
                                             ×
                                         </button>
@@ -338,9 +338,9 @@ export const EditCoursePage = () => {
                                 id="is_published"
                                 checked={formData.is_published}
                                 onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
-                                className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                className="w-4 h-4 text-primary-600 dark:text-primary-400 border-gray-300 rounded focus:ring-primary-500"
                             />
-                            <label htmlFor="is_published" className="ml-2 text-sm font-medium text-gray-700">
+                            <label htmlFor="is_published" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Publish this course (make it visible to students)
                             </label>
                         </div>
@@ -348,12 +348,12 @@ export const EditCoursePage = () => {
                 </div>
 
                 {/* Curriculum */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 mb-6 transition-colors duration-300">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold text-gray-900">Curriculum</h2>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Curriculum</h2>
                         <button
                             onClick={handleAddNewSubject}
-                            className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                         >
                             <Plus className="w-4 h-4 mr-2" />
                             Add Subject
@@ -363,26 +363,26 @@ export const EditCoursePage = () => {
                     {/* Existing Subjects */}
                     {subjects.length > 0 && (
                         <div className="space-y-4 mb-6">
-                            <h3 className="text-sm font-semibold text-gray-700 uppercase">Existing Subjects</h3>
+                            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">Existing Subjects</h3>
                             {subjects.map((subject) => (
-                                <div key={subject.id} className="border border-gray-200 rounded-lg p-4">
+                                <div key={subject.id} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 rounded-lg p-4 transition-colors duration-300">
                                     <div className="flex items-start justify-between mb-3">
-                                        <h4 className="font-medium text-gray-900">{subject.title}</h4>
+                                        <h4 className="font-medium text-gray-900 dark:text-gray-100">{subject.title}</h4>
                                         <button
                                             onClick={() => handleDeleteClick(subject)}
-                                            className="text-red-600 hover:text-red-800"
+                                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
-                                    <p className="text-sm text-gray-600">{subject.description || 'No description'}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{subject.description || 'No description'}</p>
                                     <div className="flex items-center justify-between mt-3">
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                                             {subject.resources?.length || 0} resource(s)
                                         </p>
                                         <button
                                             onClick={() => navigate(`/instructor/courses/${id}/subjects/${subject.id}/resources`)}
-                                            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                                            className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:text-primary-300 font-medium"
                                         >
                                             Manage Resources →
                                         </button>
@@ -395,14 +395,14 @@ export const EditCoursePage = () => {
                     {/* New Subjects */}
                     {newSubjects.length > 0 && (
                         <div className="space-y-4">
-                            <h3 className="text-sm font-semibold text-gray-700 uppercase">New Subjects</h3>
+                            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">New Subjects</h3>
                             {newSubjects.map((subject, index) => (
-                                <div key={index} className="border border-indigo-200 bg-indigo-50 rounded-lg p-4">
+                                <div key={index} className="border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 transition-colors duration-300">
                                     <div className="flex items-start justify-between mb-3">
-                                        <h4 className="font-medium text-gray-900">New Subject {index + 1}</h4>
+                                        <h4 className="font-medium text-gray-900 dark:text-gray-100">New Subject {index + 1}</h4>
                                         <button
                                             onClick={() => handleRemoveNewSubject(index)}
-                                            className="text-red-600 hover:text-red-800"
+                                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
                                         >
                                             Remove
                                         </button>
@@ -412,14 +412,14 @@ export const EditCoursePage = () => {
                                             type="text"
                                             value={subject.title}
                                             onChange={(e) => handleNewSubjectChange(index, 'title', e.target.value)}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                             placeholder="Subject title"
                                         />
                                         <textarea
                                             value={subject.description}
                                             onChange={(e) => handleNewSubjectChange(index, 'description', e.target.value)}
                                             rows={2}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                             placeholder="Subject description (optional)"
                                         />
                                     </div>
@@ -429,7 +429,7 @@ export const EditCoursePage = () => {
                     )}
 
                     {subjects.length === 0 && newSubjects.length === 0 && (
-                        <div className="text-center py-8 text-gray-500">
+                        <div className="text-center py-8 text-gray-500 dark:text-gray-400 dark:text-gray-500">
                             No subjects yet. Click "Add Subject" to get started.
                         </div>
                     )}
@@ -439,14 +439,14 @@ export const EditCoursePage = () => {
                 <div className="flex items-center justify-end gap-4">
                     <button
                         onClick={() => navigate('/instructor/courses')}
-                        className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                        className="px-6 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSave}
                         disabled={saving || !formData.title || !formData.description}
-                        className="flex items-center px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {saving ? (
                             <>

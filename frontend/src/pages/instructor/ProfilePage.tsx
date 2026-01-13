@@ -39,7 +39,7 @@ export const ProfilePage = () => {
     const instructor = user;
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
             {/* Banner Section */}
             <div className="relative h-80 bg-slate-900 group overflow-hidden">
                 {instructor.banner_image ? (
@@ -101,33 +101,33 @@ export const ProfilePage = () => {
                                                 <div className="bg-blue-50 p-1 rounded-full"><CheckCircle className="w-6 h-6 text-blue-500 fill-blue-500/10" /></div>
                                             )}
                                         </div>
-                                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm font-medium text-gray-500">
-                                            <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full border border-gray-200">
-                                                <Briefcase className="w-3.5 h-3.5 text-gray-600" />
+                                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                                            <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full border border-gray-200 dark:border-gray-700">
+                                                <Briefcase className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 dark:text-gray-500" />
                                                 Instructor
                                             </span>
                                             {instructor.created_at && (
-                                                <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full border border-gray-200">
-                                                    <Calendar className="w-3.5 h-3.5 text-gray-600" />
+                                                <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full border border-gray-200 dark:border-gray-700">
+                                                    <Calendar className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 dark:text-gray-500" />
                                                     Joined {format(new Date(instructor.created_at), 'MMM yyyy')}
                                                 </span>
                                             )}
-                                            <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full border border-gray-200">
-                                                <Clock className="w-3.5 h-3.5 text-gray-600" />
+                                            <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full border border-gray-200 dark:border-gray-700">
+                                                <Clock className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 dark:text-gray-500" />
                                                 {instructor.timezone || 'UTC'}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col md:flex-row items-center gap-6 mt-6 pt-6 border-t border-gray-100">
+                                <div className="flex flex-col md:flex-row items-center gap-6 mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
                                     <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-600 font-medium">
-                                        <span className="flex items-center gap-2 hover:text-indigo-600 transition-colors">
+                                        <span className="flex items-center gap-2 hover:text-primary-600 dark:text-primary-400 transition-colors">
                                             <Mail className="w-4 h-4" />
                                             {instructor.email}
                                         </span>
                                         {instructor.phone_number && (
-                                            <span className="flex items-center gap-2 hover:text-indigo-600 transition-colors">
+                                            <span className="flex items-center gap-2 hover:text-primary-600 dark:text-primary-400 transition-colors">
                                                 <Phone className="w-4 h-4" />
                                                 {instructor.phone_number}
                                             </span>
@@ -138,22 +138,22 @@ export const ProfilePage = () => {
                                     {instructor.social_links && Object.keys(instructor.social_links).length > 0 && (
                                         <div className="flex items-center gap-3 ml-auto">
                                             {instructor.social_links.website && (
-                                                <a href={instructor.social_links.website} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition-all hover:-translate-y-0.5 border border-gray-100">
+                                                <a href={instructor.social_links.website} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-primary-600 dark:text-primary-400 transition-all hover:-translate-y-0.5 border border-gray-100 dark:border-gray-800">
                                                     <Globe className="w-5 h-5" />
                                                 </a>
                                             )}
                                             {instructor.social_links.linkedin && (
-                                                <a href={instructor.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-blue-700 transition-all hover:-translate-y-0.5 border border-gray-100">
+                                                <a href={instructor.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-blue-700 transition-all hover:-translate-y-0.5 border border-gray-100 dark:border-gray-800">
                                                     <Linkedin className="w-5 h-5" />
                                                 </a>
                                             )}
                                             {instructor.social_links.twitter && (
-                                                <a href={instructor.social_links.twitter} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-blue-400 transition-all hover:-translate-y-0.5 border border-gray-100">
+                                                <a href={instructor.social_links.twitter} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-blue-400 transition-all hover:-translate-y-0.5 border border-gray-100 dark:border-gray-800">
                                                     <Twitter className="w-5 h-5" />
                                                 </a>
                                             )}
                                             {instructor.social_links.github && (
-                                                <a href={instructor.social_links.github} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-all hover:-translate-y-0.5 border border-gray-100">
+                                                <a href={instructor.social_links.github} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-all hover:-translate-y-0.5 border border-gray-100 dark:border-gray-800">
                                                     <Github className="w-5 h-5" />
                                                 </a>
                                             )}
@@ -167,9 +167,9 @@ export const ProfilePage = () => {
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
+                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
                         <div className="flex items-center gap-4">
-                            <div className="p-3.5 bg-indigo-50 rounded-2xl text-indigo-600 shadow-sm">
+                            <div className="p-3.5 bg-primary-50 dark:bg-primary-900/30 rounded-2xl text-primary-600 dark:text-primary-400 shadow-sm">
                                 <BookOpen className="w-7 h-7" />
                             </div>
                             <div>
@@ -179,7 +179,7 @@ export const ProfilePage = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
+                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
                         <div className="flex items-center gap-4">
                             <div className="p-3.5 bg-blue-50 rounded-2xl text-blue-600 shadow-sm">
                                 <Users className="w-7 h-7" />
@@ -191,7 +191,7 @@ export const ProfilePage = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
+                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
                         <div className="flex items-center gap-4">
                             <div className="p-3.5 bg-amber-50 rounded-2xl text-amber-600 shadow-sm">
                                 <Star className="w-7 h-7" />
@@ -203,7 +203,7 @@ export const ProfilePage = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
+                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1">
                         <div className="flex items-center gap-4">
                             <div className="p-3.5 bg-purple-50 rounded-2xl text-purple-600 shadow-sm">
                                 <Award className="w-7 h-7" />
@@ -222,23 +222,23 @@ export const ProfilePage = () => {
                     <div className="lg:col-span-2 space-y-6">
                         {/* About Section */}
                         {instructor.bio ? (
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6">
                                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                    <Award className="w-5 h-5 text-indigo-600" />
+                                    <Award className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                                     About
                                 </h2>
                                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{instructor.bio}</p>
                             </div>
                         ) : (
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
+                            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6 text-center">
                                 <p className="text-gray-500 mb-4">No bio added yet.</p>
-                                <Link to="/settings" className="text-indigo-600 hover:text-indigo-700 font-medium">Add Bio</Link>
+                                <Link to="/settings" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:text-primary-300 font-medium">Add Bio</Link>
                             </div>
                         )}
 
                         {/* Experience Section */}
                         {instructor.experience && (
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6">
                                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                                     <Briefcase className="w-5 h-5 text-purple-600" />
                                     Professional Experience
@@ -248,7 +248,7 @@ export const ProfilePage = () => {
                         )}
 
                         {/* Courses Section */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6">
                             <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <BookOpen className="w-5 h-5 text-green-600" />
                                 Courses Taught
@@ -258,7 +258,7 @@ export const ProfilePage = () => {
                                     {stats.course_stats.map((course: any, index: number) => (
                                         <div key={index} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                             <h3 className="font-semibold text-gray-900 mb-1">{course.title}</h3>
-                                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                                            <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                                                 <span className="flex items-center gap-1">
                                                     <Users className="w-4 h-4" />
                                                     {course.enrollments} students
@@ -275,18 +275,18 @@ export const ProfilePage = () => {
 
                     {/* Right Column - Quick Info */}
                     <div className="space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6">
                             <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Info</h2>
                             <div className="space-y-3">
-                                <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                                    <span className="text-gray-600">Verification</span>
+                                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800">
+                                    <span className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Verification</span>
                                     <span className={`font-semibold ${instructor.is_verified ? 'text-green-600' : 'text-amber-600'}`}>
                                         {instructor.is_verified ? 'Verified' : 'Pending'}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                                    <span className="text-gray-600">Role</span>
-                                    <span className="font-semibold text-indigo-600 uppercase tracking-wider text-xs">
+                                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800">
+                                    <span className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Role</span>
+                                    <span className="font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider text-xs">
                                         {instructor.role}
                                     </span>
                                 </div>
@@ -294,12 +294,12 @@ export const ProfilePage = () => {
                         </div>
 
                         {/* Recent Performance */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6">
                             <h2 className="text-xl font-bold text-gray-900 mb-4">Performance</h2>
                             <div className="space-y-4">
                                 <div>
                                     <div className="flex justify-between text-sm mb-1">
-                                        <span className="text-gray-600">Rating</span>
+                                        <span className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Rating</span>
                                         <span className="font-bold">{stats?.average_rating?.toFixed(1) || '0.0'}/5.0</span>
                                     </div>
                                     <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
@@ -311,7 +311,7 @@ export const ProfilePage = () => {
                                 </div>
                                 <div>
                                     <div className="flex justify-between text-sm mb-1">
-                                        <span className="text-gray-600">Student Satisfaction</span>
+                                        <span className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Student Satisfaction</span>
                                         <span className="font-bold">95%</span>
                                     </div>
                                     <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">

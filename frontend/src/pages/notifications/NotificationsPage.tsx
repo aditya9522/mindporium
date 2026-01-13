@@ -62,22 +62,22 @@ export const NotificationsPage = () => {
         const iconClass = "w-10 h-10 rounded-full flex items-center justify-center";
         switch (type) {
             case 'course':
-                return <div className={`${iconClass} bg-blue-100`}><Bell className="w-5 h-5 text-blue-600" /></div>;
+                return <div className={`${iconClass} bg-blue-100 dark:bg-blue-900/30`}><Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" /></div>;
             case 'announcement':
-                return <div className={`${iconClass} bg-purple-100`}><Bell className="w-5 h-5 text-purple-600" /></div>;
+                return <div className={`${iconClass} bg-purple-100 dark:bg-purple-900/30`}><Bell className="w-5 h-5 text-purple-600 dark:text-purple-400" /></div>;
             case 'class':
             case 'class_reminder':
-                return <div className={`${iconClass} bg-green-100`}><Bell className="w-5 h-5 text-green-600" /></div>;
+                return <div className={`${iconClass} bg-green-100 dark:bg-green-900/30`}><Bell className="w-5 h-5 text-green-600 dark:text-green-400" /></div>;
             case 'test':
-                return <div className={`${iconClass} bg-orange-100`}><Bell className="w-5 h-5 text-orange-600" /></div>;
+                return <div className={`${iconClass} bg-orange-100 dark:bg-orange-900/30`}><Bell className="w-5 h-5 text-orange-600 dark:text-orange-400" /></div>;
             case 'grade':
-                return <div className={`${iconClass} bg-yellow-100`}><Bell className="w-5 h-5 text-yellow-600" /></div>;
+                return <div className={`${iconClass} bg-yellow-100 dark:bg-yellow-900/30`}><Bell className="w-5 h-5 text-yellow-600 dark:text-yellow-400" /></div>;
             case 'resource':
-                return <div className={`${iconClass} bg-indigo-100`}><Bell className="w-5 h-5 text-indigo-600" /></div>;
+                return <div className={`${iconClass} bg-primary-100 dark:bg-primary-900/30`}><Bell className="w-5 h-5 text-primary-600 dark:text-primary-400" /></div>;
             case 'enrollment':
-                return <div className={`${iconClass} bg-teal-100`}><Bell className="w-5 h-5 text-teal-600" /></div>;
+                return <div className={`${iconClass} bg-teal-100 dark:bg-teal-900/30`}><Bell className="w-5 h-5 text-teal-600 dark:text-teal-400" /></div>;
             default:
-                return <div className={`${iconClass} bg-gray-100`}><Bell className="w-5 h-5 text-gray-600" /></div>;
+                return <div className={`${iconClass} bg-gray-100 dark:bg-gray-800`}><Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" /></div>;
         }
     };
 
@@ -92,18 +92,18 @@ export const NotificationsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 mb-6">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="p-3 bg-indigo-100 rounded-xl">
-                                <Bell className="w-6 h-6 text-indigo-600" />
+                            <div className="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-xl">
+                                <Bell className="w-6 h-6 text-primary-600 dark:text-primary-400" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-                                <p className="text-sm text-gray-600">
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
                                     {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
                                 </p>
                             </div>
@@ -126,8 +126,8 @@ export const NotificationsPage = () => {
                         <button
                             onClick={() => setFilter('all')}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'all'
-                                ? 'bg-indigo-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? 'bg-primary-600 text-white'
+                                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                                 }`}
                         >
                             All ({notifications.length})
@@ -135,8 +135,8 @@ export const NotificationsPage = () => {
                         <button
                             onClick={() => setFilter('unread')}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'unread'
-                                ? 'bg-indigo-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? 'bg-primary-600 text-white'
+                                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                                 }`}
                         >
                             Unread ({unreadCount})
@@ -147,10 +147,10 @@ export const NotificationsPage = () => {
                 {/* Notifications List */}
                 <div className="space-y-3">
                     {filteredNotifications.length === 0 ? (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-                            <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No notifications</h3>
-                            <p className="text-gray-600">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-12 text-center">
+                            <Bell className="w-16 h-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No notifications</h3>
+                            <p className="text-gray-600 dark:text-gray-400">
                                 {filter === 'unread' ? "You're all caught up!" : "You don't have any notifications yet."}
                             </p>
                         </div>
@@ -158,9 +158,9 @@ export const NotificationsPage = () => {
                         filteredNotifications.map((notification) => (
                             <div
                                 key={notification.id}
-                                className={`bg-white rounded-xl shadow-sm border transition-all hover:shadow-md ${notification.is_read
-                                    ? 'border-gray-200'
-                                    : 'border-indigo-200 bg-indigo-50/30'
+                                className={`bg-white dark:bg-gray-900 rounded-xl shadow-sm border transition-all hover:shadow-md ${notification.is_read
+                                    ? 'border-gray-200 dark:border-gray-800'
+                                    : 'border-primary-200 dark:border-primary-800 bg-primary-50/30 dark:bg-primary-900/10'
                                     }`}
                             >
                                 <div className="p-4 flex gap-4">
@@ -173,14 +173,14 @@ export const NotificationsPage = () => {
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-start justify-between gap-4">
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-gray-900 mb-1">
+                                                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                                                     {notification.title}
                                                     {!notification.is_read && (
-                                                        <span className="ml-2 inline-block w-2 h-2 bg-indigo-600 rounded-full"></span>
+                                                        <span className="ml-2 inline-block w-2 h-2 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
                                                     )}
                                                 </h3>
-                                                <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
-                                                <p className="text-xs text-gray-500">
+                                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{notification.message}</p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-500">
                                                     {format(new Date(notification.created_at), 'MMM d, yyyy • h:mm a')}
                                                 </p>
                                             </div>

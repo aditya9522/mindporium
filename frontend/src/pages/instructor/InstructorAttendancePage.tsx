@@ -112,13 +112,13 @@ export const InstructorAttendancePage = () => {
                         <select
                             value={selectedClassId}
                             onChange={(e) => setSelectedClassId(Number(e.target.value))}
-                            className="appearance-none bg-white/80 backdrop-blur-md pl-6 pr-12 py-4 rounded-lg border border-gray-200 text-gray-700 font-semibold hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer shadow-sm hover:shadow-md min-w-[280px]"
+                            className="appearance-none bg-white/80 dark:bg-gray-900/80 backdrop-blur-md pl-6 pr-12 py-4 rounded-lg border border-gray-200 text-gray-700 font-semibold hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-sm hover:shadow-md min-w-[280px]"
                         >
                             {classrooms.map(cls => (
                                 <option key={cls.id} value={cls.id}>{cls.title}</option>
                             ))}
                         </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-indigo-500 transition-colors">
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-primary-500 dark:text-primary-400 transition-colors">
                             <ChevronDown className="w-5 h-5 stroke-[2.5]" />
                         </div>
                     </div>
@@ -152,7 +152,7 @@ export const InstructorAttendancePage = () => {
             {/* Search & Filter */}
             <div className="flex flex-col sm:flex-row items-center gap-4 bg-white p-2 rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
                 <div className="flex-1 w-full flex items-center gap-3 pl-4">
-                    <Search className="w-5 h-5 text-gray-400" />
+                    <Search className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                     <input
                         type="text"
                         placeholder="Search students by name or email..."
@@ -166,10 +166,10 @@ export const InstructorAttendancePage = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-gray-50/50 border-b border-gray-100">
+                        <thead className="bg-gray-50/50 border-b border-gray-100 dark:border-gray-800">
                             <tr>
                                 <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
                                 <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Joined At</th>
@@ -183,7 +183,7 @@ export const InstructorAttendancePage = () => {
                                 <tr>
                                     <td colSpan={5} className="px-8 py-20 text-center">
                                         <div className="flex flex-col items-center justify-center">
-                                            <Loader2 className="h-10 w-10 animate-spin text-indigo-500 mb-4" />
+                                            <Loader2 className="h-10 w-10 animate-spin text-primary-500 dark:text-primary-400 mb-4" />
                                             <p className="text-gray-500 font-medium">Loading attendance records...</p>
                                         </div>
                                     </td>
@@ -196,7 +196,7 @@ export const InstructorAttendancePage = () => {
                                                 <Search className="w-8 h-8 text-gray-300" />
                                             </div>
                                             <p className="text-gray-900 font-semibold text-lg mb-1">No records found</p>
-                                            <p className="text-gray-500">{searchQuery ? 'Try adjusting your search terms' : 'No attendance recorded for this session yet'}</p>
+                                            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">{searchQuery ? 'Try adjusting your search terms' : 'No attendance recorded for this session yet'}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -208,12 +208,12 @@ export const InstructorAttendancePage = () => {
                                                 {record.user?.photo ? (
                                                     <img src={getImageUrl(record.user.photo)} alt={record.user.full_name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm" />
                                                 ) : (
-                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-700 font-bold text-sm ring-2 ring-white shadow-sm">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold text-sm ring-2 ring-white shadow-sm">
                                                         {record.user?.full_name?.charAt(0).toUpperCase() || '?'}
                                                     </div>
                                                 )}
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{record.user?.full_name || 'Unknown User'}</div>
+                                                    <div className="font-bold text-gray-900 group-hover:text-primary-600 dark:text-primary-400 transition-colors truncate">{record.user?.full_name || 'Unknown User'}</div>
                                                     <div className="flex items-center gap-2">
                                                         <div className="text-gray-500 text-xs font-medium truncate">{record.user?.email || 'No email provided'}</div>
                                                         {record.user?.email && (
@@ -222,7 +222,7 @@ export const InstructorAttendancePage = () => {
                                                                     navigator.clipboard.writeText(record.user?.email!);
                                                                     toast.success('Email copied');
                                                                 }}
-                                                                className="text-gray-400 hover:text-indigo-600 transition-colors"
+                                                                className="text-gray-400 hover:text-primary-600 dark:text-primary-400 transition-colors"
                                                                 title="Copy Email"
                                                             >
                                                                 <Copy className="w-3 h-3" />
@@ -253,8 +253,8 @@ export const InstructorAttendancePage = () => {
                                         </td>
                                         <td className="px-8 py-5">
                                             {record.left_at ? (
-                                                <div className="flex items-center gap-2 bg-gray-100/50 px-3 py-1.5 rounded-lg w-fit text-sm font-semibold text-gray-600">
-                                                    <Clock className="w-4 h-4 text-gray-400" />
+                                                <div className="flex items-center gap-2 bg-gray-100/50 px-3 py-1.5 rounded-lg w-fit text-sm font-semibold text-gray-600 dark:text-gray-400 dark:text-gray-500">
+                                                    <Clock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                                                     <span>
                                                         {Math.round((new Date(record.left_at).getTime() - new Date(record.joined_at).getTime()) / 60000)}m
                                                     </span>
@@ -273,7 +273,7 @@ export const InstructorAttendancePage = () => {
                                             <div className="flex flex-col gap-1.5">
                                                 {record.device_info && (
                                                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 bg-gray-50 px-2.5 py-1 rounded-md w-fit" title={record.device_info}>
-                                                        <Monitor className="w-3.5 h-3.5 text-gray-400" />
+                                                        <Monitor className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
                                                         <span className="truncate max-w-[150px]">{record.device_info}</span>
                                                     </div>
                                                 )}

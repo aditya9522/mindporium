@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
-import { BookOpen, MessageSquare, Menu, ChevronDown, LayoutDashboard, LogOut, Settings, Video } from 'lucide-react';
+import { BookOpen, MessageSquare, Menu, ChevronDown, LayoutDashboard, LogOut, Settings, Video, Moon, Sun } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import { useSidebarStore } from '../../store/sidebar.store';
 import { NotificationDropdown } from '../notifications/NotificationDropdown';
@@ -19,8 +19,12 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
     const { toggleSidebar } = useSidebarStore();
     const [showFeedback, setShowFeedback] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
-    const { appName, appIcon } = useThemeStore();
+    const { appName, appIcon, mode, setMode } = useThemeStore();
     const menuRef = React.useRef<HTMLDivElement>(null);
+
+    const toggleDarkMode = () => {
+        setMode(mode === 'dark' ? 'light' : 'dark');
+    };
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -70,7 +74,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                         <BookOpen className="h-10 w-10 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300" />
                                     )}
                                 </div>
-                                <span className="text-2xl font-black text-gray-900 dark:text-white hidden sm:block tracking-tighter transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                                <span className="text-2xl font-black text-gray-900 dark:text-white hidden sm:block tracking-tighter transition-colors group-hover:text-primary-600 dark:group-hover:text-primary-400">
                                     {appName}
                                 </span>
                             </Link>
@@ -86,6 +90,18 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                             {isAuthenticated && user ? (
                                 <>
                                     <button
+                                        onClick={toggleDarkMode}
+                                        className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-300"
+                                        title={mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                                    >
+                                        {mode === 'dark' ? (
+                                            <Sun className="w-5 h-5 transition-transform duration-300 hover:rotate-180" />
+                                        ) : (
+                                            <Moon className="w-5 h-5 transition-transform duration-300 hover:-rotate-12" />
+                                        )}
+                                    </button>
+
+                                    <button
                                         onClick={() => setShowFeedback(true)}
                                         className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
                                         title="Send Feedback"
@@ -98,7 +114,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                     <div className="relative" ref={menuRef}>
                                         <button
                                             onClick={() => setShowUserMenu(!showUserMenu)}
-                                            className="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full p-1 pl-1.5 transition-all duration-200 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
+                                            className="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full p-1 pl-1.5 transition-all duration-200 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900"
                                         >
                                             <div className="w-8 h-8 bg-primary-50 dark:bg-primary-900/50 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold border border-primary-100 dark:border-primary-800 shadow-sm">
                                                 {user.full_name.charAt(0).toUpperCase()}
@@ -177,6 +193,17 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                 </>
                             ) : (
                                 <>
+                                    <button
+                                        onClick={toggleDarkMode}
+                                        className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-300"
+                                        title={mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                                    >
+                                        {mode === 'dark' ? (
+                                            <Sun className="w-5 h-5 transition-transform duration-300 hover:rotate-180" />
+                                        ) : (
+                                            <Moon className="w-5 h-5 transition-transform duration-300 hover:-rotate-12" />
+                                        )}
+                                    </button>
                                     <Link to="/login" className="hidden sm:block">
                                         <Button variant="ghost">Sign In</Button>
                                     </Link>

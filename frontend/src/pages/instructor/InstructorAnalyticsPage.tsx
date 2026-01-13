@@ -31,11 +31,11 @@ export const InstructorAnalyticsPage = () => {
     if (!data) return null;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-indigo-600 tracking-tight mb-2">Performance Analytics</h1>
-                    <p className="text-lg text-gray-500 font-medium">Deep insights into your teaching impact and student engagement</p>
+                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-primary-600 dark:from-gray-100 dark:to-primary-400 tracking-tight mb-2">Performance Analytics</h1>
+                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">Deep insights into your teaching impact and student engagement</p>
                 </div>
 
                 {/* Key Metrics */}
@@ -68,9 +68,9 @@ export const InstructorAnalyticsPage = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
                     {/* Course Enrollments Chart */}
-                    <div className="bg-white rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                            <div className="w-1 h-6 bg-indigo-500 rounded-full"></div>
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:shadow-[0_2px_15px_rgb(0,0,0,0.2)] border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                            <div className="w-1 h-6 bg-primary-600 dark:bg-primary-400 rounded-full"></div>
                             Enrollments by Course
                         </h2>
                         <div className="h-80 w-full">
@@ -141,27 +141,27 @@ export const InstructorAnalyticsPage = () => {
                 </div>
 
                 {/* Detailed Course Stats Table */}
-                <div className="bg-white rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
-                    <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-                        <h2 className="text-lg font-bold text-gray-900">Course Financials & Engagement</h2>
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
+                    <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Course Financials & Engagement</h2>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="bg-gray-50/50 border-b border-gray-100">
+                                <tr className="bg-gray-50/50 border-b border-gray-100 dark:border-gray-800">
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Course Title</th>
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Enrollments</th>
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Est. Revenue Share</th>
                                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Performance</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                                 {data.course_stats.map((course: any) => (
-                                    <tr key={course.course_id} className="hover:bg-gray-50/50 transition-colors group">
-                                        <td className="px-8 py-5 whitespace-nowrap text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                                    <tr key={course.course_id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
+                                        <td className="px-8 py-5 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                             {course.title}
                                         </td>
-                                        <td className="px-8 py-5 whitespace-nowrap text-sm text-gray-600 font-medium">
+                                        <td className="px-8 py-5 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400 font-medium">
                                             {course.enrollments} Students
                                         </td>
                                         <td className="px-8 py-5 whitespace-nowrap">
@@ -170,8 +170,8 @@ export const InstructorAnalyticsPage = () => {
                                             </span>
                                         </td>
                                         <td className="px-8 py-5 whitespace-nowrap">
-                                            <div className="w-full max-w-[140px] bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                                <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${Math.min(course.enrollments * 5, 100)}%` }}></div>
+                                            <div className="w-full max-w-[140px] bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                                                <div className="bg-primary-500 dark:bg-primary-400 h-full rounded-full" style={{ width: `${Math.min(course.enrollments * 5, 100)}%` }}></div>
                                             </div>
                                         </td>
                                     </tr>

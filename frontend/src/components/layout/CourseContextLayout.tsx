@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useParams, useNavigate, Outlet } from 'react-router-dom';
+import { NavLink, useParams, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
     LayoutDashboard,
     BookOpen,
@@ -20,6 +20,7 @@ import { useSidebarStore } from '../../store/sidebar.store';
 export const CourseContextLayout = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useAuthStore();
     const { setCustomSidebarContent } = useSidebarStore();
 
@@ -46,38 +47,40 @@ export const CourseContextLayout = () => {
         ];
 
         const SidebarContent = (
-            <div className="space-y-6">
+            <div className="space-y-6 px-3">
                 {/* Back Button */}
                 <button
                     onClick={() => navigate('/courses')}
-                    className="w-full flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors px-2"
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all font-medium"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span>Back to Catalog</span>
+                    <span className="text-sm">Back to Catalog</span>
                 </button>
 
                 <div>
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-2">
+                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
                         Course Navigation
                     </h3>
-                    <nav className="space-y-1">
+                    <nav className="space-y-1.5">
                         {navigationItems.map((item) => {
                             if (!item.public && (isLoading || !isEnrolled)) return null;
 
+                            const isActive = location.pathname === item.path;
                             return (
                                 <NavLink
                                     key={item.path}
                                     to={item.path}
                                     end={item.path === `/courses/${id}`}
-                                    className={({ isActive }) =>
-                                        `flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${isActive
-                                            ? 'bg-indigo-50 text-indigo-700'
-                                            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                                        }`
-                                    }
+                                    className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${isActive
+                                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 shadow-sm font-semibold'
+                                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
+                                        }`}
                                 >
-                                    <item.icon className="w-5 h-5" />
-                                    {item.label}
+                                    <item.icon className={`h-5 w-5 transition-colors ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'}`} />
+                                    <span className="text-sm">{item.label}</span>
+                                    {isActive && (
+                                        <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-600 dark:bg-primary-400" />
+                                    )}
                                 </NavLink>
                             );
                         })}
@@ -85,8 +88,8 @@ export const CourseContextLayout = () => {
 
                     {user && !isLoading && (
                         <>
-                            <div className="my-4 border-t border-gray-200" />
-                            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-2">
+                            <div className="my-4 border-t border-gray-200 dark:border-gray-800" />
+                            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
                                 Actions
                             </h3>
 
@@ -95,7 +98,7 @@ export const CourseContextLayout = () => {
                                 isEnrolled ? (
                                     <button
                                         onClick={() => setShowUnenrollModal(true)}
-                                        className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
                                     >
                                         <LogOut className="w-5 h-5" />
                                         Unenroll Course
@@ -103,7 +106,7 @@ export const CourseContextLayout = () => {
                                 ) : (
                                     <button
                                         onClick={handleEnroll}
-                                        className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200"
                                     >
                                         <PlusCircle className="w-5 h-5" />
                                         Enroll Now

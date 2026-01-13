@@ -41,7 +41,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-primary-600 dark:text-primary-400 animate-spin" />
             </div>
         );
     }
@@ -66,90 +66,90 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                            <Users className="w-6 h-6 text-blue-600" />
+                        <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                            <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">{students.length}</div>
-                            <div className="text-sm text-gray-600">Total Enrolled</div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{students.length}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Total Enrolled</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                            <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.active_students || 0}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Active Students</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-green-50 rounded-lg">
-                            <TrendingUp className="w-6 h-6 text-green-600" />
+                        <div className="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
+                            <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">{stats.active_students || 0}</div>
-                            <div className="text-sm text-gray-600">Active Students</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-purple-50 rounded-lg">
-                            <Award className="w-6 h-6 text-purple-600" />
-                        </div>
-                        <div>
-                            <div className="text-2xl font-bold text-gray-900">
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                                 {students.filter(s => s.progress_percent >= 100).length}
                             </div>
-                            <div className="text-sm text-gray-600">Completed</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Completed</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-amber-50 rounded-lg">
-                            <Clock className="w-6 h-6 text-amber-600" />
+                        <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+                            <Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                                 {stats.recent_enrollments_7d || 0}
                             </div>
-                            <div className="text-sm text-gray-600">This Week</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">This Week</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Search and Filter */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 transition-colors duration-300">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Search students by name or email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     />
                 </div>
             </div>
 
             {/* Students List */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                    <h3 className="text-lg font-bold text-gray-900">Student List</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden transition-colors duration-300">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Student List</h3>
                 </div>
 
                 {filteredStudents.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                        <Users className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                        <Users className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
                         <p>No students found</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gray-50 border-b border-gray-200">
+                            <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
                                 <tr>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         Student
                                     </th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -166,19 +166,19 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200">
+                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                 {filteredStudents.map((enrollment) => (
-                                    <tr key={enrollment.id} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={enrollment.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
                                                     {enrollment.user?.full_name?.charAt(0).toUpperCase() || 'U'}
                                                 </div>
                                                 <div>
-                                                    <div className="font-semibold text-gray-900">
+                                                    <div className="font-semibold text-gray-900 dark:text-gray-100">
                                                         {enrollment.user?.full_name || 'Unknown User'}
                                                     </div>
-                                                    <div className="flex items-center gap-3 text-sm text-gray-500">
+                                                    <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                                                         <span className="flex items-center gap-1">
                                                             <Mail className="w-3 h-3" />
                                                             {enrollment.user?.email || 'N/A'}
@@ -189,18 +189,18 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="flex-1 bg-gray-200 rounded-full h-2 max-w-xs">
+                                                <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 max-w-xs">
                                                     <div
                                                         className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all"
                                                         style={{ width: `${Math.min(enrollment.progress_percent || 0, 100)}%` }}
                                                     />
                                                 </div>
-                                                <span className="text-sm font-semibold text-gray-900 min-w-[3rem]">
+                                                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 min-w-[3rem]">
                                                     {Math.round(enrollment.progress_percent || 0)}%
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600">
+                                        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                             {enrollment.enrolled_at
                                                 ? formatDistanceToNow(new Date(enrollment.enrolled_at), { addSuffix: true })
                                                 : 'N/A'}
@@ -227,7 +227,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                                     ? `/instructor/students/${enrollment.user.id}`
                                                     : `/admin/users/${enrollment.user.id}`
                                                 }
-                                                className="text-indigo-600 hover:text-indigo-800 font-bold text-sm flex items-center gap-1 transition-colors"
+                                                className="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-bold text-sm flex items-center gap-1 transition-colors"
                                             >
                                                 <UserIcon className="w-3.5 h-3.5" />
                                                 View Profile

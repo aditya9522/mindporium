@@ -111,66 +111,57 @@ export const CourseDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-gray-950 relative pb-20 transition-all duration-300 text-gray-900 dark:text-gray-100">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 relative pb-20 transition-colors duration-300 text-gray-900 dark:text-gray-100">
             {/* Hero Section */}
-            <div className="relative h-[500px] w-full bg-slate-900 overflow-hidden group">
-                {course.thumbnail ? (
+            <div className="relative h-80 w-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                {course.thumbnail && (
                     <div className="absolute inset-0">
                         <img
                             src={getImageUrl(course.thumbnail)}
                             alt={course.title}
-                            className="w-full h-full object-cover opacity-50 blur-sm scale-105 group-hover:scale-110 transition-transform duration-1000 ease-in-out"
+                            className="w-full h-full object-cover opacity-40 dark:opacity-30"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-transparent to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
                     </div>
-                ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-slate-900 to-black" />
                 )}
 
-                <div className="absolute inset-0 flex flex-col justify-end pb-16">
+                <div className="absolute inset-0 flex flex-col justify-end pb-12">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-                        <Link to="/courses" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors hover:-translate-x-1 duration-200">
-                            <ArrowLeft className="h-5 w-5" />
-                            <span className="font-medium">Back to Courses</span>
+                        <Link to="/courses" className="inline-flex items-center gap-2 text-white hover:text-white/80 mb-6 transition-colors text-sm font-medium">
+                            <ArrowLeft className="h-4 w-4" />
+                            <span>Back to Courses</span>
                         </Link>
 
-                        <div className="flex flex-wrap items-center gap-3 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-                            <span className="px-4 py-1.5 bg-indigo-500/20 backdrop-blur-md border border-indigo-500/30 text-indigo-200 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
+                        <div className="flex flex-wrap items-center gap-2 mb-4">
+                            <span className="px-3 py-1 bg-white/90 dark:bg-gray-900/90 text-gray-700 dark:text-gray-300 rounded-md text-xs font-semibold">
                                 {course.level}
                             </span>
-                            <span className={`px-4 py-1.5 backdrop-blur-md border rounded-full text-xs font-bold uppercase tracking-wider shadow-sm ${course.category === 'free'
-                                ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-200'
-                                : 'bg-amber-500/20 border-amber-500/30 text-amber-200'
+                            <span className={`px-3 py-1 rounded-md text-xs font-semibold ${course.category === 'free'
+                                ? 'bg-emerald-500/90 text-white'
+                                : 'bg-amber-500/90 text-white'
                                 }`}>
                                 {course.category}
                             </span>
                         </div>
 
-                        <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 max-w-4xl leading-tight tracking-tight drop-shadow-lg animate-in fade-in slide-in-from-bottom-6 duration-500 delay-200">
+                        <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 max-w-4xl leading-tight">
                             {course.title}
                         </h1>
 
-                        <div className="flex flex-wrap items-center gap-8 text-slate-300 font-medium animate-in fade-in slide-in-from-bottom-8 duration-500 delay-300">
-                            <div className="flex items-center gap-2.5">
-                                <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-                                    <Users className="h-5 w-5 text-indigo-400" />
-                                </div>
-                                <span className="text-lg">{(course.enrollments_count || 0).toLocaleString()} <span className="text-slate-400 text-base">students</span></span>
+                        <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm">
+                            <div className="flex items-center gap-2">
+                                <Users className="h-5 w-5" />
+                                <span>{(course.enrollments_count || 0).toLocaleString()} students</span>
                             </div>
                             {course.duration_weeks && (
-                                <div className="flex items-center gap-2.5">
-                                    <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-                                        <Clock className="h-5 w-5 text-indigo-400" />
-                                    </div>
-                                    <span className="text-lg">{course.duration_weeks} <span className="text-slate-400 text-base">weeks</span></span>
+                                <div className="flex items-center gap-2">
+                                    <Clock className="h-5 w-5" />
+                                    <span>{course.duration_weeks} weeks</span>
                                 </div>
                             )}
-                            <div className="flex items-center gap-2.5">
-                                <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-                                    <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
-                                </div>
-                                <span className="text-lg">{course.rating ? course.rating.toFixed(1) : 'New'} <span className="text-slate-400 text-base">rating</span></span>
+                            <div className="flex items-center gap-2">
+                                <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+                                <span>{course.rating ? course.rating.toFixed(1) : 'New'} rating</span>
                             </div>
                         </div>
                     </div>

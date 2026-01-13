@@ -291,14 +291,14 @@ export const ClassroomListPage = () => {
     if (pageLoading) return <PageLoader />;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Live Classrooms</h1>
-                        <p className="mt-2 text-gray-600">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Live Classrooms</h1>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">
                             {isInstructor
                                 ? 'Manage your live sessions and schedules.'
                                 : 'Join your enrolled live classes.'}
@@ -314,13 +314,13 @@ export const ClassroomListPage = () => {
 
                 {/* Filters */}
                 {(!isInstructor || (isInstructor && courses.length > 0)) && (
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4">
+                    <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-6 flex flex-col md:flex-row gap-4 transition-colors duration-300">
                         <div className="flex-1">
-                            <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Select Course</label>
+                            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Select Course</label>
                             <div className="relative">
                                 <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <select
-                                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                                    className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                                     value={selectedCourseId}
                                     onChange={(e) => setSelectedCourseId(e.target.value)}
                                 >
@@ -334,11 +334,11 @@ export const ClassroomListPage = () => {
 
                         {(selectedCourseId || selectedSubjectId) && (
                             <div className="flex-1">
-                                <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Select Subject</label>
+                                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Select Subject</label>
                                 <div className="relative">
                                     <Layers className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                     <select
-                                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                                        className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                                         value={selectedSubjectId}
                                         onChange={(e) => setSelectedSubjectId(e.target.value)}
                                         disabled={!selectedCourseId || loadingSubjects}
@@ -361,17 +361,17 @@ export const ClassroomListPage = () => {
                 ) : (
                     <>
                         {!isInstructor && !selectedSubjectId ? (
-                            <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100 border-dashed">
+                            <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 border-dashed transition-colors duration-300">
                                 <div className="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <Search className="w-8 h-8 text-indigo-500" />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-900">Select a course and subject</h3>
-                                <p className="text-gray-500 mt-1">Please select an enrolled course and subject above to view available classes.</p>
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Select a course and subject</h3>
+                                <p className="text-gray-500 dark:text-gray-400 mt-1">Please select an enrolled course and subject above to view available classes.</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {classrooms.length > 0 ? classrooms.map((classroom) => (
-                                    <div key={classroom.id} className="relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all group">
+                                    <div key={classroom.id} className="relative bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-md dark:hover:shadow-lg transition-all group">
                                         <div className="p-6">
                                             <div className="flex justify-between items-start mb-4">
                                                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${classroom.status === 'live' ? 'bg-red-100 text-red-600 animate-pulse' :
@@ -405,11 +405,11 @@ export const ClassroomListPage = () => {
                                                 </div>
                                             )}
 
-                                            <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1" title={classroom.title}>{classroom.title}</h3>
-                                            <p className="text-gray-500 text-sm mb-4 line-clamp-2 h-10">{classroom.description || 'No description provided.'}</p>
+                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-1" title={classroom.title}>{classroom.title}</h3>
+                                            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2 h-10">{classroom.description || 'No description provided.'}</p>
 
-                                            <div className="space-y-3 mb-6 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                                <div className="flex items-center text-xs text-gray-600">
+                                            <div className="space-y-3 mb-6 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                                                <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
                                                     <Calendar className="w-3.5 h-3.5 mr-2 text-indigo-500" />
                                                     {format(new Date(classroom.start_time), 'EEE, MMM d, yyyy')}
                                                 </div>
@@ -442,7 +442,7 @@ export const ClassroomListPage = () => {
                                         </div>
                                     </div>
                                 )) : (
-                                    <div className="col-span-full py-12 text-center text-gray-500 bg-white rounded-xl border border-gray-100 border-dashed">
+                                    <div className="col-span-full py-12 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 border-dashed transition-colors duration-300">
                                         <p>No classrooms found matching your selection.</p>
                                     </div>
                                 )}
@@ -455,17 +455,17 @@ export const ClassroomListPage = () => {
             {/* Create/Edit Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
-                        <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-                            <h2 className="text-xl font-bold text-gray-900">{editingClass ? 'Edit Classroom' : 'Schedule New Class'}</h2>
-                            <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-600"><span className="text-2xl">&times;</span></button>
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-800 pb-4">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingClass ? 'Edit Classroom' : 'Schedule New Class'}</h2>
+                            <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><span className="text-2xl">&times;</span></button>
                         </div>
 
                         <form onSubmit={handleFormSubmit} className="space-y-4">
                             {!editingClass && (
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Course <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Course <span className="text-red-500">*</span></label>
                                         <select
                                             required
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"

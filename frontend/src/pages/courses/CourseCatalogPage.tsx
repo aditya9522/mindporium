@@ -64,14 +64,14 @@ export const CourseCatalogPage = () => {
                         {/* Search Bar */}
                         <div className="flex-1 flex gap-2">
                             <div className="relative flex-1 group">
-                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-500 dark:group-focus-within:text-primary-400 transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search courses..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     onKeyPress={handleKeyPress}
-                                    className="w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-400 text-gray-900 dark:text-gray-100 font-medium"
+                                    className="w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-primary-500/20 dark:focus:ring-primary-400/20 focus:border-primary-500 dark:focus:border-primary-400 outline-none transition-all placeholder:text-gray-400 text-gray-900 dark:text-gray-100 font-medium"
                                 />
                                 <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                                     <VoiceInput
@@ -82,7 +82,7 @@ export const CourseCatalogPage = () => {
                                     />
                                 </div>
                             </div>
-                            <Button onClick={handleSearch} className="h-full px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg shadow-indigo-200 transition-all hover:-translate-y-0.5">Search</Button>
+                            <Button onClick={handleSearch} className="h-full px-8 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg shadow-primary-200 dark:shadow-primary-900/50 transition-all hover:-translate-y-0.5">Search</Button>
                         </div>
 
                         {/* View Toggle */}
@@ -90,16 +90,16 @@ export const CourseCatalogPage = () => {
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === 'grid'
-                                    ? 'bg-white dark:bg-gray-800 text-indigo-600 shadow-sm'
-                                    : 'text-gray-400 hover:text-gray-600'}`}
+                                    ? 'bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400 shadow-sm'
+                                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             >
                                 <Grid className="h-5 w-5" />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
                                 className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === 'list'
-                                    ? 'bg-white dark:bg-gray-800 text-indigo-600 shadow-sm'
-                                    : 'text-gray-400 hover:text-gray-600'}`}
+                                    ? 'bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400 shadow-sm'
+                                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             >
                                 <List className="h-5 w-5" />
                             </button>

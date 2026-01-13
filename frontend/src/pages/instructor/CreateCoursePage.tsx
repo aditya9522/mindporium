@@ -113,19 +113,19 @@ export const CreateCoursePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
                     <button
                         onClick={() => navigate('/instructor/courses')}
-                        className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+                        className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 mb-4 transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back to My Courses
                     </button>
-                    <h1 className="text-3xl font-bold text-gray-900">Create New Course</h1>
-                    <p className="mt-2 text-gray-600">Follow the steps to create your course.</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Create New Course</h1>
+                    <p className="mt-2 text-gray-600 dark:text-gray-400 dark:text-gray-500">Follow the steps to create your course.</p>
                 </div>
 
                 {/* Progress Steps */}
@@ -137,12 +137,12 @@ export const CreateCoursePage = () => {
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${currentStep > step.number
                                         ? 'bg-green-500 text-white'
                                         : currentStep === step.number
-                                            ? 'bg-indigo-600 text-white'
+                                            ? 'bg-primary-600 text-white'
                                             : 'bg-gray-200 text-gray-600'
                                         }`}>
                                         {currentStep > step.number ? <Check className="w-5 h-5" /> : step.number}
                                     </div>
-                                    <span className={`ml-3 text-sm font-medium ${currentStep >= step.number ? 'text-gray-900' : 'text-gray-500'
+                                    <span className={`ml-3 text-sm font-medium ${currentStep >= step.number ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'
                                         }`}>
                                         {step.title}
                                     </span>
@@ -157,19 +157,19 @@ export const CreateCoursePage = () => {
                 </div>
 
                 {/* Form Content */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-8 transition-colors duration-300">
                     {/* Step 1: Basic Information */}
                     {currentStep === 1 && (
                         <div className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Course Title *
                                 </label>
                                 <input
                                     type="text"
                                     value={basicInfo.title}
                                     onChange={(e) => setBasicInfo({ ...basicInfo, title: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="e.g., Complete Web Development Bootcamp"
                                 />
                             </div>
@@ -182,7 +182,7 @@ export const CreateCoursePage = () => {
                                     value={basicInfo.description}
                                     onChange={(e) => setBasicInfo({ ...basicInfo, description: e.target.value })}
                                     rows={4}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="Describe what students will learn in this course..."
                                 />
                             </div>
@@ -195,7 +195,7 @@ export const CreateCoursePage = () => {
                                     <select
                                         value={basicInfo.level}
                                         onChange={(e) => setBasicInfo({ ...basicInfo, level: e.target.value as LevelEnum })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     >
                                         <option value="beginner">Beginner</option>
                                         <option value="intermediate">Intermediate</option>
@@ -210,7 +210,7 @@ export const CreateCoursePage = () => {
                                     <select
                                         value={basicInfo.category}
                                         onChange={(e) => setBasicInfo({ ...basicInfo, category: e.target.value as CategoryEnum })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     >
                                         <option value="free">Free</option>
                                         <option value="paid">Paid</option>
@@ -227,7 +227,7 @@ export const CreateCoursePage = () => {
                                         type="number"
                                         value={basicInfo.price}
                                         onChange={(e) => setBasicInfo({ ...basicInfo, price: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                         min="0"
                                         step="0.01"
                                     />
@@ -242,7 +242,7 @@ export const CreateCoursePage = () => {
                                     type="number"
                                     value={basicInfo.duration_weeks}
                                     onChange={(e) => setBasicInfo({ ...basicInfo, duration_weeks: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     min="0"
                                 />
                             </div>
@@ -257,13 +257,13 @@ export const CreateCoursePage = () => {
                                         value={tagInput}
                                         onChange={(e) => setTagInput(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="flex-1 px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                         placeholder="Add a tag and press Enter"
                                     />
                                     <button
                                         type="button"
                                         onClick={handleAddTag}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                                     >
                                         Add
                                     </button>
@@ -272,12 +272,12 @@ export const CreateCoursePage = () => {
                                     {basicInfo.tags.map((tag) => (
                                         <span
                                             key={tag}
-                                            className="inline-flex items-center px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm"
+                                            className="inline-flex items-center px-3 py-1 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full text-sm"
                                         >
                                             {tag}
                                             <button
                                                 onClick={() => handleRemoveTag(tag)}
-                                                className="ml-2 text-indigo-600 hover:text-indigo-800"
+                                                className="ml-2 text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200"
                                             >
                                                 <X className="w-4 h-4" />
                                             </button>
@@ -304,28 +304,28 @@ export const CreateCoursePage = () => {
                     {currentStep === 2 && (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900">Course Curriculum</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Course Curriculum</h3>
                                 <button
                                     onClick={handleAddSubject}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                                 >
                                     Add Subject
                                 </button>
                             </div>
 
                             {subjects.length === 0 ? (
-                                <div className="text-center py-8 text-gray-500">
+                                <div className="text-center py-8 text-gray-500 dark:text-gray-400 dark:text-gray-500">
                                     No subjects added yet. Click "Add Subject" to get started.
                                 </div>
                             ) : (
                                 <div className="space-y-4">
                                     {subjects.map((subject, index) => (
-                                        <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                        <div key={index} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 rounded-lg p-4 transition-colors duration-300">
                                             <div className="flex items-start justify-between mb-3">
-                                                <h4 className="font-medium text-gray-900">Subject {index + 1}</h4>
+                                                <h4 className="font-medium text-gray-900 dark:text-gray-100">Subject {index + 1}</h4>
                                                 <button
                                                     onClick={() => handleRemoveSubject(index)}
-                                                    className="text-red-600 hover:text-red-800"
+                                                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
                                                 >
                                                     Remove
                                                 </button>
@@ -335,14 +335,14 @@ export const CreateCoursePage = () => {
                                                     type="text"
                                                     value={subject.title}
                                                     onChange={(e) => handleSubjectChange(index, 'title', e.target.value)}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                                     placeholder="Subject title"
                                                 />
                                                 <textarea
                                                     value={subject.description}
                                                     onChange={(e) => handleSubjectChange(index, 'description', e.target.value)}
                                                     rows={2}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                                     placeholder="Subject description (optional)"
                                                 />
                                             </div>
@@ -358,14 +358,14 @@ export const CreateCoursePage = () => {
                         <div className="space-y-6">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Your Course</h3>
 
-                            <div className="bg-gray-50 rounded-lg p-6 space-y-4">
+                            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 space-y-4 border border-gray-200 dark:border-gray-700">
                                 <div>
-                                    <h4 className="font-medium text-gray-700 mb-1">Title</h4>
-                                    <p className="text-gray-900">{basicInfo.title}</p>
+                                    <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Title</h4>
+                                    <p className="text-gray-900 dark:text-gray-100">{basicInfo.title}</p>
                                 </div>
                                 <div>
                                     <h4 className="font-medium text-gray-700 mb-1">Description</h4>
-                                    <p className="text-gray-900">{basicInfo.description}</p>
+                                    <p className="text-gray-900 dark:text-gray-100">{basicInfo.description}</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
@@ -380,12 +380,12 @@ export const CreateCoursePage = () => {
                                 {basicInfo.category === 'paid' && (
                                     <div>
                                         <h4 className="font-medium text-gray-700 mb-1">Price</h4>
-                                        <p className="text-gray-900">${basicInfo.price}</p>
+                                        <p className="text-gray-900 dark:text-gray-100">${basicInfo.price}</p>
                                     </div>
                                 )}
                                 <div>
                                     <h4 className="font-medium text-gray-700 mb-1">Subjects ({subjects.length})</h4>
-                                    <ul className="list-disc list-inside text-gray-900">
+                                    <ul className="list-disc list-inside text-gray-900 dark:text-gray-100">
                                         {subjects.map((subject, index) => (
                                             <li key={index}>{subject.title}</li>
                                         ))}
@@ -396,7 +396,7 @@ export const CreateCoursePage = () => {
                                         <h4 className="font-medium text-gray-700 mb-1">Tags</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {basicInfo.tags.map((tag) => (
-                                                <span key={tag} className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-sm">
+                                                <span key={tag} className="px-2 py-1 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded text-sm">
                                                     {tag}
                                                 </span>
                                             ))}
@@ -413,7 +413,7 @@ export const CreateCoursePage = () => {
                     <button
                         onClick={() => setCurrentStep(currentStep - 1)}
                         disabled={currentStep === 1}
-                        className="flex items-center px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Previous
@@ -423,7 +423,7 @@ export const CreateCoursePage = () => {
                         <button
                             onClick={() => setCurrentStep(currentStep + 1)}
                             disabled={!canProceed()}
-                            className="flex items-center px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Next
                             <ArrowRight className="w-4 h-4 ml-2" />

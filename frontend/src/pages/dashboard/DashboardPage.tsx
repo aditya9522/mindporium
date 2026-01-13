@@ -69,37 +69,32 @@ export const DashboardPage = () => {
     ].filter(item => item.value > 0) : [];
 
     return (
-        <div className="space-y-8 px-8 py-8 transition-colors">
+        <div className="space-y-6 px-4 sm:px-6 lg:px-8 py-6 transition-colors">
             {/* Welcome Section */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-primary-600 to-primary-400 rounded-3xl p-10 text-white shadow-2xl shadow-primary-200 animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="absolute top-0 right-0 p-12 opacity-10 transform translate-x-12 -translate-y-12">
-                    <Award className="w-56 h-56 text-white" />
-                </div>
-                <div className="relative z-10">
-                    <h1 className="text-4xl font-extrabold mb-3 tracking-tight">
-                        Welcome back, {user?.full_name?.split(' ')[0]}! 👋
-                    </h1>
-                    <p className="text-primary-100 text-lg font-medium opacity-90 max-w-xl">
-                        You're making great progress. Keep up the momentum and reach your goals today!
-                    </p>
-                </div>
+            <div className="bg-white dark:bg-gray-900 rounded-xl p-8 border border-gray-200 dark:border-gray-800 transition-colors">
+                <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+                    Welcome back, {user?.full_name?.split(' ')[0]}! 👋
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                    You're making great progress. Keep up the momentum and reach your goals today!
+                </p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => {
                     const Icon = stat.icon;
                     return (
                         <div
                             key={index}
-                            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1"
+                            className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors"
                         >
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
-                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">{stat.value}</p>
+                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{stat.label}</p>
+                                    <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stat.value}</p>
                                 </div>
-                                <div className={`${stat.color} p-3.5 rounded-xl shadow-lg shadow-primary-100/50`}>
+                                <div className={`${stat.color} p-3 rounded-lg`}>
                                     <Icon className="h-6 w-6 text-white" />
                                 </div>
                             </div>
@@ -109,9 +104,9 @@ export const DashboardPage = () => {
             </div>
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Activity Chart */}
-                <div className="lg:col-span-2 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors">
+                <div className="lg:col-span-2 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         Learning Activity (Last 30 Days)
@@ -119,7 +114,7 @@ export const DashboardPage = () => {
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={dashboardData?.charts?.activity || []}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                                 <XAxis
                                     dataKey="date"
                                     tickFormatter={(val) => new Date(val).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
@@ -134,9 +129,9 @@ export const DashboardPage = () => {
                                     type="monotone"
                                     dataKey="count"
                                     stroke="var(--primary-600)"
-                                    strokeWidth={3}
-                                    dot={{ r: 4, fill: 'var(--primary-600)' }}
-                                    activeDot={{ r: 6 }}
+                                    strokeWidth={2}
+                                    dot={{ r: 3, fill: 'var(--primary-600)' }}
+                                    activeDot={{ r: 5 }}
                                 />
                             </LineChart>
                         </ResponsiveContainer>
@@ -144,7 +139,7 @@ export const DashboardPage = () => {
                 </div>
 
                 {/* Performance Chart */}
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
                         <Award className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         Performance Overview
@@ -171,7 +166,7 @@ export const DashboardPage = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
                                 <Award className="w-12 h-12 mb-2 opacity-20" />
                                 <p>No test data yet</p>
                             </div>
@@ -181,17 +176,17 @@ export const DashboardPage = () => {
             </div>
 
             {/* Recent Activity & Enrolled Courses */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Activity List */}
-                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 transition-colors">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 transition-colors">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         Recent Activity
                     </h2>
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         {dashboardData?.recent_activity?.length > 0 ? (
                             dashboardData.recent_activity.map((activity: any, index: number) => (
-                                <div key={index} className="flex gap-4 items-start">
+                                <div key={index} className="flex gap-3 items-start">
                                     <div className="w-2 h-2 mt-2 rounded-full bg-primary-600 dark:bg-primary-400 flex-shrink-0" />
                                     <div>
                                         <p className="text-gray-900 dark:text-gray-100 font-medium">{activity.title}</p>
@@ -207,7 +202,7 @@ export const DashboardPage = () => {
                                 </div>
                             ))
                         ) : (
-                            <div className="text-center py-8 text-gray-500">
+                            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                                 No recent activity
                             </div>
                         )}
@@ -215,7 +210,7 @@ export const DashboardPage = () => {
                 </div>
 
                 {/* Course Progress */}
-                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 transition-colors">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 transition-colors">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
                         <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         My Courses
@@ -234,18 +229,18 @@ export const DashboardPage = () => {
                                             {course.progress_percent}%
                                         </span>
                                     </div>
-                                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                                         <div
                                             className="bg-primary-600 h-2 rounded-full transition-all duration-300"
-                                            style={{ width: `${course.progress_percent}%` }}
+                                            style={{ width: `${Math.min(course.progress_percent || 0, 100)}%` }}
                                         />
                                     </div>
                                 </Link>
                             ))
                         ) : (
                             <div className="text-center py-8">
-                                <p className="text-gray-500 mb-4">You haven't enrolled in any courses yet.</p>
-                                <Link to="/courses" className="text-primary-600 font-medium hover:text-primary-700">
+                                <p className="text-gray-500 dark:text-gray-400 mb-4">You haven't enrolled in any courses yet.</p>
+                                <Link to="/courses" className="text-primary-600 dark:text-primary-400 font-medium hover:text-primary-700 dark:hover:text-primary-500">
                                     Browse Courses &rarr;
                                 </Link>
                             </div>

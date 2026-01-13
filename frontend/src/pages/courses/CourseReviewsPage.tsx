@@ -66,46 +66,45 @@ export const CourseReviewsPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto space-y-10 px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Course Reviews</h1>
-                        <p className="text-lg text-gray-500 dark:text-gray-400 mt-2 font-medium">See what students are saying about this course</p>
-                    </div>
+            <div className="max-w-7xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Course Reviews</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mt-2">See what students are saying about this course</p>
                 </div>
 
                 {/* Rating Overview */}
-                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 p-10">
-                    <div className="flex flex-col md:flex-row gap-16 items-center text-center md:text-left">
-                        <div className="flex flex-col items-center justify-center min-w-[200px]">
-                            <div className="text-7xl font-black text-gray-900 dark:text-white mb-2 tracking-tighter">{averageRating}</div>
-                            <div className="flex gap-1 mb-4">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-8">
+                    <div className="flex flex-col md:flex-row gap-12 items-center">
+                        <div className="flex flex-col items-center justify-center min-w-[180px]">
+                            <div className="text-6xl font-bold text-gray-900 dark:text-white mb-3">{averageRating}</div>
+                            <div className="flex gap-1 mb-3">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <Star
                                         key={star}
-                                        className={`w-6 h-6 ${star <= Number(averageRating)
+                                        className={`w-5 h-5 ${star <= Number(averageRating)
                                             ? 'text-amber-400 fill-amber-400'
                                             : 'text-gray-200 dark:text-gray-800'
                                             }`}
                                     />
                                 ))}
                             </div>
-                            <p className="text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest text-sm">{reviews.length} Ratings</p>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{reviews.length} {reviews.length === 1 ? 'Rating' : 'Ratings'}</p>
                         </div>
 
-                        <div className="flex-1 w-full space-y-4 max-w-2xl">
+                        <div className="flex-1 w-full space-y-3 max-w-2xl">
                             {ratingDistribution.map(({ star, percentage }) => (
-                                <div key={star} className="flex items-center gap-6">
-                                    <div className="flex items-center gap-2 w-16 text-sm font-bold text-gray-700 dark:text-gray-300">
-                                        <span>{star} stars</span>
+                                <div key={star} className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2 w-20 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <span>{star}</span>
+                                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                                     </div>
-                                    <div className="flex-1 h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                    <div className="flex-1 h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-700 ease-out"
+                                            className="h-full bg-primary-500 dark:bg-primary-600 rounded-full transition-all duration-500"
                                             style={{ width: `${percentage}%` }}
                                         />
                                     </div>
-                                    <div className="w-12 text-sm font-bold text-gray-400 dark:text-gray-500 text-right">
+                                    <div className="w-12 text-sm font-medium text-gray-500 dark:text-gray-400 text-right">
                                         {Math.round(percentage)}%
                                     </div>
                                 </div>
@@ -115,76 +114,71 @@ export const CourseReviewsPage = () => {
                 </div>
 
                 {/* Reviews List */}
-                <div className="space-y-8">
-                    <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-6">
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Student Feedback</h2>
-                        <div className="relative group">
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-4">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Student Feedback</h2>
+                        <div className="relative">
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value as any)}
-                                className="pl-5 pr-12 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer group-hover:border-indigo-200 dark:group-hover:border-indigo-900 transition-all shadow-sm"
+                                className="pl-4 pr-10 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none cursor-pointer transition-colors"
                             >
                                 <option value="newest">Newest First</option>
                                 <option value="highest">Highest Rating</option>
                                 <option value="lowest">Lowest Rating</option>
                             </select>
-                            <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-indigo-500 transition-colors" />
+                            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                         </div>
                     </div>
 
                     {reviews.length === 0 ? (
-                        <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-800">
-                            <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <MessageSquare className="w-10 h-10 text-gray-300 dark:text-gray-700" />
+                        <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+                            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <MessageSquare className="w-8 h-8 text-gray-400 dark:text-gray-600" />
                             </div>
-                            <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">No reviews yet</h3>
-                            <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-2 font-medium">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No reviews yet</h3>
+                            <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
                                 Be the first to share your experience with this course after enrolling!
                             </p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {getSortedReviews().map((review) => (
-                                <div key={review.id} className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:hover:shadow-indigo-900/10 transition-all duration-300 flex flex-col group">
-                                    <div className="flex items-start justify-between mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center overflow-hidden border border-indigo-100 dark:border-indigo-800 group-hover:scale-110 transition-transform">
-                                                {review.user.photo ? (
-                                                    <img src={getImageUrl(review.user.photo)} alt={review.user.full_name} className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <UserIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                                                )}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-black text-gray-900 dark:text-white text-base tracking-tight">{review.user.full_name}</h4>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <div className="flex gap-0.5">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className={`w-3 h-3 ${star <= review.rating
-                                                                    ? 'text-amber-400 fill-amber-400'
-                                                                    : 'text-gray-200 dark:text-gray-800'
-                                                                    }`}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                                                        • {new Date(review.created_at).toLocaleDateString()}
-                                                    </span>
+                                <div key={review.id} className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow">
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <div className="w-12 h-12 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                            {review.user.photo ? (
+                                                <img src={getImageUrl(review.user.photo)} alt={review.user.full_name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <UserIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-semibold text-gray-900 dark:text-white">{review.user.full_name}</h4>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <div className="flex gap-0.5">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star
+                                                            key={star}
+                                                            className={`w-3.5 h-3.5 ${star <= review.rating
+                                                                ? 'text-amber-400 fill-amber-400'
+                                                                : 'text-gray-300 dark:text-gray-700'
+                                                                }`}
+                                                        />
+                                                    ))}
                                                 </div>
+                                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {new Date(review.created_at).toLocaleDateString()}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="relative flex-1">
-                                        <span className="absolute -top-4 -left-2 text-4xl text-gray-100 dark:text-gray-800 font-serif opacity-50">"</span>
-                                        <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 text-sm font-medium italic relative z-10 pt-2">
-                                            {review.review_text}
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center gap-4 pt-6 border-t border-gray-50 dark:border-gray-800 mt-auto">
-                                        <button className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors uppercase tracking-widest">
-                                            <ThumbsUp className="w-3.5 h-3.5" />
+                                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4">
+                                        {review.review_text}
+                                    </p>
+                                    <div className="flex items-center gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                                        <button className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                            <ThumbsUp className="w-4 h-4" />
                                             <span>Helpful</span>
                                         </button>
                                     </div>

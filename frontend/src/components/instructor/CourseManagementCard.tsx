@@ -13,7 +13,7 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
     const [showMenu, setShowMenu] = useState(false);
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 group">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all duration-300 group">
             {/* Thumbnail */}
             <div className="relative h-40 bg-gradient-to-br from-indigo-500 to-teal-500 overflow-hidden rounded-t-xl">
                 {course.thumbnail ? (
@@ -53,29 +53,29 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
             <div className="p-5">
                 {/* Level Badge */}
                 <div className="mb-3">
-                    <span className="inline-block px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-50 rounded">
+                    <span className="inline-block px-2 py-1 text-xs font-medium text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 rounded">
                         {course.level.toUpperCase()}
                     </span>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                     {course.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                     {course.description || 'No description available'}
                 </p>
 
                 {/* Stats */}
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-100">
+                <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
                         <span>{enrollmentCount} students</span>
                     </div>
                     {course.category === 'paid' && course.price !== undefined && (
-                        <div className="flex items-center gap-1 text-indigo-600 font-semibold">
+                        <div className="flex items-center gap-1 text-primary-600 dark:text-primary-400 font-semibold">
                             <span>${course.price}</span>
                         </div>
                     )}
@@ -85,14 +85,14 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
                 <div className="flex items-center gap-2">
                     <Link
                         to={`/courses/${course.id}`}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
                     >
                         <Eye className="w-4 h-4" />
                         View
                     </Link>
                     <Link
                         to={`/instructor/courses/${course.id}/edit`}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
                     >
                         <Edit className="w-4 h-4" />
                         Edit
@@ -100,9 +100,9 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
                     <div className="relative">
                         <button
                             onClick={() => setShowMenu(!showMenu)}
-                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                         >
-                            <MoreVertical className="w-5 h-5 text-gray-600" />
+                            <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                         </button>
 
                         {showMenu && (
@@ -111,10 +111,10 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
                                     className="fixed inset-0 z-10"
                                     onClick={() => setShowMenu(false)}
                                 />
-                                <div className="absolute right-0 bottom-full mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                                <div className="absolute right-0 bottom-full mb-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
                                     <Link
                                         to={`/instructor/courses/${course.id}/view`}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         onClick={() => setShowMenu(false)}
                                     >
                                         <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
                                     </Link>
                                     <Link
                                         to={`/instructor/courses/${course.id}/analytics`}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         onClick={() => setShowMenu(false)}
                                     >
                                         <div className="flex items-center gap-2">
@@ -134,7 +134,7 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
                                     </Link>
                                     <Link
                                         to={`/instructor/courses/${course.id}/view/students`}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         onClick={() => setShowMenu(false)}
                                     >
                                         <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
                                             }
                                             setShowMenu(false);
                                         }}
-                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                                        className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
                                     >
                                         <div className="flex items-center gap-2">
                                             <Trash2 className="w-4 h-4" />

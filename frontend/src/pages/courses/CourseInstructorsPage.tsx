@@ -47,7 +47,7 @@ export const CourseInstructorsPage = () => {
     if (!course) {
         return (
             <div className="text-center py-12">
-                <h2 className="text-2xl font-bold text-gray-900">Course not found</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Course not found</h2>
             </div>
         );
     }
@@ -56,20 +56,20 @@ export const CourseInstructorsPage = () => {
         <div className="max-w-7xl mx-auto space-y-8 py-8 px-4 sm:px-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Instructors</h1>
-                    <p className="text-gray-500 mt-1">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Instructors</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">
                         Meet the experts teaching {course.title}
                     </p>
                 </div>
             </div>
 
             {(!course.instructors || course.instructors.length === 0) ? (
-                <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
-                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Users className="w-8 h-8 text-gray-300" />
+                <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+                    <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Users className="w-8 h-8 text-gray-300 dark:text-gray-600" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900">No instructors assigned</h3>
-                    <p className="text-gray-500 max-w-sm mx-auto mt-2">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">No instructors assigned</h3>
+                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-2">
                         This course currently has no assigned instructors.
                     </p>
                 </div>
@@ -78,11 +78,11 @@ export const CourseInstructorsPage = () => {
                     {course.instructors.map((instructor) => (
                         <div
                             key={instructor.id}
-                            className="bg-white rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 hover:shadow-lg hover:border-indigo-100 transition-all duration-300 flex flex-col items-center text-center group"
+                            className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none border border-gray-100 dark:border-gray-800 hover:shadow-lg hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 flex flex-col items-center text-center group"
                         >
                             <div className="relative mb-4">
-                                <div className="w-24 h-24 rounded-full p-1 bg-white shadow-md ring-1 ring-gray-100 group-hover:ring-indigo-100 transition-all">
-                                    <div className="w-full h-full rounded-full overflow-hidden bg-gray-100">
+                                <div className="w-24 h-24 rounded-full p-1 bg-white dark:bg-gray-800 shadow-md ring-1 ring-gray-100 dark:ring-gray-700 group-hover:ring-primary-100 dark:group-hover:ring-primary-900 transition-all">
+                                    <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
                                         {instructor.photo ? (
                                             <img
                                                 src={getImageUrl(instructor.photo)}
@@ -90,7 +90,7 @@ export const CourseInstructorsPage = () => {
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-600 font-bold text-2xl">
+                                            <div className="w-full h-full flex items-center justify-center bg-primary-50 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 font-bold text-2xl">
                                                 {instructor.full_name.charAt(0)}
                                             </div>
                                         )}
@@ -98,17 +98,17 @@ export const CourseInstructorsPage = () => {
                                 </div>
                             </div>
 
-                            <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                 {instructor.full_name}
                             </h3>
 
-                            <p className="text-sm text-gray-500 line-clamp-3 mb-6 flex-1">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-6 flex-1">
                                 {instructor.bio || "No bio available for this instructor."}
                             </p>
 
                             <Link
                                 to={`/instructors/${instructor.id}`}
-                                className="w-full py-2.5 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 hover:text-indigo-600 hover:border-indigo-200 transition-all flex items-center justify-center gap-2 group/btn"
+                                className="w-full py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-200 dark:hover:border-primary-800 transition-all flex items-center justify-center gap-2 group/btn"
                             >
                                 View Profile
                                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />

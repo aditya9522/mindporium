@@ -66,8 +66,8 @@ export const AnnouncementsList = ({ courseId, isInstructor = false }: Announceme
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <Bell className="w-5 h-5 text-indigo-600" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <Bell className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                     Announcements
                 </h3>
                 {isInstructor && (
@@ -79,13 +79,13 @@ export const AnnouncementsList = ({ courseId, isInstructor = false }: Announceme
             </div>
 
             {showCreate && (
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 animate-fade-in-down">
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 animate-fade-in-down">
                     <form onSubmit={handleCreate}>
                         <div className="mb-3">
                             <input
                                 type="text"
                                 placeholder="Title"
-                                className="w-full px-3 py-2 border rounded-md"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                 value={newAnnouncement.title}
                                 onChange={e => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
                                 required
@@ -94,18 +94,19 @@ export const AnnouncementsList = ({ courseId, isInstructor = false }: Announceme
                         <div className="mb-3">
                             <textarea
                                 placeholder="Content"
-                                className="w-full px-3 py-2 border rounded-md h-24"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md h-24 focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                 value={newAnnouncement.content}
                                 onChange={e => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
                                 required
                             />
                         </div>
                         <div className="flex items-center justify-between">
-                            <label className="flex items-center gap-2 text-sm text-gray-600">
+                            <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                                 <input
                                     type="checkbox"
                                     checked={newAnnouncement.is_pinned}
                                     onChange={e => setNewAnnouncement({ ...newAnnouncement, is_pinned: e.target.checked })}
+                                    className="rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500"
                                 />
                                 Pin to top
                             </label>
@@ -121,32 +122,32 @@ export const AnnouncementsList = ({ courseId, isInstructor = false }: Announceme
             <div className="space-y-4">
                 {announcements.length > 0 ? (
                     announcements.map((announcement) => (
-                        <div key={announcement.id} className={`bg-white p-4 rounded-lg border ${announcement.is_pinned ? 'border-indigo-200 bg-indigo-50' : 'border-gray-100'}`}>
+                        <div key={announcement.id} className={`p-4 rounded-lg border transition-colors duration-300 ${announcement.is_pinned ? 'border-primary-200 dark:border-primary-800/50 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900'}`}>
                             <div className="flex justify-between items-start mb-2">
                                 <div>
-                                    <h4 className="font-bold text-gray-900 flex items-center gap-2">
-                                        {announcement.is_pinned && <Pin className="w-3 h-3 text-indigo-600 fill-current" />}
+                                    <h4 className="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                        {announcement.is_pinned && <Pin className="w-3 h-3 text-primary-600 dark:text-primary-400 fill-current" />}
                                         {announcement.title}
                                     </h4>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
                                         {formatDistanceToNow(new Date(announcement.created_at), { addSuffix: true })}
                                     </p>
                                 </div>
                                 {isInstructor && (
                                     <button
                                         onClick={() => handleDelete(announcement.id)}
-                                        className="text-gray-400 hover:text-red-500 transition-colors"
+                                        className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>
                                 )}
                             </div>
-                            <p className="text-gray-600 text-sm whitespace-pre-wrap">{announcement.content}</p>
+                            <p className="text-gray-600 dark:text-gray-300 text-sm whitespace-pre-wrap">{announcement.content}</p>
                         </div>
                     ))
                 ) : (
-                    <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                        <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-dashed border-gray-200 dark:border-gray-700">
+                        <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
                         <p>No announcements yet.</p>
                     </div>
                 )}

@@ -144,13 +144,13 @@ export const ManageResourcesPage = () => {
     if (!subject) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <p className="text-gray-500">Subject not found</p>
+                <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Subject not found</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
@@ -163,12 +163,12 @@ export const ManageResourcesPage = () => {
                     </button>
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Manage Resources</h1>
-                            <p className="mt-2 text-gray-600">Subject: {subject.title}</p>
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Manage Resources</h1>
+                            <p className="mt-2 text-gray-600 dark:text-gray-400 dark:text-gray-500">Subject: {subject.title}</p>
                         </div>
                         <button
                             onClick={() => setShowAddForm(!showAddForm)}
-                            className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                         >
                             <Plus className="w-4 h-4 mr-2" />
                             Add Resource
@@ -178,7 +178,7 @@ export const ManageResourcesPage = () => {
 
                 {/* Add Resource Form */}
                 {showAddForm && (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
                         <h2 className="text-lg font-bold text-gray-900 mb-4">Add New Resource</h2>
 
                         <div className="space-y-4">
@@ -189,7 +189,7 @@ export const ManageResourcesPage = () => {
                                 <select
                                     value={newResource.resource_type}
                                     onChange={(e) => setNewResource({ ...newResource, resource_type: e.target.value as ResourceTypeEnum })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                 >
                                     <option value="video">Video</option>
                                     <option value="pdf">PDF Document</option>
@@ -209,7 +209,7 @@ export const ManageResourcesPage = () => {
                                     type="text"
                                     value={newResource.title}
                                     onChange={(e) => setNewResource({ ...newResource, title: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="e.g., Introduction to React"
                                 />
                             </div>
@@ -222,7 +222,7 @@ export const ManageResourcesPage = () => {
                                     value={newResource.description}
                                     onChange={(e) => setNewResource({ ...newResource, description: e.target.value })}
                                     rows={2}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="Brief description of this resource"
                                 />
                             </div>
@@ -238,7 +238,7 @@ export const ManageResourcesPage = () => {
                                             type="url"
                                             value={newResource.file_url}
                                             onChange={(e) => setNewResource({ ...newResource, file_url: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                             placeholder="https://example.com/video.mp4"
                                         />
                                     </div>
@@ -253,7 +253,7 @@ export const ManageResourcesPage = () => {
                                         type="url"
                                         value={newResource.external_link}
                                         onChange={(e) => setNewResource({ ...newResource, external_link: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                         placeholder="https://example.com"
                                     />
                                 </div>
@@ -265,9 +265,9 @@ export const ManageResourcesPage = () => {
                                     id="is_downloadable"
                                     checked={newResource.is_downloadable}
                                     onChange={(e) => setNewResource({ ...newResource, is_downloadable: e.target.checked })}
-                                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                    className="w-4 h-4 text-primary-600 dark:text-primary-400 border-gray-300 rounded focus:ring-primary-500"
                                 />
-                                <label htmlFor="is_downloadable" className="ml-2 text-sm text-gray-700">
+                                <label htmlFor="is_downloadable" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                                     Allow students to download this resource
                                 </label>
                             </div>
@@ -276,7 +276,7 @@ export const ManageResourcesPage = () => {
                                 <button
                                     onClick={handleAddResource}
                                     disabled={saving}
-                                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                                    className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
                                 >
                                     {saving ? (
                                         <>
@@ -292,7 +292,7 @@ export const ManageResourcesPage = () => {
                                 </button>
                                 <button
                                     onClick={() => setShowAddForm(false)}
-                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
                                 >
                                     Cancel
                                 </button>
@@ -302,7 +302,7 @@ export const ManageResourcesPage = () => {
                 )}
 
                 {/* Resources List */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 p-6">
                     <h2 className="text-lg font-bold text-gray-900 mb-4">
                         Resources ({resources.length})
                     </h2>
@@ -312,7 +312,7 @@ export const ManageResourcesPage = () => {
                             {resources.map((resource, index) => (
                                 <div
                                     key={resource.id}
-                                    className="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+                                    className="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                                 >
                                     <div className="flex items-start gap-3 flex-1">
                                         <div className="text-gray-600 mt-1">
@@ -320,7 +320,7 @@ export const ManageResourcesPage = () => {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="font-medium text-gray-900">{resource.title}</h3>
+                                                <h3 className="font-medium text-gray-900 dark:text-gray-100">{resource.title}</h3>
                                                 <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">
                                                     {resource.resource_type.toUpperCase()}
                                                 </span>
@@ -328,7 +328,7 @@ export const ManageResourcesPage = () => {
                                             {resource.description && (
                                                 <p className="text-sm text-gray-600 mb-2">{resource.description}</p>
                                             )}
-                                            <div className="flex items-center gap-4 text-xs text-gray-500">
+                                            <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                                                 <span>Order: {index + 1}</span>
                                                 {resource.is_downloadable && (
                                                     <span className="text-green-600">Downloadable</span>
@@ -346,8 +346,8 @@ export const ManageResourcesPage = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-12 text-gray-500">
-                            <File className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                        <div className="text-center py-12 text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                            <File className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
                             <p>No resources added yet.</p>
                             <p className="text-sm mt-1">Click "Add Resource" to get started.</p>
                         </div>

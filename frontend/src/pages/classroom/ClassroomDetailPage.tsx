@@ -146,10 +146,6 @@ export const ClassroomDetailPage = () => {
         }
     };
 
-    // ... (Other functions loadMessages, handleSendMessage, startCamera etc are defined below in original, but hooks must be top)
-    // Actually the easiest way is to just keep functions where they are and only move the hooks up.
-    // But I will just output the hooks block at the top and remove them from the bottom.
-
     const loadMessages = async () => {
         if (!id) return;
         try {
@@ -182,7 +178,6 @@ export const ClassroomDetailPage = () => {
         }
     };
 
-    // --- Media Action Handlers ---
     const startCamera = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -801,7 +796,7 @@ export const ClassroomDetailPage = () => {
                         </div>
                     )}
 
-                    <Button variant="ghost" className="mt-6 text-gray-400 hover:text-white" onClick={() => navigate('/classrooms')}>
+                    <Button variant="ghost" className="mt-6 text-gray-400 hover:bg-gray-700 dark:hover:text-gray-200" onClick={() => navigate('/classrooms')}>
                         Back to Classrooms
                     </Button>
                 </div>

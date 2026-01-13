@@ -244,24 +244,24 @@ export const CreateTestPage = () => {
     if (pageLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary-600 dark:text-primary-400" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <button
                     onClick={() => navigate('/instructor/tests')}
-                    className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+                    className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 mb-6 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to Tests
                 </button>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-6">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 mb-6 transition-colors duration-300">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                         {isEditing ? 'Edit Test' : 'Create New Test'}
                     </h1>
 
@@ -269,14 +269,14 @@ export const CreateTestPage = () => {
                         {/* Basic Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Test Title *
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="e.g., Mid-term Examination"
                                     required
                                 />
@@ -290,20 +290,20 @@ export const CreateTestPage = () => {
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     rows={3}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="Brief description of the test"
                                 />
                             </div>
 
                             {/* Course & Subject Selection */}
-                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 md:col-span-2 space-y-4">
-                                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 md:col-span-2 space-y-4">
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                                     <Filter className="w-4 h-4" />
                                     Test Context (Optional)
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                                        <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                                             Filter by Course
                                         </label>
                                         <select
@@ -312,7 +312,7 @@ export const CreateTestPage = () => {
                                                 setSelectedCourseId(e.target.value);
                                                 setFormData({ ...formData, subject_id: '' }); // Reset subject
                                             }}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
                                         >
                                             <option value="">All Courses</option>
                                             {courses.map((course) => (
@@ -330,7 +330,7 @@ export const CreateTestPage = () => {
                                         <select
                                             value={formData.subject_id}
                                             onChange={(e) => setFormData({ ...formData, subject_id: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
                                         >
                                             <option value="">-- General / No Subject --</option>
                                             {filteredSubjects.map((subject) => (
@@ -352,7 +352,7 @@ export const CreateTestPage = () => {
                                     value={formData.duration_minutes}
                                     onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
                                     min="1"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     required
                                 />
                             </div>
@@ -365,9 +365,9 @@ export const CreateTestPage = () => {
                                     type="number"
                                     value={formData.total_marks}
                                     readOnly
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                                    className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">Auto-calculated from questions</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Auto-calculated from questions</p>
                             </div>
 
                             <div>
@@ -381,7 +381,7 @@ export const CreateTestPage = () => {
                                     min="0"
                                     max={formData.total_marks}
                                     step="0.5"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     required
                                 />
                             </div>
@@ -393,7 +393,7 @@ export const CreateTestPage = () => {
                                 <select
                                     value={formData.status}
                                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                 >
                                     <option value="draft">Draft</option>
                                     <option value="published">Published</option>
@@ -404,11 +404,11 @@ export const CreateTestPage = () => {
                         {/* Questions */}
                         <div className="border-t border-gray-200 pt-6">
                             <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-lg font-bold text-gray-900">Questions</h2>
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Questions</h2>
                                 <button
                                     type="button"
                                     onClick={addQuestion}
-                                    className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors text-sm font-medium"
+                                    className="flex items-center gap-2 px-4 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors text-sm font-medium"
                                 >
                                     <Plus className="w-4 h-4" />
                                     Add Question
@@ -417,24 +417,24 @@ export const CreateTestPage = () => {
 
                             <div className="space-y-6">
                                 {questions.map((question, qIndex) => (
-                                    <div key={qIndex} className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                                    <div key={qIndex} className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 overflow-hidden shadow-sm transition-colors duration-300">
                                         <div
-                                            className="flex justify-between items-center p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                                            className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-800/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
                                             onClick={() => toggleQuestion(qIndex)}
                                         >
                                             <div className="flex items-center gap-3">
-                                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold">
+                                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 text-xs font-bold">
                                                     {qIndex + 1}
                                                 </span>
-                                                <h3 className="font-medium text-gray-900">
+                                                <h3 className="font-medium text-gray-900 dark:text-gray-100">
                                                     {question.question_text ? (question.question_text.length > 50 ? question.question_text.substring(0, 50) + '...' : question.question_text) : 'New Question'}
                                                 </h3>
-                                                <span className="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">
+                                                <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
                                                     {question.question_type === 'mcq' ? 'MCQ' : question.question_type === 'short_answer' ? 'Short Answer' : 'Essay'}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {expandedQuestions[qIndex] ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                                                {expandedQuestions[qIndex] ? <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />}
                                                 {questions.length > 1 && (
                                                     <button
                                                         type="button"
@@ -452,16 +452,16 @@ export const CreateTestPage = () => {
                                         </div>
 
                                         {expandedQuestions[qIndex] && (
-                                            <div className="p-4 border-t border-gray-200 space-y-4 animate-in slide-in-from-top-2 duration-200">
+                                            <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-4 animate-in slide-in-from-top-2 duration-200">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                         Question Text *
                                                     </label>
                                                     <textarea
                                                         value={question.question_text}
                                                         onChange={(e) => updateQuestion(qIndex, 'question_text', e.target.value)}
                                                         rows={2}
-                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                                                        className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                                         placeholder="Enter your question"
                                                         required
                                                     />
@@ -475,7 +475,7 @@ export const CreateTestPage = () => {
                                                         <select
                                                             value={question.question_type}
                                                             onChange={(e) => updateQuestion(qIndex, 'question_type', e.target.value)}
-                                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                                                            className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                                         >
                                                             <option value="mcq">Multiple Choice</option>
                                                             <option value="short_answer">Short Answer</option>
@@ -493,14 +493,14 @@ export const CreateTestPage = () => {
                                                             onChange={(e) => updateQuestion(qIndex, 'marks', parseFloat(e.target.value))}
                                                             min="0.5"
                                                             step="0.5"
-                                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                                                            className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                                             required
                                                         />
                                                     </div>
                                                 </div>
 
                                                 {question.question_type === 'mcq' && (
-                                                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                    <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                                                         <label className="block text-sm font-medium text-gray-700 mb-2">
                                                             Options
                                                         </label>
@@ -512,20 +512,20 @@ export const CreateTestPage = () => {
                                                                         name={`correct-${qIndex}`}
                                                                         checked={question.correct_answer === option && option !== ''}
                                                                         onChange={() => updateQuestion(qIndex, 'correct_answer', option)}
-                                                                        className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                                                        className="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500"
                                                                     />
                                                                     <input
                                                                         type="text"
                                                                         value={option}
                                                                         onChange={(e) => updateOption(qIndex, optIndex, e.target.value)}
-                                                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-sm"
+                                                                        className="flex-1 px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                                                                         placeholder={`Option ${optIndex + 1}`}
                                                                         required
                                                                     />
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                        <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-1">
                                                             <CheckCircle className="w-3 h-3" /> Select the radio button for the correct answer
                                                         </p>
                                                     </div>
@@ -538,18 +538,18 @@ export const CreateTestPage = () => {
                         </div>
 
                         {/* Submit Buttons */}
-                        <div className="flex gap-4 pt-6 border-t border-gray-200">
+                        <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <button
                                 type="button"
                                 onClick={() => navigate('/instructor/tests')}
-                                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                                className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="flex-1 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <>

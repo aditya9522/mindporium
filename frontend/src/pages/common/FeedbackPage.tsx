@@ -96,24 +96,24 @@ export const FeedbackPage = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary-600 dark:text-primary-400" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 mb-6">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="p-3 bg-indigo-100 rounded-xl">
-                                <MessageSquare className="w-6 h-6 text-indigo-600" />
+                            <div className="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-xl">
+                                <MessageSquare className="w-6 h-6 text-primary-600 dark:text-primary-400" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Feedback & Support</h1>
-                                <p className="text-sm text-gray-600">Share your thoughts and get help</p>
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Feedback & Support</h1>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Share your thoughts and get help</p>
                             </div>
                         </div>
                         <Button
@@ -127,19 +127,19 @@ export const FeedbackPage = () => {
 
                     {/* Feedback Form */}
                     {showForm && (
-                        <form onSubmit={handleSubmit} className="mt-6 p-6 bg-gray-50 rounded-xl border border-gray-200">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Submit Feedback</h3>
+                        <form onSubmit={handleSubmit} className="mt-6 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Submit Feedback</h3>
 
                             <div className="space-y-4">
                                 {/* Category */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Category
                                     </label>
                                     <select
                                         value={category}
                                         onChange={(e) => setCategory(e.target.value)}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     >
                                         <option value="general">General Feedback</option>
                                         <option value="bug">Bug Report</option>
@@ -151,7 +151,7 @@ export const FeedbackPage = () => {
 
                                 {/* Subject */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Subject <span className="text-red-500">*</span>
                                     </label>
                                     <input
@@ -159,14 +159,14 @@ export const FeedbackPage = () => {
                                         value={subject}
                                         onChange={(e) => setSubject(e.target.value)}
                                         placeholder="Brief summary of your feedback"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                         required
                                     />
                                 </div>
 
                                 {/* Message */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Message <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
@@ -174,14 +174,14 @@ export const FeedbackPage = () => {
                                         onChange={(e) => setMessage(e.target.value)}
                                         placeholder="Provide detailed information..."
                                         rows={5}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                                         required
                                     />
                                 </div>
 
                                 {/* Rating */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Overall Rating (Optional)
                                     </label>
                                     <div className="flex gap-2">
@@ -237,13 +237,13 @@ export const FeedbackPage = () => {
 
                 {/* Feedback History */}
                 <div className="space-y-4">
-                    <h2 className="text-xl font-bold text-gray-900">Your Feedback History</h2>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Feedback History</h2>
 
                     {feedbacks.length === 0 ? (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-                            <MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No feedback yet</h3>
-                            <p className="text-gray-600 mb-4">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-12 text-center">
+                            <MessageSquare className="w-16 h-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No feedback yet</h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-4">
                                 Share your thoughts to help us improve!
                             </p>
                             <Button onClick={() => setShowForm(true)}>
@@ -254,12 +254,12 @@ export const FeedbackPage = () => {
                         feedbacks.map((feedback) => (
                             <div
                                 key={feedback.id}
-                                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                                className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 hover:shadow-md transition-shadow"
                             >
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
-                                            <h3 className="text-lg font-semibold text-gray-900">
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                                                 {feedback.subject}
                                             </h3>
                                             <span
@@ -271,7 +271,7 @@ export const FeedbackPage = () => {
                                                 {feedback.status.toUpperCase()}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-gray-600 mb-3">{feedback.message}</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{feedback.message}</p>
                                         {feedback.rating && (
                                             <div className="flex items-center gap-1 mb-2">
                                                 {[...Array(5)].map((_, i) => (
@@ -285,7 +285,7 @@ export const FeedbackPage = () => {
                                                 ))}
                                             </div>
                                         )}
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
                                             Submitted on {format(new Date(feedback.created_at), 'MMM d, yyyy • h:mm a')}
                                         </p>
                                     </div>
@@ -293,11 +293,11 @@ export const FeedbackPage = () => {
 
                                 {/* Admin Response */}
                                 {feedback.response && (
-                                    <div className="mt-4 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-600">
-                                        <p className="text-sm font-semibold text-indigo-900 mb-1">
+                                    <div className="mt-4 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border-l-4 border-primary-600 dark:border-primary-400">
+                                        <p className="text-sm font-semibold text-primary-900 dark:text-primary-100 mb-1">
                                             Response from Admin:
                                         </p>
-                                        <p className="text-sm text-indigo-800">{feedback.response}</p>
+                                        <p className="text-sm text-primary-800 dark:text-primary-200">{feedback.response}</p>
                                     </div>
                                 )}
                             </div>

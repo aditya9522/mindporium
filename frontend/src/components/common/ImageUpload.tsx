@@ -92,20 +92,20 @@ export const ImageUpload = ({
             case 'banner':
                 return "w-full h-48 rounded-xl";
             default: // standard
-                return "w-full h-48 rounded-xl bg-white";
+                return "w-full h-48 rounded-xl bg-white dark:bg-gray-800";
         }
     };
 
     const getPlaceholderContent = () => {
         if (variant === 'avatar') {
             return (
-                <div className="flex flex-col items-center justify-center text-gray-400">
+                <div className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
                     <Camera className="w-8 h-8 mb-1" />
                 </div>
             );
         }
         return (
-            <div className="flex flex-col items-center justify-center text-gray-500">
+            <div className="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
                 {isUploading ? (
                     <Loader2 className="w-8 h-8 animate-spin mb-2" />
                 ) : (
@@ -118,13 +118,13 @@ export const ImageUpload = ({
 
     return (
         <div className={`space-y-2 ${className}`}>
-            {label && <label className="block text-sm font-medium text-gray-700">{label}</label>}
+            {label && <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>}
 
             <div
                 onClick={handleContainerClick}
                 className={`
-                    relative overflow-hidden bg-gray-50 border-2 border-dashed border-gray-300 
-                    text-gray-400 hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-200 cursor-pointer group
+                    relative overflow-hidden bg-gray-50 dark:bg-gray-800/50 border-2 border-dashed border-gray-300 dark:border-gray-700 
+                    text-gray-400 hover:border-primary-500 dark:hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-all duration-200 cursor-pointer group
                     flex items-center justify-center
                     ${getContainerStyles()}
                     ${isUploading ? 'opacity-50 pointer-events-none' : ''}
@@ -164,7 +164,7 @@ export const ImageUpload = ({
             </div>
             {
                 variant === 'standard' && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                         Recommended: 1280x720px (16:9). Max 5MB.
                     </p>
                 )
