@@ -66,7 +66,7 @@ async def get_course_analytics(
 async def get_course_tracking(
     course_id: int,
     db: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_superuser),
+    current_user: User = Depends(deps.get_current_user),
 ) -> Any:
 
     from sqlalchemy import select, func, case

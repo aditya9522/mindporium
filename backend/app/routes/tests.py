@@ -2,7 +2,7 @@ from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, func, or_
 from sqlalchemy.orm import selectinload
 
 from app.api import deps
@@ -29,6 +29,9 @@ async def create_test(
     """
     Create a new test with questions. Instructor only.
     """
+    if not test_in.subject_id and not test_in.classroom_id:
+        raise HTTPException(status_code=400, detail="Test must belong to a Subject or Classroom")
+
     # Verify context (Subject or Classroom)
     if test_in.subject_id:
         result = await db.execute(select(Subject).where(Subject.id == test_in.subject_id))
@@ -151,29 +154,18 @@ async def get_instructor_tests(
     """
     from app.models.course import Course
     
-    # Get courses created by this instructor
-    instructor_courses_query = await db.execute(
-        select(Course.id).where(Course.created_by == current_user.id)
-    )
-    instructor_course_ids = [row[0] for row in instructor_courses_query.all()]
-    
-    if not instructor_course_ids:
-        return []
-    
-    # Get subjects from instructor's courses
-    subjects_query = await db.execute(
-        select(Subject.id).where(Subject.course_id.in_(instructor_course_ids))
-    )
-    subject_ids = [row[0] for row in subjects_query.all()]
-    
-    if not subject_ids:
-        return []
-    
-    # Get tests from these subjects
+    # Use a single query to fetch tests linked to subjects in courses owned by the instructor
     query = (
         select(Test)
+        .join(Subject, Test.subject_id == Subject.id)
+        .join(Course, Subject.course_id == Course.id)
+        .where(
+            or_(
+                Course.created_by == current_user.id,
+                Course.instructors.any(User.id == current_user.id)
+            )
+        )
         .options(selectinload(Test.questions))
-        .where(Test.subject_id.in_(subject_ids))
         .order_by(desc(Test.created_at))
         .offset(skip)
         .limit(limit)

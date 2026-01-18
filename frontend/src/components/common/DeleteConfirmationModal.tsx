@@ -51,7 +51,7 @@ export const DeleteConfirmationModal = ({
 
                     {/* Item Highlight */}
                     {itemName && (
-                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 mb-6 border border-gray-100 dark:border-gray-800 group transition-all hover:bg-red-50/50 dark:hover:bg-red-900/10">
+                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-6 border border-gray-100 dark:border-gray-800 group transition-all hover:bg-red-50/50 dark:hover:bg-red-900/10">
                             <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1 group-hover:text-red-400 transition-colors">Confirming Deletion of</p>
                             <p className="text-gray-900 dark:text-gray-200 font-semibold break-all">{itemName}</p>
                         </div>
@@ -62,14 +62,14 @@ export const DeleteConfirmationModal = ({
                         <button
                             onClick={onClose}
                             disabled={isLoading}
-                            className="px-6 py-3.5 text-gray-600 dark:text-gray-400 font-bold rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
+                            className="px-6 py-3.5 text-gray-600 dark:text-gray-400 font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
                         >
                             Keep it
                         </button>
                         <button
                             onClick={onConfirm}
                             disabled={isLoading}
-                            className="relative overflow-hidden group px-6 py-3.5 bg-red-600 dark:bg-rose-600 text-white font-bold rounded-2xl hover:bg-red-700 dark:hover:bg-rose-700 transition-all shadow-lg shadow-red-200 dark:shadow-rose-900/20 active:scale-95 disabled:opacity-80 flex items-center justify-center gap-2"
+                            className="relative overflow-hidden group px-6 py-3.5 bg-red-600 dark:bg-rose-600 text-white font-bold rounded-xl hover:bg-red-700 dark:hover:bg-rose-700 transition-all shadow-lg shadow-red-200 dark:shadow-rose-900/20 active:scale-95 disabled:opacity-80 flex items-center justify-center gap-2"
                         >
                             {isLoading ? (
                                 <>

@@ -358,7 +358,7 @@ export const CommunityPage = () => {
                                 </div>
 
                                 <div className="pt-6 border-t border-gray-100">
-                                    <h3 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                                         <span className="w-1 h-4 bg-indigo-600 rounded-full"></span>
                                         Branding & Appearance
                                     </h3>

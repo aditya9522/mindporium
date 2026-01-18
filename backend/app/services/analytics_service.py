@@ -437,4 +437,179 @@ class AnalyticsService:
             
         return final_students
 
+    async def get_student_profile_for_instructor(self, db: AsyncSession, instructor_id: int, student_id: int) -> Dict[str, Any]:
+        """
+        Get detailed student profile specifically for an instructor.
+        Only returns data related to courses this instructor teaches.
+        """
+        # 1. Get instructor's course IDs
+        courses_query = await db.execute(
+            select(Course.id).where(
+                or_(
+                    Course.created_by == instructor_id,
+                    Course.instructors.any(User.id == instructor_id)
+                )
+            )
+        )
+        instructor_course_ids = courses_query.scalars().all()
+        
+        if not instructor_course_ids:
+            return None
+
+        # 2. Verify student exists
+        student_query = await db.execute(select(User).where(User.id == student_id))
+        student = student_query.scalars().first()
+        
+        if not student:
+            return None
+
+        # 3. Get enrollments for this student in these courses
+        enrollments_query = await db.execute(
+            select(Enrollment, Course.title)
+            .join(Course, Enrollment.course_id == Course.id)
+            .where(
+                Enrollment.user_id == student_id,
+                Enrollment.course_id.in_(instructor_course_ids)
+            )
+        )
+        enrollments_data = enrollments_query.all()
+        
+        if not enrollments_data:
+            return None
+
+        # Process courses list
+        courses_list = []
+        total_progress = 0
+        
+        for enroll, course_title in enrollments_data:
+            courses_list.append({
+                "course_id": enroll.course_id,
+                "course_title": course_title,
+                "progress_percent": enroll.progress_percent,
+                "enrolled_at": enroll.enrolled_at.isoformat() if enroll.enrolled_at else None,
+                "last_accessed": enroll.last_accessed_at.isoformat() if enroll.last_accessed_at else None
+            })
+            total_progress += enroll.progress_percent
+            
+        avg_progress = total_progress / len(courses_list) if courses_list else 0
+
+        # 4. Recent Activity & Track Data (Last 7 Days)
+        recent_activity = []
+        from datetime import timezone
+        now = datetime.now(timezone.utc)
+        seven_days_ago = now - timedelta(days=7)
+        
+        # Track data map: Date string -> Activity Score
+        # Activity Score: +10 for class attendance, +15 for submission
+        track_map = {(now - timedelta(days=i)).strftime("%a"): 0 for i in range(7)}
+        
+        # 4a. Attendance Activity
+        attendance_query = await db.execute(
+            select(Attendance, Classroom.title)
+            .join(Classroom, Attendance.classroom_id == Classroom.id)
+            .join(Subject, Classroom.subject_id == Subject.id)
+            .where(
+                Attendance.user_id == student_id,
+                Subject.course_id.in_(instructor_course_ids)
+            )
+            .order_by(Attendance.joined_at.desc())
+            .limit(20) # Fetch enough to filter for recent list + chart
+        )
+        
+        attendance_records = attendance_query.all()
+        
+        for att, title in attendance_records:
+            # Recent Activity Feed
+            recent_activity.append({
+                "type": "classroom",
+                "text": f"Joined session: {title}",
+                "timestamp": att.joined_at,
+                "meta": {"status": att.status}
+            })
+            
+            # Chart Data
+            # Ensure safe comparison by normalizing to utc if needed, though assumed aware from DB
+            if att.joined_at:
+                # att.joined_at should be aware given the column definition, 
+                # but let's be safe if DB driver returns naive for some reason (e.g. SQLite sometimes)
+                att_time = att.joined_at
+                if att_time.tzinfo is None:
+                    att_time = att_time.replace(tzinfo=timezone.utc)
+                
+                if att_time >= seven_days_ago:
+                    day_key = att_time.strftime("%a")
+                    if day_key in track_map:
+                        track_map[day_key] += 10
+
+        # 4b. Test Submissions Activity
+        # Only include submissions for tests in subjects belonging to instructor's courses
+        submissions_query = await db.execute(
+            select(Submission, Test.title)
+            .join(Test, Submission.test_id == Test.id)
+            .outerjoin(Subject, Test.subject_id == Subject.id)
+            .where(
+                Submission.user_id == student_id,
+                Subject.course_id.in_(instructor_course_ids)
+            )
+            .order_by(Submission.submitted_at.desc())
+            .limit(10)
+        )
+        
+        submission_records = submissions_query.all()
+        
+        for sub, test_title in submission_records:
+            # Recent Activity Feed
+            recent_activity.append({
+                "type": "submission",
+                "text": f"Submitted Test: {test_title}",
+                "timestamp": sub.submitted_at,
+                "meta": {"score": sub.obtained_marks}
+            })
+            
+            # Chart Data
+            if sub.submitted_at:
+                sub_time = sub.submitted_at
+                if sub_time.tzinfo is None:
+                    sub_time = sub_time.replace(tzinfo=timezone.utc)
+                    
+                if sub_time >= seven_days_ago:
+                    day_key = sub_time.strftime("%a")
+                    if day_key in track_map:
+                        track_map[day_key] += 15
+
+        # Sort and Format Recent Activity
+        recent_activity.sort(key=lambda x: x["timestamp"], reverse=True)
+        recent_activity = recent_activity[:10]
+        
+        formatted_activity = []
+        for act in recent_activity:
+            formatted_activity.append({
+                "text": act["text"],
+                "time": act["timestamp"].isoformat(),
+                "type": act["type"]
+            })
+
+        # Format Track Data
+        # Ensure ordered list from 6 days ago to today
+        track_data = []
+        for i in range(6, -1, -1):
+            date_obj = now - timedelta(days=i)
+            day_key = date_obj.strftime("%a")
+            track_data.append({
+                "date": day_key,
+                "progress": track_map.get(day_key, 0)
+            })
+
+        return {
+            "user_id": student.id,
+            "full_name": student.full_name,
+            "email": student.email,
+            "enrolled_courses": len(courses_list),
+            "total_progress": round(avg_progress, 1),
+            "last_active": courses_list[0]["last_accessed"] if courses_list and courses_list[0]["last_accessed"] else None,
+            "courses": courses_list,
+            "recent_activity": formatted_activity,
+            "track_data": track_data
+        }
+
 analytics_service = AnalyticsService()

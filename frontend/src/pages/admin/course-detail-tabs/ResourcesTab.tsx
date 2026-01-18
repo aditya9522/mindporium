@@ -155,7 +155,7 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
             </div>
         );
     }
@@ -195,12 +195,12 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
             </div>
 
             {/* Resources List */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-gray-900">All Resources</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden transition-colors duration-300">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">All Resources</h3>
                     <button
                         onClick={openCreateModal}
-                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 dark:bg-emerald-500 text-white rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
                         Add Resource
@@ -208,16 +208,16 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
                 </div>
 
                 {resources.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                        <File className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                        <File className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
                         <p>No resources found for this course</p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-200">
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
                         {resources.map((resource) => (
                             <div
                                 key={resource.id}
-                                className="p-6 hover:bg-gray-50 transition-colors"
+                                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
@@ -225,15 +225,15 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
                                             {getIcon(resource.type)}
                                         </div>
                                         <div className="flex-1">
-                                            <h4 className="text-lg font-bold text-gray-900 mb-1">
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
                                                 {resource.title}
                                             </h4>
-                                            <p className="text-gray-600 mb-3 line-clamp-2">
+                                            <p className="text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
                                                 {resource.description || 'No description provided'}
                                             </p>
-                                            <div className="flex items-center gap-6 text-sm text-gray-500">
+                                            <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="uppercase text-xs font-bold px-2 py-0.5 bg-gray-100 rounded text-gray-600">
+                                                    <span className="uppercase text-xs font-bold px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-gray-600 dark:text-gray-400">
                                                         {resource.type}
                                                     </span>
                                                 </div>
@@ -248,21 +248,21 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
                                             href={resource.url || resource.file_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
                                             title="View/Download"
                                         >
                                             {resource.type === 'link' ? <ExternalLink className="w-4 h-4" /> : <Download className="w-4 h-4" />}
                                         </a>
                                         <button
                                             onClick={() => openEditModal(resource)}
-                                            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
                                             title="Edit Resource"
                                         >
                                             <Edit className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => setDeleteModal({ isOpen: true, resourceId: resource.id, title: resource.title })}
-                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                                             title="Delete Resource"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -288,14 +288,14 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
             {/* Resource Modal */}
             {resourceModal.isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-bold text-gray-900">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {resourceModal.isEditing ? 'Edit Resource' : 'Add New Resource'}
                             </h3>
                             <button
                                 onClick={() => setResourceModal({ ...resourceModal, isOpen: false })}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -303,27 +303,27 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
                         <form onSubmit={handleSaveResource}>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Resource Title <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         value={resourceModal.title}
                                         onChange={(e) => setResourceModal({ ...resourceModal, title: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                         placeholder="e.g. Course Syllabus"
                                         required
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Resource Type
                                     </label>
                                     <select
                                         value={resourceModal.resource_type}
                                         onChange={(e) => setResourceModal({ ...resourceModal, resource_type: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                     >
                                         <option value="link">Link</option>
                                         <option value="pdf">PDF</option>
@@ -333,14 +333,14 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         URL / File Link <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="url"
                                         value={resourceModal.file_url}
                                         onChange={(e) => setResourceModal({ ...resourceModal, file_url: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                         placeholder="https://..."
                                         required
                                     />
@@ -348,13 +348,13 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
 
                                 {subjects.length > 0 && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Subject (Optional)
                                         </label>
                                         <select
                                             value={resourceModal.subjectId}
                                             onChange={(e) => setResourceModal({ ...resourceModal, subjectId: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                         >
                                             <option value="">Select a subject</option>
                                             {subjects.map((s) => (
@@ -365,13 +365,13 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
                                 )}
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Description
                                     </label>
                                     <textarea
                                         value={resourceModal.description}
                                         onChange={(e) => setResourceModal({ ...resourceModal, description: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                         placeholder="Brief description..."
                                         rows={3}
                                     />
@@ -381,14 +381,14 @@ export const ResourcesTab = ({ courseData }: ResourcesTabProps) => {
                                 <button
                                     type="button"
                                     onClick={() => setResourceModal({ ...resourceModal, isOpen: false })}
-                                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-lg"
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={saving || !resourceModal.title || !resourceModal.file_url}
-                                    className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
                                     {saving ? 'Saving...' : (resourceModal.isEditing ? 'Save Changes' : 'Add Resource')}
                                 </button>

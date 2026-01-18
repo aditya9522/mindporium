@@ -29,13 +29,16 @@ async def create_subject(
     Create a new subject in a course.
     """
     # Check course
-    result = await db.execute(select(Course).where(Course.id == subject_in.course_id))
+    result = await db.execute(
+        select(Course).options(selectinload(Course.instructors)).where(Course.id == subject_in.course_id)
+    )
     course = result.scalars().first()
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
         
-    # Check permissions
-    if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
+    # Check permissions (Creator, Admin, or Assigned Instructor)
+    is_assigned = any(instructor.id == current_user.id for instructor in course.instructors)
+    if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     subject = Subject(**subject_in.model_dump())
@@ -114,11 +117,15 @@ async def update_subject(
     if not subject:
         raise HTTPException(status_code=404, detail="Subject not found")
         
-    # Check course ownership
-    result_course = await db.execute(select(Course).where(Course.id == subject.course_id))
+    # Check course ownership or assignment
+    result_course = await db.execute(
+        select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id)
+    )
     course = result_course.scalars().first()
     
-    if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
+    # Check permissions (Creator, Admin, or Assigned Instructor)
+    is_assigned = any(instructor.id == current_user.id for instructor in course.instructors)
+    if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     update_data = subject_in.model_dump(exclude_unset=True)
@@ -146,11 +153,15 @@ async def delete_subject(
     if not subject:
         raise HTTPException(status_code=404, detail="Subject not found")
         
-    # Check course ownership
-    result_course = await db.execute(select(Course).where(Course.id == subject.course_id))
+    # Check course ownership or assignment
+    result_course = await db.execute(
+        select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id)
+    )
     course = result_course.scalars().first()
     
-    if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
+    # Check permissions (Creator, Admin, or Assigned Instructor)
+    is_assigned = any(instructor.id == current_user.id for instructor in course.instructors)
+    if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     await db.delete(subject)

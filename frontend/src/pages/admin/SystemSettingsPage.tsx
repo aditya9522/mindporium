@@ -188,7 +188,7 @@ export const SystemSettingsPage = () => {
                 <select
                     value={editValues[setting.key]}
                     onChange={(e) => setEditValues({ ...editValues, [setting.key]: e.target.value })}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                 >
                     <option value="true">True (Enabled)</option>
                     <option value="false">False (Disabled)</option>
@@ -201,7 +201,7 @@ export const SystemSettingsPage = () => {
                 type={isSecret ? "password" : "text"}
                 value={editValues[setting.key] || ''}
                 onChange={(e) => setEditValues({ ...editValues, [setting.key]: e.target.value })}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm outline-none"
                 placeholder={isSecret ? "••••••••" : ""}
             />
         );
@@ -231,16 +231,16 @@ export const SystemSettingsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">System Settings</h1>
-                    <p className="mt-2 text-gray-600">Configure global application behavior and appearance.</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">System Settings</h1>
+                    <p className="mt-2 text-gray-600 dark:text-gray-400">Configure global application behavior and appearance.</p>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex space-x-1 bg-white p-1 rounded-xl shadow-sm border border-gray-200 mb-8 overflow-x-auto">
+                <div className="flex space-x-1 bg-white dark:bg-gray-900 p-1 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto">
                     {[
                         { id: 'general', label: 'General', icon: Settings },
                         { id: 'appearance', label: 'Appearance', icon: LayoutTemplate },
@@ -250,11 +250,11 @@ export const SystemSettingsPage = () => {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
-                                ? 'bg-primary-50 text-primary-700 shadow-sm ring-1 ring-primary-200'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 shadow-sm ring-1 ring-primary-200 dark:ring-primary-800'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
                                 }`}
                         >
-                            <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary-600' : 'text-gray-400'}`} />
+                            <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400'}`} />
                             {tab.label}
                         </button>
                     ))}
@@ -266,26 +266,26 @@ export const SystemSettingsPage = () => {
                     {/* --- GENERAL TAB --- */}
                     {activeTab === 'general' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-                                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
-                                    <Monitor className="w-5 h-5 text-primary-600" />
+                            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 space-y-6">
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-4">
+                                    <Monitor className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                                     Application Identity
                                 </h2>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Application Name</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Application Name</label>
                                     <input
                                         type="text"
                                         value={appName}
                                         onChange={(e) => setAppName(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="Mindporium"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Application Icon</label>
-                                    <div className="p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Application Icon</label>
+                                    <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
                                         <ImageUpload
                                             value={appIcon || ''}
                                             onChange={(url) => setAppIcon(url)}
@@ -296,22 +296,22 @@ export const SystemSettingsPage = () => {
                                             entityId="0"
                                             category="icon"
                                         />
-                                        <p className="text-xs text-center text-gray-500 mt-2">Recommended: 512x512px PNG/SVG</p>
+                                        <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">Recommended: 512x512px PNG/SVG</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-                                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
-                                    <Power className="w-5 h-5 text-indigo-600" />
+                            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 space-y-6">
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-4">
+                                    <Power className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                                     System Status
                                 </h2>
 
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
                                         <div>
-                                            <h3 className="font-medium text-gray-900">Maintenance Mode</h3>
-                                            <p className="text-sm text-gray-500">Disable access for non-admin users</p>
+                                            <h3 className="font-medium text-gray-900 dark:text-gray-100">Maintenance Mode</h3>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Disable access for non-admin users</p>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
                                             <input
@@ -320,14 +320,14 @@ export const SystemSettingsPage = () => {
                                                 checked={maintenanceMode}
                                                 onChange={(e) => setMaintenanceMode(e.target.checked)}
                                             />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                            <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                                         </label>
                                     </div>
 
-                                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
                                         <div>
-                                            <h3 className="font-medium text-gray-900">Allow Registration</h3>
-                                            <p className="text-sm text-gray-500">Allow new users to create accounts</p>
+                                            <h3 className="font-medium text-gray-900 dark:text-gray-100">Allow Registration</h3>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Allow new users to create accounts</p>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
                                             <input
@@ -336,11 +336,11 @@ export const SystemSettingsPage = () => {
                                                 checked={allowRegistration}
                                                 onChange={(e) => setAllowRegistration(e.target.checked)}
                                             />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                            <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 dark:peer-checked:bg-green-500"></div>
                                         </label>
                                     </div>
 
-                                    <div className="pt-4 border-t border-gray-100 flex justify-end">
+                                    <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-end">
                                         <button
                                             onClick={saveGeneralSettings}
                                             className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-sm font-medium"
@@ -358,30 +358,30 @@ export const SystemSettingsPage = () => {
                     {/* --- APPEARANCE TAB --- */}
                     {activeTab === 'appearance' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-                                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
-                                    <Moon className="w-5 h-5 text-primary-600" />
+                            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 space-y-6">
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-4">
+                                    <Moon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                                     Display Mode
                                 </h2>
 
                                 <div className="grid grid-cols-3 gap-4">
                                     <button
                                         onClick={() => setMode('light')}
-                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${mode === 'light' ? 'border-primary-600 bg-primary-50 text-primary-700' : 'border-gray-100 hover:border-gray-200 text-gray-600'}`}
+                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${mode === 'light' ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400' : 'border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 text-gray-600 dark:text-gray-400'}`}
                                     >
                                         <Sun className="w-8 h-8 mb-2" />
                                         <span className="font-medium text-sm">Light</span>
                                     </button>
                                     <button
                                         onClick={() => setMode('dark')}
-                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${mode === 'dark' ? 'border-primary-600 bg-primary-50 text-primary-700' : 'border-gray-100 hover:border-gray-200 text-gray-600'}`}
+                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${mode === 'dark' ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400' : 'border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 text-gray-600 dark:text-gray-400'}`}
                                     >
                                         <Moon className="w-8 h-8 mb-2" />
                                         <span className="font-medium text-sm">Dark</span>
                                     </button>
                                     <button
                                         onClick={() => setMode('system')}
-                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${mode === 'system' ? 'border-primary-600 bg-primary-50 text-primary-700' : 'border-gray-100 hover:border-gray-200 text-gray-600'}`}
+                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${mode === 'system' ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400' : 'border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 text-gray-600 dark:text-gray-400'}`}
                                     >
                                         <Monitor className="w-8 h-8 mb-2" />
                                         <span className="font-medium text-sm">System</span>
@@ -389,9 +389,9 @@ export const SystemSettingsPage = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-                                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
-                                    <LayoutTemplate className="w-5 h-5 text-primary-600" />
+                            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 space-y-6">
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-4">
+                                    <LayoutTemplate className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                                     Theme Color
                                 </h2>
 
@@ -400,10 +400,10 @@ export const SystemSettingsPage = () => {
                                         <button
                                             key={theme.id}
                                             onClick={() => setThemeColor(theme.id as any)}
-                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${themeColor === theme.id ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-200' : 'border-gray-100 hover:bg-gray-50'}`}
+                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${themeColor === theme.id ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 ring-1 ring-primary-200 dark:ring-primary-800' : 'border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
                                         >
-                                            <div className={`w-8 h-8 rounded-full shadow-sm flex-shrink-0 bg-${theme.value}-500 border-2 border-white ring-1 ring-gray-100`}></div>
-                                            <span className={`font-medium ${themeColor === theme.id ? 'text-primary-900' : 'text-gray-700'}`}>{theme.name}</span>
+                                            <div className={`w-8 h-8 rounded-full shadow-sm flex-shrink-0 bg-${theme.value}-500 border-2 border-white dark:border-gray-900 ring-1 ring-gray-100 dark:ring-gray-700`}></div>
+                                            <span className={`font-medium ${themeColor === theme.id ? 'text-primary-900 dark:text-primary-300' : 'text-gray-700 dark:text-gray-300'}`}>{theme.name}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -418,11 +418,11 @@ export const SystemSettingsPage = () => {
                         <div>
                             <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                        <Lock className="w-5 h-5 text-indigo-600" />
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                        <Lock className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                                         Advanced Configuration
                                     </h3>
-                                    <p className="text-sm text-gray-500 mt-1">
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                         Directly edit database configuration keys. <span className="text-red-500 font-medium">Use with caution.</span>
                                     </p>
                                 </div>
@@ -432,11 +432,11 @@ export const SystemSettingsPage = () => {
                                         placeholder="Search keys..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-full sm:w-48"
+                                        className="px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-full sm:w-48"
                                     />
                                     <button
                                         onClick={() => setShowCreateModal(true)}
-                                        className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium whitespace-nowrap"
+                                        className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium whitespace-nowrap"
                                     >
                                         <Plus className="w-4 h-4" />
                                         Add Key
@@ -445,13 +445,13 @@ export const SystemSettingsPage = () => {
                             </div>
 
                             {Object.keys(groups).length === 0 ? (
-                                <div className="text-center py-12 text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
-                                    <Settings className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                                <div className="text-center py-12 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                                    <Settings className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-600" />
                                     <p>{searchQuery ? 'No settings match your search.' : 'No backend settings found.'}</p>
                                     {searchQuery && (
                                         <button
                                             onClick={() => setSearchQuery('')}
-                                            className="mt-2 text-indigo-600 hover:text-indigo-700 font-medium"
+                                            className="mt-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
                                         >
                                             Clear Search
                                         </button>
@@ -459,22 +459,22 @@ export const SystemSettingsPage = () => {
                                 </div>
                             ) : (
                                 Object.entries(groups).map(([groupName, groupSettings]) => (
-                                    <div key={groupName} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-                                        <div className="p-4 border-b border-gray-100 bg-gray-50/50">
-                                            <h3 className="font-bold text-gray-900 text-sm uppercase tracking-wide">{groupName}</h3>
+                                    <div key={groupName} className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden mb-6">
+                                        <div className="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
+                                            <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wide">{groupName}</h3>
                                         </div>
-                                        <div className="divide-y divide-gray-100">
+                                        <div className="divide-y divide-gray-100 dark:divide-gray-800">
                                             {groupSettings.map((setting) => (
-                                                <div key={setting.id} className="p-5 hover:bg-gray-50/50 transition-colors">
+                                                <div key={setting.id} className="p-5 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                                                     <div className="flex flex-col md:flex-row md:items-start gap-4">
                                                         <div className="flex-1 min-w-[250px]">
                                                             <div className="flex items-center gap-2 mb-1">
-                                                                <span className="font-mono text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">{setting.key}</span>
+                                                                <span className="font-mono text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded border border-gray-200 dark:border-gray-700">{setting.key}</span>
                                                                 {setting.is_public && (
-                                                                    <span className="text-[10px] uppercase font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100">Public</span>
+                                                                    <span className="text-[10px] uppercase font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded border border-green-100 dark:border-green-900/30">Public</span>
                                                                 )}
                                                             </div>
-                                                            <p className="text-sm text-gray-500">{setting.description || 'No description'}</p>
+                                                            <p className="text-sm text-gray-500 dark:text-gray-400">{setting.description || 'No description'}</p>
                                                         </div>
                                                         <div className="flex-1 flex gap-2 w-full md:w-auto">
                                                             {renderInput(setting)}
@@ -489,7 +489,7 @@ export const SystemSettingsPage = () => {
                                                             <button
                                                                 onClick={() => handleDeleteClick(setting.key)}
                                                                 disabled={savingKey === setting.key}
-                                                                className="px-3 py-2 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 disabled:opacity-50 flex items-center justify-center min-w-[40px]"
+                                                                className="px-3 py-2 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10 disabled:opacity-50 flex items-center justify-center min-w-[40px]"
                                                                 title="Delete"
                                                             >
                                                                 <Trash className="w-4 h-4" />
@@ -509,12 +509,12 @@ export const SystemSettingsPage = () => {
                 {/* Create Setting Modal (Only for Advanced Tab) */}
                 {showCreateModal && (
                     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                        <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 animate-in zoom-in duration-200">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-lg w-full p-6 animate-in zoom-in duration-200 border border-gray-100 dark:border-gray-800">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-xl font-bold text-gray-900">Add New Setting</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Add New Setting</h3>
                                 <button
                                     onClick={() => setShowCreateModal(false)}
-                                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -522,34 +522,34 @@ export const SystemSettingsPage = () => {
 
                             <form onSubmit={handleCreateSetting} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Key (e.g. site.name)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Key (e.g. site.name)</label>
                                     <input
                                         type="text"
                                         required
                                         value={newSetting.key}
                                         onChange={(e) => setNewSetting({ ...newSetting, key: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
                                         placeholder="category.key_name"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Value</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Value</label>
                                     <input
                                         type="text"
                                         required
                                         value={newSetting.value}
                                         onChange={(e) => setNewSetting({ ...newSetting, value: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="Value"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                                     <textarea
                                         value={newSetting.description}
                                         onChange={(e) => setNewSetting({ ...newSetting, description: e.target.value })}
                                         rows={2}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="What is this setting for?"
                                     />
                                 </div>
@@ -562,11 +562,11 @@ export const SystemSettingsPage = () => {
                                         onChange={(e) => setNewSetting({ ...newSetting, is_public: e.target.checked })}
                                         className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                                     />
-                                    <label htmlFor="is_public" className="text-sm text-gray-700">Make this setting public</label>
+                                    <label htmlFor="is_public" className="text-sm text-gray-700 dark:text-gray-300">Make this setting public</label>
                                 </div>
 
                                 <div className="flex justify-end gap-3 mt-6">
-                                    <button onClick={() => setShowCreateModal(false)} type="button" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Cancel</button>
+                                    <button onClick={() => setShowCreateModal(false)} type="button" className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">Cancel</button>
                                     <button type="submit" disabled={isCreating} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
                                         {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
                                     </button>

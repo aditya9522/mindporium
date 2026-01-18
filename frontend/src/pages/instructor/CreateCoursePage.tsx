@@ -138,7 +138,7 @@ export const CreateCoursePage = () => {
                                         ? 'bg-green-500 text-white'
                                         : currentStep === step.number
                                             ? 'bg-primary-600 text-white'
-                                            : 'bg-gray-200 text-gray-600'
+                                            : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                                         }`}>
                                         {currentStep > step.number ? <Check className="w-5 h-5" /> : step.number}
                                     </div>
@@ -148,7 +148,7 @@ export const CreateCoursePage = () => {
                                     </span>
                                 </div>
                                 {index < steps.length - 1 && (
-                                    <div className={`flex-1 h-1 mx-4 ${currentStep > step.number ? 'bg-green-500' : 'bg-gray-200'
+                                    <div className={`flex-1 h-1 mx-4 ${currentStep > step.number ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-700'
                                         }`} />
                                 )}
                             </div>
@@ -175,7 +175,7 @@ export const CreateCoursePage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Description *
                                 </label>
                                 <textarea
@@ -189,7 +189,7 @@ export const CreateCoursePage = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Level
                                     </label>
                                     <select
@@ -204,7 +204,7 @@ export const CreateCoursePage = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Category
                                     </label>
                                     <select
@@ -220,7 +220,7 @@ export const CreateCoursePage = () => {
 
                             {basicInfo.category === 'paid' && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Price ($)
                                     </label>
                                     <input
@@ -235,7 +235,7 @@ export const CreateCoursePage = () => {
                             )}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Duration (weeks)
                                 </label>
                                 <input
@@ -248,7 +248,7 @@ export const CreateCoursePage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Tags
                                 </label>
                                 <div className="flex gap-2 mb-2">
@@ -356,7 +356,7 @@ export const CreateCoursePage = () => {
                     {/* Step 3: Review */}
                     {currentStep === 3 && (
                         <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Your Course</h3>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Review Your Course</h3>
 
                             <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 space-y-4 border border-gray-200 dark:border-gray-700">
                                 <div>
@@ -364,27 +364,27 @@ export const CreateCoursePage = () => {
                                     <p className="text-gray-900 dark:text-gray-100">{basicInfo.title}</p>
                                 </div>
                                 <div>
-                                    <h4 className="font-medium text-gray-700 mb-1">Description</h4>
+                                    <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Description</h4>
                                     <p className="text-gray-900 dark:text-gray-100">{basicInfo.description}</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <h4 className="font-medium text-gray-700 mb-1">Level</h4>
-                                        <p className="text-gray-900 capitalize">{basicInfo.level}</p>
+                                        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Level</h4>
+                                        <p className="text-gray-900 dark:text-gray-100 capitalize">{basicInfo.level}</p>
                                     </div>
                                     <div>
-                                        <h4 className="font-medium text-gray-700 mb-1">Category</h4>
-                                        <p className="text-gray-900 capitalize">{basicInfo.category}</p>
+                                        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Category</h4>
+                                        <p className="text-gray-900 dark:text-gray-100 capitalize">{basicInfo.category}</p>
                                     </div>
                                 </div>
                                 {basicInfo.category === 'paid' && (
                                     <div>
-                                        <h4 className="font-medium text-gray-700 mb-1">Price</h4>
+                                        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Price</h4>
                                         <p className="text-gray-900 dark:text-gray-100">${basicInfo.price}</p>
                                     </div>
                                 )}
                                 <div>
-                                    <h4 className="font-medium text-gray-700 mb-1">Subjects ({subjects.length})</h4>
+                                    <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Subjects ({subjects.length})</h4>
                                     <ul className="list-disc list-inside text-gray-900 dark:text-gray-100">
                                         {subjects.map((subject, index) => (
                                             <li key={index}>{subject.title}</li>
@@ -393,7 +393,7 @@ export const CreateCoursePage = () => {
                                 </div>
                                 {basicInfo.tags.length > 0 && (
                                     <div>
-                                        <h4 className="font-medium text-gray-700 mb-1">Tags</h4>
+                                        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Tags</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {basicInfo.tags.map((tag) => (
                                                 <span key={tag} className="px-2 py-1 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded text-sm">

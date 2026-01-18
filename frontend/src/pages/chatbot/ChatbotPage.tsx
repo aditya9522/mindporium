@@ -198,7 +198,7 @@ export const ChatbotPage = () => {
                                         <PanelLeftOpen className={`w-5 h-5 transition-transform ${isSidebarOpen ? 'rotate-180' : ''}`} />
                                     </button>
                                     <div className="h-6 w-px bg-gray-200 mx-1 hidden sm:block"></div>
-                                    <div className="bg-primary-600 p-2 rounded-xl shadow-lg shadow-primary-200">
+                                    <div className="bg-primary-600 p-2 rounded-xl shadow-lg shadow-primary-200 dark:shadow-none">
                                         <Bot className="w-5 h-5 text-white" />
                                     </div>
                                     <div className="overflow-hidden">
@@ -277,7 +277,7 @@ export const ChatbotPage = () => {
                                         <button
                                             type="submit"
                                             disabled={!input.trim() || sending}
-                                            className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all shadow-md shadow-primary-100 disabled:opacity-50 disabled:shadow-none flex items-center justify-center group"
+                                            className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all shadow-md shadow-primary-100 dark:shadow-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center group"
                                         >
                                             {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />}
                                         </button>

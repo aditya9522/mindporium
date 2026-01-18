@@ -94,11 +94,11 @@ export const UserManagementPage = () => {
     const getRoleBadge = (role: string) => {
         switch (role) {
             case 'admin':
-                return <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold flex items-center gap-1"><Shield className="w-3 h-3" /> Admin</span>;
+                return <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full text-xs font-semibold flex items-center gap-1"><Shield className="w-3 h-3" /> Admin</span>;
             case 'instructor':
-                return <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold flex items-center gap-1"><GraduationCap className="w-3 h-3" /> Instructor</span>;
+                return <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-semibold flex items-center gap-1"><GraduationCap className="w-3 h-3" /> Instructor</span>;
             default:
-                return <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-semibold flex items-center gap-1"><User className="w-3 h-3" /> Student</span>;
+                return <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs font-semibold flex items-center gap-1"><User className="w-3 h-3" /> Student</span>;
         }
     };
 
@@ -107,13 +107,13 @@ export const UserManagementPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-                        <p className="mt-2 text-gray-600">Manage platform users and roles.</p>
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">User Management</h1>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">Manage platform users and roles.</p>
                     </div>
                     <div className="flex gap-4">
                         <div className="relative">
@@ -123,12 +123,12 @@ export const UserManagementPage = () => {
                                 placeholder="Search users..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full sm:w-64"
+                                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full sm:w-64 shadow-sm"
                             />
                         </div>
                         <button
                             onClick={() => setShowCreateModal(true)}
-                            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
                         >
                             <Plus className="w-5 h-5" />
                             Create User
@@ -137,29 +137,29 @@ export const UserManagementPage = () => {
                 </div>
 
                 {/* Users Table */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <thead>
-                                <tr className="bg-gray-50 border-b border-gray-200">
-                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
-                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
-                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Joined</th>
-                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                                <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">User</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Joined</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200">
+                            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                                 {filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-semibold">
+                                                <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/20 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-semibold">
                                                     {user.full_name?.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-gray-900">{user.full_name}</p>
-                                                    <p className="text-sm text-gray-500">{user.email}</p>
+                                                    <p className="font-medium text-gray-900 dark:text-gray-100">{user.full_name}</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -168,25 +168,25 @@ export const UserManagementPage = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.is_active
-                                                ? 'bg-green-100 text-green-700'
-                                                : 'bg-red-100 text-red-700'
+                                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
                                                 }`}>
                                                 {user.is_active ? 'Active' : 'Inactive'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                                             {user.created_at ? formatDistanceToNow(new Date(user.created_at), { addSuffix: true }) : 'N/A'}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <button
                                                 onClick={() => handleEditClick(user)}
-                                                className="text-gray-400 hover:text-indigo-600 p-2"
+                                                className="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-2"
                                             >
                                                 <MoreVertical className="w-5 h-5" />
                                             </button>
                                             <button
                                                 onClick={() => setShowDeleteConfirm({ isOpen: true, user })}
-                                                className="text-gray-400 hover:text-red-600 p-2"
+                                                className="text-gray-400 hover:text-red-600 dark:hover:text-red-400 p-2"
                                             >
                                                 <Trash2 className="w-5 h-5" />
                                             </button>
@@ -197,8 +197,8 @@ export const UserManagementPage = () => {
                         </table>
                     </div>
                     {filteredUsers.length === 0 && (
-                        <div className="text-center py-12 text-gray-500">
-                            <User className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                            <User className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-600" />
                             <p>No users found matching your search.</p>
                         </div>
                     )}
@@ -208,34 +208,34 @@ export const UserManagementPage = () => {
             {/* Edit User Modal */}
             {editingUser && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in duration-200">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in duration-200 border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Edit User</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Edit User</h2>
                             <button
                                 onClick={() => setEditingUser(null)}
-                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                             >
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
                                 <select
                                     value={editForm.role}
                                     onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                 >
                                     <option value="instructor">Instructor</option>
                                     <option value="admin">Admin</option>
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
                                 <select
                                     value={editForm.is_active ? 'active' : 'inactive'}
                                     onChange={(e) => setEditForm({ ...editForm, is_active: e.target.value === 'active' })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                 >
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
@@ -244,7 +244,7 @@ export const UserManagementPage = () => {
                             <div className="flex justify-end gap-3 mt-6">
                                 <button
                                     onClick={() => setEditingUser(null)}
-                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                                    className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                                 >
                                     Cancel
                                 </button>
@@ -271,12 +271,12 @@ export const UserManagementPage = () => {
             {/* Create User Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in duration-200 max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Create New User</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Create New User</h2>
                             <button
                                 onClick={() => setShowCreateModal(false)}
-                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                             >
                                 <X className="w-6 h-6" />
                             </button>
@@ -284,39 +284,39 @@ export const UserManagementPage = () => {
                         <form onSubmit={handleCreateUser}>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={newUser.full_name}
                                         onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                         placeholder="e.g. John Doe"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
                                     <input
                                         type="email"
                                         required
                                         value={newUser.email}
                                         onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                         placeholder="user@mindporium.com"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
                                     <input
                                         type="password"
                                         required
                                         value={newUser.password}
                                         onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                         placeholder="••••••••"
                                         minLength={6}
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                         Minimum 6 characters required.
                                     </p>
                                 </div>
@@ -324,7 +324,7 @@ export const UserManagementPage = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowCreateModal(false)}
-                                        className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                                        className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                                     >
                                         Cancel
                                     </button>

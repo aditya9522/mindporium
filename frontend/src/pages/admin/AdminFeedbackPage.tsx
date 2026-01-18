@@ -105,59 +105,59 @@ export const AdminFeedbackPage = () => {
         : [];
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">App Feedback & Analysis</h1>
-                    <p className="mt-2 text-gray-600">Comprehensive overview of user feedback and sentiment.</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">App Feedback & Analysis</h1>
+                    <p className="mt-2 text-gray-600 dark:text-gray-400">Comprehensive overview of user feedback and sentiment.</p>
                 </div>
 
                 {/* Stats Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-amber-50 rounded-lg">
-                                <Star className="w-6 h-6 text-amber-600" />
+                            <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                <Star className="w-6 h-6 text-amber-600 dark:text-amber-500" />
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-gray-900">{analysis?.average_rating || 0}</div>
-                                <div className="text-sm text-gray-600">Average Rating</div>
+                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.average_rating || 0}</div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-blue-50 rounded-lg">
-                                <MessageSquare className="w-6 h-6 text-blue-600" />
+                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-500" />
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-gray-900">{analysis?.total_reviews || 0}</div>
-                                <div className="text-sm text-gray-600">Total Reviews</div>
+                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.total_reviews || 0}</div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">Total Reviews</div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-green-50 rounded-lg">
-                                <ThumbsUp className="w-6 h-6 text-green-600" />
+                            <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                <ThumbsUp className="w-6 h-6 text-green-600 dark:text-green-500" />
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-gray-900">{analysis?.sentiment_analysis?.positive || 0}</div>
-                                <div className="text-sm text-gray-600">Positive Sentiment</div>
+                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.sentiment_analysis?.positive || 0}</div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">Positive Sentiment</div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-red-50 rounded-lg">
-                                <ThumbsDown className="w-6 h-6 text-red-600" />
+                            <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                                <ThumbsDown className="w-6 h-6 text-red-600 dark:text-red-500" />
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-gray-900">{analysis?.sentiment_analysis?.negative || 0}</div>
-                                <div className="text-sm text-gray-600">Negative Sentiment</div>
+                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.sentiment_analysis?.negative || 0}</div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">Negative Sentiment</div>
                             </div>
                         </div>
                     </div>
@@ -166,9 +166,9 @@ export const AdminFeedbackPage = () => {
                 {/* Charts Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Rating Distribution */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-indigo-600" />
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                             Rating Distribution
                         </h3>
                         <div className="h-80">
@@ -185,9 +185,9 @@ export const AdminFeedbackPage = () => {
                     </div>
 
                     {/* Sentiment Analysis */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                            <Brain className="w-5 h-5 text-purple-600" />
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                             Sentiment Analysis (AI Powered)
                         </h3>
                         <div className="h-80">
@@ -222,23 +222,23 @@ export const AdminFeedbackPage = () => {
                 </div>
 
                 {/* Detailed Feedbacks List */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-900">Recent Feedback</h3>
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Recent Feedback</h3>
                     </div>
 
                     {feedbacks.length === 0 ? (
                         <div className="text-center py-12">
-                            <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-gray-900">No feedback yet</h3>
-                            <p className="text-gray-500 mt-2">Wait for users to submit their thoughts.</p>
+                            <MessageSquare className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">No feedback yet</h3>
+                            <p className="text-gray-500 dark:text-gray-400 mt-2">Wait for users to submit their thoughts.</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-gray-200">
+                        <div className="divide-y divide-gray-200 dark:divide-gray-800">
                             {feedbacks.map((feedback) => (
                                 <div
                                     key={feedback.id}
-                                    className="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
+                                    className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
                                     onClick={() => handleViewDetails(feedback)}
                                 >
                                     <div className="flex items-start justify-between mb-4">
@@ -247,21 +247,21 @@ export const AdminFeedbackPage = () => {
                                                 {feedback.user?.full_name?.charAt(0).toUpperCase() || <User className="w-5 h-5" />}
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="font-medium text-gray-900">{feedback.user?.full_name || 'Anonymous'}</h3>
-                                                <p className="text-xs text-gray-500">
+                                                <h3 className="font-medium text-gray-900 dark:text-gray-100">{feedback.user?.full_name || 'Anonymous'}</h3>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
                                                     {feedback.created_at ? formatDistanceToNow(new Date(feedback.created_at), { addSuffix: true }) : 'Recently'}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">
                                             {getSentimentBadge(feedback.rating)}
-                                            <div className="flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full text-amber-600 border border-amber-100">
+                                            <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full text-amber-600 dark:text-amber-500 border border-amber-100 dark:border-amber-900/10">
                                                 <Star className="w-4 h-4 fill-current" />
                                                 <span className="font-bold">{feedback.rating}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="text-gray-700 leading-relaxed line-clamp-2">
+                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-2">
                                         {feedback.message || 'No comment provided'}
                                     </p>
                                 </div>
@@ -274,13 +274,13 @@ export const AdminFeedbackPage = () => {
             {/* Detailed Feedback Modal */}
             {isDetailModalOpen && selectedFeedback && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
                         {/* Header */}
-                        <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-gray-900">Feedback Details</h2>
+                        <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 p-6 flex items-center justify-between">
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Feedback Details</h2>
                             <button
                                 onClick={() => setIsDetailModalOpen(false)}
-                                className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -289,13 +289,13 @@ export const AdminFeedbackPage = () => {
                         {/* Content */}
                         <div className="p-6 space-y-6">
                             {/* User Info */}
-                            <div className="flex items-center gap-4 p-4 bg-linear-to-br from-indigo-50 to-purple-50 rounded-xl">
+                            <div className="flex items-center gap-4 p-4 bg-linear-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl">
                                 <div className="w-16 h-16 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
                                     {selectedFeedback.user?.full_name?.charAt(0).toUpperCase() || <User className="w-8 h-8" />}
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-bold text-gray-900">{selectedFeedback.user?.full_name || 'Anonymous User'}</h3>
-                                    <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{selectedFeedback.user?.full_name || 'Anonymous User'}</h3>
+                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mt-1">
                                         <Mail className="w-4 h-4" />
                                         <span>{selectedFeedback.user?.email || 'No email'}</span>
                                     </div>
@@ -304,24 +304,24 @@ export const AdminFeedbackPage = () => {
 
                             {/* Rating & Sentiment */}
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-                                    <div className="text-sm text-amber-700 font-medium mb-2">Rating</div>
+                                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-900/10">
+                                    <div className="text-sm text-amber-700 dark:text-amber-500 font-medium mb-2">Rating</div>
                                     <div className="flex items-center gap-2">
                                         {[...Array(5)].map((_, i) => (
                                             <Star
                                                 key={i}
                                                 className={`w-6 h-6 ${i < selectedFeedback.rating
                                                     ? 'text-amber-500 fill-current'
-                                                    : 'text-gray-300'
+                                                    : 'text-gray-300 dark:text-gray-700'
                                                     }`}
                                             />
                                         ))}
-                                        <span className="text-2xl font-bold text-amber-600 ml-2">{selectedFeedback.rating}</span>
+                                        <span className="text-2xl font-bold text-amber-600 dark:text-amber-500 ml-2">{selectedFeedback.rating}</span>
                                     </div>
                                 </div>
 
-                                <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                                    <div className="text-sm text-blue-700 font-medium mb-2">Sentiment</div>
+                                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-900/10">
+                                    <div className="text-sm text-blue-700 dark:text-blue-400 font-medium mb-2">Sentiment</div>
                                     <div className="text-2xl font-bold">
                                         {getSentimentBadge(selectedFeedback.rating)}
                                     </div>
@@ -330,23 +330,23 @@ export const AdminFeedbackPage = () => {
 
                             {/* Feedback Message */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Feedback Message</label>
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-                                    <p className="text-gray-900 leading-relaxed whitespace-pre-wrap">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Feedback Message</label>
+                                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                                    <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap">
                                         {selectedFeedback.message || 'No comment provided'}
                                     </p>
                                 </div>
                             </div>
 
                             {/* Metadata */}
-                            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl">
+                            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
                                 <div>
-                                    <div className="text-xs text-gray-500 mb-1">Feedback ID</div>
-                                    <div className="font-mono text-sm text-gray-900">#{selectedFeedback.id}</div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Feedback ID</div>
+                                    <div className="font-mono text-sm text-gray-900 dark:text-gray-100">#{selectedFeedback.id}</div>
                                 </div>
                                 <div>
-                                    <div className="text-xs text-gray-500 mb-1">Submitted</div>
-                                    <div className="text-sm text-gray-900 flex items-center gap-1">
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Submitted</div>
+                                    <div className="text-sm text-gray-900 dark:text-gray-100 flex items-center gap-1">
                                         <Calendar className="w-4 h-4" />
                                         {selectedFeedback.created_at
                                             ? format(new Date(selectedFeedback.created_at), 'PPpp')
@@ -357,10 +357,10 @@ export const AdminFeedbackPage = () => {
                         </div>
 
                         {/* Actions */}
-                        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex items-center justify-end gap-3">
+                        <div className="sticky bottom-0 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-6 flex items-center justify-end gap-3">
                             <button
                                 onClick={() => setIsDetailModalOpen(false)}
-                                className="px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors font-medium"
+                                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors font-medium"
                             >
                                 Close
                             </button>

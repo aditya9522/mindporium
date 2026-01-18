@@ -92,15 +92,15 @@ export const TakeTestPage = () => {
     if (!test) return null;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header with Timer */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8 sticky top-4 z-10 flex justify-between items-center">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 mb-8 sticky top-4 z-10 flex justify-between items-center transition-colors duration-300">
                     <div>
-                        <h1 className="text-xl font-bold text-gray-900">{test.title}</h1>
-                        <p className="text-sm text-gray-500">Total Marks: {test.total_marks}</p>
+                        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">{test.title}</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Total Marks: {test.total_marks}</p>
                     </div>
-                    <div className={`flex items-center gap-2 text-xl font-mono font-bold ${(timeLeft || 0) < 300 ? 'text-red-600 animate-pulse' : 'text-indigo-600'
+                    <div className={`flex items-center gap-2 text-xl font-mono font-bold ${(timeLeft || 0) < 300 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-indigo-600 dark:text-indigo-400'
                         }`}>
                         <Clock className="w-6 h-6" />
                         {timeLeft !== null ? formatTime(timeLeft) : '--:--'}
@@ -109,13 +109,13 @@ export const TakeTestPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {test.questions.map((question, index) => (
-                        <div key={question.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div key={question.id} className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 transition-colors duration-300">
                             <div className="flex justify-between mb-4">
-                                <h3 className="font-medium text-gray-900 text-lg">
-                                    <span className="text-gray-400 mr-2">{index + 1}.</span>
+                                <h3 className="font-medium text-gray-900 dark:text-gray-100 text-lg">
+                                    <span className="text-gray-400 dark:text-gray-500 mr-2">{index + 1}.</span>
                                     {question.question_text}
                                 </h3>
-                                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
                                     {question.marks} marks
                                 </span>
                             </div>
@@ -126,8 +126,8 @@ export const TakeTestPage = () => {
                                         <label
                                             key={optIndex}
                                             className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${answers[question.id!.toString()] === option
-                                                ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600'
-                                                : 'border-gray-200 hover:bg-gray-50'
+                                                ? 'border-indigo-600 dark:border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 ring-1 ring-indigo-600 dark:ring-indigo-500'
+                                                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
                                                 }`}
                                         >
                                             <input
@@ -136,15 +136,15 @@ export const TakeTestPage = () => {
                                                 value={option}
                                                 checked={answers[question.id!.toString()] === option}
                                                 onChange={(e) => handleAnswerChange(question.id!, e.target.value)}
-                                                className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                className="w-4 h-4 text-indigo-600 dark:text-indigo-400 border-gray-300 dark:border-gray-600 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800"
                                             />
-                                            <span className="ml-3 text-gray-700">{option}</span>
+                                            <span className="ml-3 text-gray-700 dark:text-gray-300">{option}</span>
                                         </label>
                                     ))}
                                 </div>
                             ) : (
                                 <textarea
-                                    className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-h-[100px] bg-white"
+                                    className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent min-h-[100px] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                                     placeholder="Type your answer here..."
                                     value={answers[question.id!.toString()] || ''}
                                     onChange={(e) => handleAnswerChange(question.id!, e.target.value)}

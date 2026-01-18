@@ -36,7 +36,7 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
             </div>
         );
     }
@@ -63,16 +63,17 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
     return (
         <div className="space-y-6">
             {/* Header */}
+            {/* Header */}
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl shadow-xl p-6 text-white">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold mb-2">Course Feedbacks & Reviews</h2>
+                        <h2 className="text-2xl font-bold mb-2 text-white">Course Feedbacks & Reviews</h2>
                         <p className="text-amber-100">Student ratings, reviews, and sentiment analysis</p>
                     </div>
                     <div className="text-center">
                         <div className="flex items-center gap-2 justify-center mb-1">
-                            <Star className="w-8 h-8 fill-current" />
-                            <span className="text-4xl font-bold">{averageRating.toFixed(1)}</span>
+                            <Star className="w-8 h-8 fill-current text-white" />
+                            <span className="text-4xl font-bold text-white">{averageRating.toFixed(1)}</span>
                         </div>
                         <div className="text-amber-100">{totalFeedbacks} reviews</div>
                     </div>
@@ -81,54 +82,54 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-amber-50 rounded-lg">
-                            <Star className="w-6 h-6 text-amber-600" />
+                        <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+                            <Star className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
-                            <div className="text-sm text-gray-600">Average Rating</div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{averageRating.toFixed(1)}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                            <MessageSquare className="w-6 h-6 text-blue-600" />
+                        <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                            <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">{totalFeedbacks}</div>
-                            <div className="text-sm text-gray-600">Total Reviews</div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{totalFeedbacks}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Total Reviews</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-green-50 rounded-lg">
-                            <ThumbsUp className="w-6 h-6 text-green-600" />
+                        <div className="p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                            <ThumbsUp className="w-6 h-6 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                                 {feedbacks.filter(f => f.rating >= 4).length}
                             </div>
-                            <div className="text-sm text-gray-600">Positive</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Positive</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-red-50 rounded-lg">
-                            <ThumbsDown className="w-6 h-6 text-red-600" />
+                        <div className="p-3 bg-red-50 dark:bg-red-900/30 rounded-lg">
+                            <ThumbsDown className="w-6 h-6 text-red-600 dark:text-red-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                                 {feedbacks.filter(f => f.rating <= 2).length}
                             </div>
-                            <div className="text-sm text-gray-600">Negative</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Negative</div>
                         </div>
                     </div>
                 </div>
@@ -137,9 +138,9 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Rating Distribution */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-indigo-600" />
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors duration-300">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         Rating Distribution
                     </h3>
                     <ResponsiveContainer width="100%" height={300}>
@@ -154,9 +155,9 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
                 </div>
 
                 {/* Sentiment Analysis */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <Brain className="w-5 h-5 text-purple-600" />
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors duration-300">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                         Sentiment Analysis
                     </h3>
                     <ResponsiveContainer width="100%" height={300}>
@@ -182,30 +183,30 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
             </div>
 
             {/* Reviews List */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                    <h3 className="text-lg font-bold text-gray-900">Student Reviews</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden transition-colors duration-300">
+                <div className="p-6 border-b border-gray-100 dark:border-gray-700">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Student Reviews</h3>
                 </div>
 
                 {feedbacks.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                        <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                        <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
                         <p>No reviews yet</p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-200">
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
                         {feedbacks.map((feedback) => (
-                            <div key={feedback.id} className="p-6 hover:bg-gray-50 transition-colors">
+                            <div key={feedback.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold">
                                             {feedback.user?.full_name?.charAt(0).toUpperCase() || 'U'}
                                         </div>
                                         <div>
-                                            <div className="font-semibold text-gray-900">
+                                            <div className="font-semibold text-gray-900 dark:text-gray-100">
                                                 {feedback.user?.full_name || 'Anonymous'}
                                             </div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="text-sm text-gray-500 dark:text-gray-400">
                                                 {feedback.created_at
                                                     ? formatDistanceToNow(new Date(feedback.created_at), { addSuffix: true })
                                                     : 'Recently'}
@@ -218,14 +219,14 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
                                                 key={i}
                                                 className={`w-5 h-5 ${i < feedback.rating
                                                     ? 'text-amber-500 fill-current'
-                                                    : 'text-gray-300'
+                                                    : 'text-gray-300 dark:text-gray-600'
                                                     }`}
                                             />
                                         ))}
                                     </div>
                                 </div>
                                 {feedback.review_text && (
-                                    <p className="text-gray-700 leading-relaxed">{feedback.review_text}</p>
+                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{feedback.review_text}</p>
                                 )}
                             </div>
                         ))}

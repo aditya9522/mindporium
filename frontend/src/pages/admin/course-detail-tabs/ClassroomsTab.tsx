@@ -175,7 +175,7 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
             </div>
         );
     }
@@ -202,50 +202,50 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-green-50 rounded-lg">
-                            <Video className="w-8 h-8 text-green-600" />
+                        <div className="p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                            <Video className="w-8 h-8 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">{liveClasses}</div>
-                            <div className="text-sm text-gray-600">Live Now</div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{liveClasses}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Live Now</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                            <Calendar className="w-8 h-8 text-blue-600" />
+                        <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                            <Calendar className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">{upcomingClasses}</div>
-                            <div className="text-sm text-gray-600">Upcoming</div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{upcomingClasses}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Upcoming</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-gray-50 rounded-lg">
-                            <CheckCircle className="w-8 h-8 text-gray-600" />
+                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <CheckCircle className="w-8 h-8 text-gray-600 dark:text-gray-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900">{completedClasses}</div>
-                            <div className="text-sm text-gray-600">Completed</div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{completedClasses}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Completed</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Classrooms List */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-gray-900">All Classes</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden transition-colors duration-300">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">All Classes</h3>
                     <button
                         onClick={openCreateModal}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
                         Schedule Class
@@ -253,22 +253,22 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                 </div>
 
                 {classrooms.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                        <Video className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                        <Video className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
                         <p>No classes scheduled for this course</p>
                         <button
                             onClick={openCreateModal}
-                            className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                            className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
                         >
                             Schedule your first class
                         </button>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-200">
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
                         {classrooms.map((classroom) => (
                             <div
                                 key={classroom.id}
-                                className="p-6 hover:bg-gray-50 transition-colors"
+                                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                             >
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-start gap-4 flex-1">
@@ -279,17 +279,17 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3 mb-1">
-                                                <h4 className="text-lg font-bold text-gray-900">
+                                                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                                     {classroom.title}
                                                 </h4>
                                                 <span className={`px-2 py-0.5 text-xs font-medium rounded-full border ${getStatusColor(classroom.status)}`}>
                                                     {classroom.status === 'not_started' ? 'SCHEDULED' : classroom.status.toUpperCase()}
                                                 </span>
                                             </div>
-                                            <p className="text-gray-600 mb-3 line-clamp-2">
+                                            <p className="text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
                                                 {classroom.description || 'No description provided'}
                                             </p>
-                                            <div className="flex items-center gap-6 text-sm text-gray-500">
+                                            <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="w-4 h-4" />
                                                     <span>{format(new Date(classroom.start_time), 'MMM d, yyyy')}</span>
@@ -312,21 +312,21 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                                                 navigator.clipboard.writeText(url);
                                                 toast.success('Class link copied');
                                             }}
-                                            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
                                             title="Copy Class Link"
                                         >
                                             <Copy className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => openEditModal(classroom)}
-                                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                                             title="Edit Class"
                                         >
                                             <Edit className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => setDeleteModal({ isOpen: true, classroomId: classroom.id, title: classroom.title })}
-                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                                             title="Delete Class"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -352,14 +352,14 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
             {/* Classroom Modal */}
             {classroomModal.isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-xl shadow-xl max-w-xl w-full p-6 animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-xl w-full p-6 animate-in fade-in zoom-in duration-200">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-bold text-gray-900">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {classroomModal.isEditing ? 'Edit Class' : 'Schedule New Class'}
                             </h3>
                             <button
                                 onClick={() => setClassroomModal({ ...classroomModal, isOpen: false })}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -367,14 +367,14 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                         <form onSubmit={handleSaveClass}>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Class Title <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         value={classroomModal.title}
                                         onChange={(e) => setClassroomModal({ ...classroomModal, title: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         placeholder="e.g. Weekly Q&A Session"
                                         required
                                     />
@@ -382,13 +382,13 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
 
                                 {subjects.length > 0 && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Subject (Optional)
                                         </label>
                                         <select
                                             value={classroomModal.subjectId}
                                             onChange={(e) => setClassroomModal({ ...classroomModal, subjectId: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         >
                                             <option value="">Select a subject</option>
                                             {subjects.map((s) => (
@@ -399,13 +399,13 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                                 )}
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Description
                                     </label>
                                     <textarea
                                         value={classroomModal.description}
                                         onChange={(e) => setClassroomModal({ ...classroomModal, description: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         placeholder="Brief description of what will be covered..."
                                         rows={3}
                                     />
@@ -413,40 +413,40 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Date <span className="text-red-500">*</span>
                                         </label>
                                         <input
                                             type="date"
                                             value={classroomModal.date}
                                             onChange={(e) => setClassroomModal({ ...classroomModal, date: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             required
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Time <span className="text-red-500">*</span>
                                         </label>
                                         <input
                                             type="time"
                                             value={classroomModal.time}
                                             onChange={(e) => setClassroomModal({ ...classroomModal, time: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             required
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Duration (minutes)
                                     </label>
                                     <input
                                         type="number"
                                         value={classroomModal.duration}
                                         onChange={(e) => setClassroomModal({ ...classroomModal, duration: Number(e.target.value) })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         min="15"
                                         step="15"
                                     />
@@ -456,14 +456,14 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                                 <button
                                     type="button"
                                     onClick={() => setClassroomModal({ ...classroomModal, isOpen: false })}
-                                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-lg"
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={saving || !classroomModal.title || !classroomModal.date || !classroomModal.time}
-                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
                                     {saving ? 'Saving...' : (classroomModal.isEditing ? 'Save Changes' : 'Schedule Class')}
                                 </button>

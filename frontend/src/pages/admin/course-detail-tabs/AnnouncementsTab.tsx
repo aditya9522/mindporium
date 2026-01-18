@@ -127,7 +127,7 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
             </div>
         );
     }
@@ -149,12 +149,12 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
             </div>
 
             {/* Announcements List */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-gray-900">All Announcements</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden transition-colors duration-300">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">All Announcements</h3>
                     <button
                         onClick={openCreateModal}
-                        className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
                         New Announcement
@@ -162,37 +162,37 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
                 </div>
 
                 {announcements.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                        <Megaphone className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                        <Megaphone className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
                         <p>No announcements found for this course</p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-200">
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
                         {announcements.map((announcement) => (
                             <div
                                 key={announcement.id}
-                                className={`p-6 hover:bg-gray-50 transition-colors ${announcement.is_pinned ? 'bg-orange-50/50' : ''}`}
+                                className={`p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${announcement.is_pinned ? 'bg-orange-50/50 dark:bg-orange-900/10' : ''}`}
                             >
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-start gap-4 flex-1">
-                                        <div className={`flex items-center justify-center w-12 h-12 rounded-full ${announcement.is_pinned ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'}`}>
+                                        <div className={`flex items-center justify-center w-12 h-12 rounded-full ${announcement.is_pinned ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'}`}>
                                             <Megaphone className="w-6 h-6" />
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3 mb-1">
-                                                <h4 className="text-lg font-bold text-gray-900">
+                                                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                                     {announcement.title}
                                                 </h4>
                                                 {announcement.is_pinned && (
-                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800">
                                                         PINNED
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-gray-600 mb-3 whitespace-pre-wrap">
+                                            <p className="text-gray-600 dark:text-gray-400 mb-3 whitespace-pre-wrap">
                                                 {announcement.content}
                                             </p>
-                                            <div className="flex items-center gap-6 text-sm text-gray-500">
+                                            <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="w-4 h-4" />
                                                     <span>{format(new Date(announcement.created_at), 'MMM d, yyyy')}</span>
@@ -207,14 +207,14 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => openEditModal(announcement)}
-                                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                                             title="Edit Announcement"
                                         >
                                             <Edit className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => setDeleteModal({ isOpen: true, announcementId: announcement.id, title: announcement.title })}
-                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                                             title="Delete Announcement"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -240,14 +240,14 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
             {/* Announcement Modal */}
             {announcementModal.isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-bold text-gray-900">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {announcementModal.isEditing ? 'Edit Announcement' : 'New Announcement'}
                             </h3>
                             <button
                                 onClick={() => setAnnouncementModal({ ...announcementModal, isOpen: false })}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -255,27 +255,27 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
                         <form onSubmit={handleSaveAnnouncement}>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Title <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         value={announcementModal.title}
                                         onChange={(e) => setAnnouncementModal({ ...announcementModal, title: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="e.g. Exam Schedule Update"
                                         required
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Content <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
                                         value={announcementModal.content}
                                         onChange={(e) => setAnnouncementModal({ ...announcementModal, content: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="Write your announcement here..."
                                         rows={5}
                                         required
@@ -290,7 +290,7 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
                                             onChange={(e) => setAnnouncementModal({ ...announcementModal, is_pinned: e.target.checked })}
                                             className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
                                         />
-                                        <span className="text-sm font-medium text-gray-700">Pin to top</span>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pin to top</span>
                                     </label>
                                 </div>
                             </div>
@@ -298,14 +298,14 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
                                 <button
                                     type="button"
                                     onClick={() => setAnnouncementModal({ ...announcementModal, isOpen: false })}
-                                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-lg"
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={saving || !announcementModal.title || !announcementModal.content}
-                                    className="px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-orange-600 dark:bg-orange-500 hover:bg-orange-700 dark:hover:bg-orange-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
                                     {saving ? 'Saving...' : (announcementModal.isEditing ? 'Save Changes' : 'Post Announcement')}
                                 </button>

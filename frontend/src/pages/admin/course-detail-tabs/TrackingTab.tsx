@@ -35,7 +35,7 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
     };
 
     if (loading) return <PageLoader />;
-    if (!trackingData) return <div className="p-8 text-center text-gray-500">No tracking data available</div>;
+    if (!trackingData) return <div className="p-8 text-center text-gray-500 dark:text-gray-400">No tracking data available</div>;
 
     const progressData = Object.entries(trackingData.progress_distribution || {}).map(([range, count]) => ({
         name: range,
@@ -46,12 +46,12 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Course Tracking</h2>
-                    <p className="text-gray-500">Real-time engagement and progress metrics</p>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Course Tracking</h2>
+                    <p className="text-gray-500 dark:text-gray-400">Real-time engagement and progress metrics</p>
                 </div>
                 <button
                     onClick={fetchTrackingData}
-                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+                    className="p-2 text-gray-400 rounded-md bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
                     <Activity className="w-5 h-5" />
                 </button>
@@ -89,9 +89,9 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Progress Pie */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <Target className="w-5 h-5 text-green-600" />
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-colors duration-300">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <Target className="w-5 h-5 text-green-600 dark:text-green-400" />
                         Progress Distribution
                     </h3>
                     <div className="h-[300px]">
@@ -125,9 +125,9 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
                 </div>
 
                 {/* Progress Bar */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5 text-indigo-600" />
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-colors duration-300">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         Engagement Breakdown
                     </h3>
                     <div className="h-[300px]">
@@ -145,7 +145,7 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
             </div>
 
             {/* Insights Section */}
-            <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200 overflow-hidden relative">
+            <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200 dark:shadow-none overflow-hidden relative">
                 <div className="relative z-10">
                     <h3 className="text-2xl font-bold mb-6">Engagement Summary</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -175,24 +175,24 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
 
 const MetricCard = ({ icon: Icon, label, value, color, subvalue }: any) => {
     const colorClasses: any = {
-        blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
-        green: { bg: 'bg-green-50', text: 'text-green-600' },
-        emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600' },
-        purple: { bg: 'bg-purple-50', text: 'text-purple-600' },
+        blue: { bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400' },
+        green: { bg: 'bg-green-50 dark:bg-green-900/30', text: 'text-green-600 dark:text-green-400' },
+        emerald: { bg: 'bg-emerald-50 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400' },
+        purple: { bg: 'bg-purple-50 dark:bg-purple-900/30', text: 'text-purple-600 dark:text-purple-400' },
     };
 
     const { bg, text } = colorClasses[color] || colorClasses.blue;
 
     return (
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all duration-300">
             <div className={`p-3 w-fit rounded-xl mb-4 ${bg}`}>
                 <Icon className={`w-6 h-6 ${text}`} />
             </div>
-            <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{label}</p>
             <div className="flex items-baseline gap-2">
-                <h4 className="text-3xl font-bold text-gray-900">{value || 0}</h4>
+                <h4 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{value || 0}</h4>
             </div>
-            {subvalue && <p className="text-xs font-semibold text-green-600 mt-2">{subvalue}</p>}
+            {subvalue && <p className="text-xs font-semibold text-green-600 dark:text-green-400 mt-2">{subvalue}</p>}
         </div>
     );
 };

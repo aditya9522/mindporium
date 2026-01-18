@@ -80,22 +80,23 @@
     letter-spacing: -0.02em;
   }
 
-  /* Premium Scrollbar */
+  /* Hide Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 0px;
+    height: 0px;
+    display: none;
   }
 
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+  html {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE usage */
   }
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-gray-600 rounded-full border-4 border-transparent bg-clip-content;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400 dark:bg-gray-500 border-4 border-transparent bg-clip-content;
+  body {
+    -ms-overflow-style: none;
+    /* IE usage */
   }
 
   /* Selection Color */

@@ -19,12 +19,17 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
     const { toggleSidebar } = useSidebarStore();
     const [showFeedback, setShowFeedback] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
+    const [imgError, setImgError] = useState(false);
     const { appName, appIcon, mode, setMode } = useThemeStore();
     const menuRef = React.useRef<HTMLDivElement>(null);
 
     const toggleDarkMode = () => {
         setMode(mode === 'dark' ? 'light' : 'dark');
     };
+
+    useEffect(() => {
+        setImgError(false);
+    }, [appIcon]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -64,11 +69,12 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                             )}
                             <Link to="/" className="flex items-center gap-3 group">
                                 <div className="flex items-center justify-center">
-                                    {appIcon ? (
+                                    {appIcon && !imgError ? (
                                         <img
                                             src={appIcon.startsWith('/') ? appIcon : getImageUrl(appIcon)}
                                             alt={appName}
                                             className="h-12 w-12 object-contain group-hover:scale-110 transition-transform duration-300"
+                                            onError={() => setImgError(true)}
                                         />
                                     ) : (
                                         <BookOpen className="h-10 w-10 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300" />

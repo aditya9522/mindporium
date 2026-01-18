@@ -92,39 +92,39 @@ export const SettingsTab = ({ courseData, refreshData }: SettingsTabProps) => {
             </div>
 
             {/* General Settings Form */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600" />
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 transition-colors duration-300">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     General Information
                 </h3>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Course Title</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Course Title</label>
                             <input
                                 type="text"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 required
                             />
                         </div>
 
                         <div className="col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
                             <textarea
                                 name="description"
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows={4}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price ($)</label>
                             <input
                                 type="number"
                                 name="price"
@@ -132,17 +132,17 @@ export const SettingsTab = ({ courseData, refreshData }: SettingsTabProps) => {
                                 onChange={handleChange}
                                 min="0"
                                 step="0.01"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Level</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Level</label>
                             <select
                                 name="level"
                                 value={formData.level}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             >
                                 <option value="beginner">Beginner</option>
                                 <option value="intermediate">Intermediate</option>
@@ -151,12 +151,12 @@ export const SettingsTab = ({ courseData, refreshData }: SettingsTabProps) => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
                             <select
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             >
                                 <option value="paid">Paid</option>
                                 <option value="free">Free</option>
@@ -166,22 +166,22 @@ export const SettingsTab = ({ courseData, refreshData }: SettingsTabProps) => {
 
                         <div className="flex items-center gap-3 pt-6">
                             <div
-                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${formData.is_published ? 'bg-green-500' : 'bg-gray-300'}`}
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${formData.is_published ? 'bg-green-500 dark:bg-green-600' : 'bg-gray-300 dark:bg-gray-600'}`}
                                 onClick={() => handleTogglePublish(!formData.is_published)}
                             >
                                 <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform ${formData.is_published ? 'translate-x-6' : 'translate-x-0'}`} />
                             </div>
-                            <span className="text-sm font-medium text-gray-700">
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {formData.is_published ? 'Published (Visible to students)' : 'Draft (Hidden from students)'}
                             </span>
                         </div>
                     </div>
 
-                    <div className="flex justify-end pt-4 border-t border-gray-100">
+                    <div className="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-800">
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                            className="flex items-center gap-2 px-6 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50"
                         >
                             {loading ? (
                                 <>
@@ -200,18 +200,18 @@ export const SettingsTab = ({ courseData, refreshData }: SettingsTabProps) => {
             </div>
 
             {/* Danger Zone */}
-            <div className="bg-red-50 rounded-xl shadow-sm border border-red-100 p-6">
-                <h3 className="text-lg font-bold text-red-700 mb-2 flex items-center gap-2">
+            <div className="bg-red-50 dark:bg-red-900/10 rounded-xl shadow-sm border border-red-100 dark:border-red-900/20 p-6 transition-colors duration-300">
+                <h3 className="text-lg font-bold text-red-700 dark:text-red-400 mb-2 flex items-center gap-2">
                     <AlertTriangle className="w-5 h-5" />
                     Danger Zone
                 </h3>
-                <p className="text-red-600 mb-6 text-sm">
+                <p className="text-red-600 dark:text-red-400/80 mb-6 text-sm">
                     Once you delete a course, there is no going back. Please be certain.
                 </p>
 
                 <button
                     onClick={() => setIsDeleteModalOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/40 hover:border-red-300 dark:hover:border-red-800 transition-colors"
                 >
                     <Trash2 className="w-4 h-4" />
                     Delete Course

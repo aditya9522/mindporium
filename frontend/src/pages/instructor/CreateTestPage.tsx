@@ -3,8 +3,12 @@ import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { testService } from '../../services/test.service';
 import { subjectService } from '../../services/subject.service';
 import { courseService } from '../../services/course.service';
+import { adminService } from '../../services/admin.service';
+import { useAuthStore } from '../../store/auth.store';
 import { Plus, Trash2, ArrowLeft, Loader2, Save, ChevronDown, ChevronUp, CheckCircle, Filter } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { PageLoader } from '../../components/common/PageLoader';
+import type { Subject } from '../../types/enrollment';
 
 interface Question {
     id?: number;
@@ -19,13 +23,16 @@ interface Question {
 export const CreateTestPage = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+
     const isEditing = !!id;
+    const { user } = useAuthStore();
 
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
 
     // Data Sources
-    const [allSubjects, setAllSubjects] = useState<any[]>([]);
+    const [allSubjectsCache, setAllSubjectsCache] = useState<Subject[]>([]); // For looking up course_id from subject_id
+    const [availableSubjects, setAvailableSubjects] = useState<Subject[]>([]); // For the dropdown
     const [courses, setCourses] = useState<any[]>([]);
 
     // UI State
@@ -67,29 +74,60 @@ export const CreateTestPage = () => {
         loadInitialData();
     }, []);
 
-    // Filter subjects based on selected course
-    const filteredSubjects = selectedCourseId
-        ? allSubjects.filter(s => s.course_id === parseInt(selectedCourseId))
-        : allSubjects;
+    // Fetch subjects when course changes
+    useEffect(() => {
+        const fetchCourseSubjects = async () => {
+            if (!selectedCourseId) {
+                setAvailableSubjects([]);
+                return;
+            }
+            try {
+                // Determine if we need to fetch or filter
+                // Ideally, fetch fresh to be sure
+                const subjects = await subjectService.getCourseSubjects(parseInt(selectedCourseId));
+                setAvailableSubjects(subjects);
+            } catch (error) {
+                console.error("Failed to fetch course subjects", error);
+                // Fallback to filtering cache if fetch fails (though fetch is safer)
+                const fallback = allSubjectsCache.filter(s => String(s.course_id) === String(selectedCourseId));
+                setAvailableSubjects(fallback);
+            }
+        };
+
+        fetchCourseSubjects();
+    }, [selectedCourseId, allSubjectsCache]);
+
 
     const loadInitialData = async () => {
         try {
             setPageLoading(true);
-            const [subjectsData, coursesData] = await Promise.all([
-                subjectService.getMySubjects(),
-                courseService.getMyCourses()
-            ]);
+            setPageLoading(true);
 
-            setAllSubjects(subjectsData);
+            let coursesData = [];
+            let subjectsData: Subject[] = [];
+
+            if (user?.role === 'admin') {
+                coursesData = await adminService.getAllCourses();
+                // Admins don't load all subjects upfront, too many
+            } else {
+                [subjectsData, coursesData] = await Promise.all([
+                    subjectService.getMySubjects(),
+                    courseService.getMyCourses()
+                ]);
+            }
+
+            setAllSubjectsCache(subjectsData);
             setCourses(coursesData);
 
-            // If query param exists
+            // If query param exists (Creating new with pre-selected context)
             const subjectIdParam = searchParams.get('subject_id');
             if (subjectIdParam) {
                 setFormData(prev => ({ ...prev, subject_id: subjectIdParam }));
                 // Try to find course for this subject
                 const subj = subjectsData.find(s => s.id === parseInt(subjectIdParam));
-                if (subj) setSelectedCourseId(subj.course_id.toString());
+                if (subj && subj.course_id) {
+                    setSelectedCourseId(subj.course_id.toString());
+                }
             }
 
             // If Editing
@@ -105,7 +143,7 @@ export const CreateTestPage = () => {
         }
     };
 
-    const loadTestData = async (testId: number, currentSubjects: any[]) => {
+    const loadTestData = async (testId: number, currentSubjects: Subject[]) => {
         try {
             const test = await testService.getTest(testId);
             setFormData({
@@ -132,10 +170,28 @@ export const CreateTestPage = () => {
             }
 
             // Set Course Filter
+            // We need to set selectedCourseId so the dropdown populates
             if (test.subject_id) {
                 const subj = currentSubjects.find(s => s.id === test.subject_id);
-                if (subj) {
+                if (subj && subj.course_id) {
                     setSelectedCourseId(subj.course_id.toString());
+                } else if (user?.role === 'admin' && (test as any).subject?.course_id) {
+                    // Fallback for admin if test has expanded subject
+                    setSelectedCourseId((test as any).subject.course_id.toString());
+                } else {
+                    // If we still don't have course ID (e.g. admin editing, subject not in cache, test.subject not expanded)
+                    // We might need to fetch the subject. 
+                    // For now, assuming test response includes subject or we accept potentially empty course selection
+                    if (test.subject_id) {
+                        // Attempt to fetch subject details to get course_id
+                        try {
+                            // This presumes getCourseSubjects might find it if we knew the course. But we don't.
+                            // Ideally we should have an endpoint to get subject by ID.
+                            // Let's assume we can get it from the filtered availableSubjects later? No.
+                        } catch (e) {
+                            console.warn("Could not resolve course for subject", test.subject_id);
+                        }
+                    }
                 }
             }
 
@@ -199,6 +255,11 @@ export const CreateTestPage = () => {
             return;
         }
 
+        if (!formData.subject_id) {
+            toast.error('Please select a subject for the test');
+            return;
+        }
+
         if (questions.some(q => !q.question_text.trim())) {
             toast.error('All questions must have text');
             return;
@@ -242,11 +303,7 @@ export const CreateTestPage = () => {
     };
 
     if (pageLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="w-8 h-8 animate-spin text-primary-600 dark:text-primary-400" />
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -276,21 +333,21 @@ export const CreateTestPage = () => {
                                     type="text"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="e.g., Mid-term Examination"
                                     required
                                 />
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Description
                                 </label>
                                 <textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     rows={3}
-                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     placeholder="Brief description of the test"
                                 />
                             </div>
@@ -299,12 +356,12 @@ export const CreateTestPage = () => {
                             <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 md:col-span-2 space-y-4">
                                 <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                                     <Filter className="w-4 h-4" />
-                                    Test Context (Optional)
+                                    Test Context (Required for Listing)
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                                            Filter by Course
+                                            Select Course
                                         </label>
                                         <select
                                             value={selectedCourseId}
@@ -312,9 +369,9 @@ export const CreateTestPage = () => {
                                                 setSelectedCourseId(e.target.value);
                                                 setFormData({ ...formData, subject_id: '' }); // Reset subject
                                             }}
-                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
                                         >
-                                            <option value="">All Courses</option>
+                                            <option value="">-- Select Course --</option>
                                             {courses.map((course) => (
                                                 <option key={course.id} value={course.id}>
                                                     {course.title}
@@ -324,27 +381,35 @@ export const CreateTestPage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                                        <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                                             Select Subject
                                         </label>
                                         <select
                                             value={formData.subject_id}
                                             onChange={(e) => setFormData({ ...formData, subject_id: e.target.value })}
-                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
                                         >
-                                            <option value="">-- General / No Subject --</option>
-                                            {filteredSubjects.map((subject) => (
+                                            <option value="">-- Select Subject --</option>
+                                            {availableSubjects.map((subject) => (
                                                 <option key={subject.id} value={subject.id}>
-                                                    {subject.title} {selectedCourseId ? '' : `(${subject.course_title})`}
+                                                    {subject.title}
                                                 </option>
                                             ))}
                                         </select>
+                                        {!selectedCourseId && (
+                                            <p className="text-xs text-orange-500 dark:text-orange-400 mt-1">Please select a course first.</p>
+                                        )}
+                                        {selectedCourseId && availableSubjects.length === 0 && (
+                                            <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                                                No subjects found for this course. Please create subjects first.
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Duration (minutes) *
                                 </label>
                                 <input
@@ -352,13 +417,13 @@ export const CreateTestPage = () => {
                                     value={formData.duration_minutes}
                                     onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
                                     min="1"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Total Marks
                                 </label>
                                 <input
@@ -371,7 +436,7 @@ export const CreateTestPage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Passing Marks *
                                 </label>
                                 <input
@@ -381,19 +446,19 @@ export const CreateTestPage = () => {
                                     min="0"
                                     max={formData.total_marks}
                                     step="0.5"
-                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Status
                                 </label>
                                 <select
                                     value={formData.status}
                                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                 >
                                     <option value="draft">Draft</option>
                                     <option value="published">Published</option>
@@ -402,7 +467,7 @@ export const CreateTestPage = () => {
                         </div>
 
                         {/* Questions */}
-                        <div className="border-t border-gray-200 pt-6">
+                        <div className="border-t border-gray-200 dark:border-gray-800 pt-6">
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Questions</h2>
                                 <button
@@ -442,7 +507,7 @@ export const CreateTestPage = () => {
                                                             e.stopPropagation();
                                                             removeQuestion(qIndex);
                                                         }}
-                                                        className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ml-2"
+                                                        className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors ml-2"
                                                         title="Delete Question"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -469,7 +534,7 @@ export const CreateTestPage = () => {
 
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                             Question Type
                                                         </label>
                                                         <select
@@ -484,7 +549,7 @@ export const CreateTestPage = () => {
                                                     </div>
 
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                             Marks *
                                                         </label>
                                                         <input
@@ -501,7 +566,7 @@ export const CreateTestPage = () => {
 
                                                 {question.question_type === 'mcq' && (
                                                     <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                             Options
                                                         </label>
                                                         <div className="space-y-2">
@@ -512,7 +577,7 @@ export const CreateTestPage = () => {
                                                                         name={`correct-${qIndex}`}
                                                                         checked={question.correct_answer === option && option !== ''}
                                                                         onChange={() => updateQuestion(qIndex, 'correct_answer', option)}
-                                                                        className="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500"
+                                                                        className="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
                                                                     />
                                                                     <input
                                                                         type="text"
@@ -538,7 +603,7 @@ export const CreateTestPage = () => {
                         </div>
 
                         {/* Submit Buttons */}
-                        <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-800">
                             <button
                                 type="button"
                                 onClick={() => navigate('/instructor/tests')}

@@ -413,18 +413,18 @@ export const ClassroomListPage = () => {
                                                     <Calendar className="w-3.5 h-3.5 mr-2 text-indigo-500" />
                                                     {format(new Date(classroom.start_time), 'EEE, MMM d, yyyy')}
                                                 </div>
-                                                <div className="flex items-center text-xs text-gray-600">
+                                                <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
                                                     <Clock className="w-3.5 h-3.5 mr-2 text-indigo-500" />
                                                     {format(new Date(classroom.start_time), 'h:mm a')} - {classroom.end_time ? format(new Date(classroom.end_time), 'h:mm a') : '...'}
                                                 </div>
                                                 {classroom.instructor && (
-                                                    <div className="flex items-center text-xs text-gray-600">
+                                                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
                                                         <UserIcon className="w-3.5 h-3.5 mr-2 text-indigo-500" />
                                                         <span className="truncate">Instructor: {classroom.instructor.full_name}</span>
                                                     </div>
                                                 )}
                                                 {classroom.subject && (
-                                                    <div className="flex items-center text-xs text-gray-600">
+                                                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
                                                         <Layers className="w-3.5 h-3.5 mr-2 text-indigo-500" />
                                                         <span className="truncate">Subject: {classroom.subject.title}</span>
                                                     </div>
@@ -468,7 +468,7 @@ export const ClassroomListPage = () => {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Course <span className="text-red-500">*</span></label>
                                         <select
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                                             value={formData.course_id}
                                             onChange={e => setFormData({ ...formData, course_id: e.target.value, subject_id: '' })}
                                         >
@@ -477,10 +477,10 @@ export const ClassroomListPage = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Subject <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subject <span className="text-red-500">*</span></label>
                                         <select
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
+                                            className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                                             value={formData.subject_id}
                                             onChange={e => setFormData({ ...formData, subject_id: e.target.value })}
                                             disabled={!formData.course_id || loadingCreateSubjects}
@@ -493,40 +493,40 @@ export const ClassroomListPage = () => {
                             )}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Title <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     required
                                     value={formData.title}
                                     onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                     placeholder="e.g. Introduction to Thermodynamics"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                                 <textarea
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none h-24"
+                                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none h-24"
                                     placeholder="What will be covered in this class?"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Time <span className="text-red-500">*</span></label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time <span className="text-red-500">*</span></label>
                                     <input
                                         type="datetime-local"
                                         required
                                         value={formData.start_time}
                                         onChange={e => setFormData({ ...formData, start_time: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes) <span className="text-red-500">*</span></label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duration (minutes) <span className="text-red-500">*</span></label>
                                     <input
                                         type="number"
                                         required
@@ -534,7 +534,7 @@ export const ClassroomListPage = () => {
                                         step="15"
                                         value={formData.duration}
                                         onChange={e => setFormData({ ...formData, duration: parseInt(e.target.value) || 0 })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
+                                        className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                                     />
                                 </div>
                             </div>

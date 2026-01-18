@@ -90,7 +90,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
                             <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -104,7 +104,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
                             <Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />

@@ -4,6 +4,7 @@ import { TrendingUp, Users, BookOpen, Star, MessageSquare } from 'lucide-react';
 import { PageLoader } from '../../components/common/PageLoader';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { StatsCard } from '../../components/instructor/StatsCard';
+import ReactMarkdown from 'react-markdown';
 
 export const InstructorAnalyticsPage = () => {
     const [loading, setLoading] = useState(true);
@@ -75,26 +76,43 @@ export const InstructorAnalyticsPage = () => {
                         </h2>
                         <div className="h-80 w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={data.course_stats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <BarChart data={data.course_stats} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                                     <defs>
                                         <linearGradient id="colorEnrollments" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
                                             <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                                    <XAxis dataKey="title" hide />
-                                    <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" className="dark:stroke-gray-800" />
+                                    <XAxis
+                                        dataKey="title"
+                                        tick={{ fontSize: 11, fill: '#6b7280' }}
+                                        axisLine={false}
+                                        tickLine={false}
+                                        interval={0}
+                                        angle={-10}
+                                        textAnchor="end"
+                                        height={60}
+                                    />
+                                    <YAxis
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tick={{ fontSize: 12, fill: '#6b7280' }}
+                                        allowDecimals={false}
+                                    />
                                     <Tooltip
-                                        cursor={{ fill: '#f9fafb' }}
+                                        cursor={{ fill: 'rgba(243, 244, 246, 0.5)' }}
                                         contentStyle={{
-                                            backgroundColor: '#ffffff',
+                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                             borderRadius: '12px',
-                                            border: '1px solid #f3f4f6',
-                                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-                                            padding: '12px'
+                                            border: 'none',
+                                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                                            padding: '12px',
+                                            color: '#374151'
                                         }}
+                                        itemStyle={{ color: '#374151' }}
                                         labelStyle={{ fontWeight: 600, color: '#111827', marginBottom: '4px' }}
+                                        wrapperClassName="dark:!bg-gray-800 dark:!text-white"
                                     />
                                     <Bar
                                         dataKey="enrollments"
@@ -123,8 +141,10 @@ export const InstructorAnalyticsPage = () => {
 
                         {data.ai_insights?.sentiment_analysis ? (
                             <div className="relative z-10">
-                                <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 text-indigo-100 leading-relaxed font-medium shadow-lg mb-4">
-                                    "{data.ai_insights.sentiment_analysis}"
+                                <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 text-indigo-100 leading-relaxed font-medium shadow-lg mb-4 prose prose-invert max-w-none prose-sm">
+                                    <ReactMarkdown>
+                                        {data.ai_insights.sentiment_analysis}
+                                    </ReactMarkdown>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm text-indigo-300 ml-1">
                                     <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
@@ -141,18 +161,18 @@ export const InstructorAnalyticsPage = () => {
                 </div>
 
                 {/* Detailed Course Stats Table */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 overflow-hidden transition-colors duration-300">
                     <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Course Financials & Engagement</h2>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="bg-gray-50/50 border-b border-gray-100 dark:border-gray-800">
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Course Title</th>
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Enrollments</th>
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Est. Revenue Share</th>
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Performance</th>
+                                <tr className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Course Title</th>
+                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Enrollments</th>
+                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Est. Revenue Share</th>
+                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Performance</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
@@ -165,7 +185,7 @@ export const InstructorAnalyticsPage = () => {
                                             {course.enrollments} Students
                                         </td>
                                         <td className="px-8 py-5 whitespace-nowrap">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-100">
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-800">
                                                 ${(course.enrollments * 49.99 * 0.7).toFixed(2)}
                                             </span>
                                         </td>

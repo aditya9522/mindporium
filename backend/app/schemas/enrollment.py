@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 from app.schemas.course import CourseResponse
+from app.schemas.user import UserResponse
 
 
 class EnrollmentBase(BaseModel):
@@ -19,6 +20,7 @@ class EnrollmentResponse(BaseModel):
     enrolled_at: Optional[datetime] = None
     progress_percent: float = 0.0
     course: Optional[CourseResponse] = None
+    user: Optional[UserResponse] = None
 
     class Config:
         from_attributes = True

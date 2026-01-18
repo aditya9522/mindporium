@@ -130,16 +130,16 @@ export const AnnouncementManagementPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8 flex justify-between items-center">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Announcements</h1>
-                        <p className="mt-2 text-gray-600">Manage platform-wide and course-specific announcements.</p>
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Announcements</h1>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">Manage platform-wide and course-specific announcements.</p>
                     </div>
                     <button
                         onClick={() => setShowCreateModal(true)}
-                        className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
                     >
                         <Plus className="w-5 h-5" />
                         Create Announcement
@@ -147,43 +147,43 @@ export const AnnouncementManagementPage = () => {
                 </div>
 
                 {announcements.length === 0 ? (
-                    <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
-                        <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900">No announcements yet</h3>
-                        <p className="text-gray-500 mt-2">Create your first announcement to get started.</p>
+                    <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                        <MessageSquare className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">No announcements yet</h3>
+                        <p className="text-gray-500 dark:text-gray-400 mt-2">Create your first announcement to get started.</p>
                     </div>
                 ) : (
                     <div className="grid gap-6">
                         {announcements.map((announcement) => (
-                            <div key={announcement.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <div key={announcement.id} className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <h3 className="text-xl font-bold text-gray-900">{announcement.title}</h3>
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{announcement.title}</h3>
                                             {announcement.is_pinned && (
                                                 <Pin className="w-4 h-4 text-amber-500 fill-current" />
                                             )}
                                             {!announcement.is_active && (
-                                                <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+                                                <span className="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-semibold rounded-full">
                                                     Inactive
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="text-gray-600 whitespace-pre-wrap">{announcement.content}</p>
-                                        <p className="text-xs text-gray-400 mt-2">
+                                        <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{announcement.content}</p>
+                                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
                                             {announcement.created_at ? formatDistanceToNow(new Date(announcement.created_at), { addSuffix: true }) : 'Recently'}
                                         </p>
                                     </div>
                                     <div className="flex gap-2 ml-4">
                                         <button
                                             onClick={() => handleEdit(announcement)}
-                                            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
                                         >
                                             <Edit className="w-5 h-5" />
                                         </button>
                                         <button
                                             onClick={() => setDeleteModal({ isOpen: true, announcement })}
-                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                         >
                                             <Trash2 className="w-5 h-5" />
                                         </button>
@@ -197,52 +197,52 @@ export const AnnouncementManagementPage = () => {
 
             {/* Create/Edit Modal */}
             {(showCreateModal || editingAnnouncement) && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-800">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                             {editingAnnouncement ? 'Edit Announcement' : 'Create Announcement'}
                         </h2>
                         <form onSubmit={editingAnnouncement ? handleUpdate : handleCreate}>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
                                     <input
                                         type="text"
                                         required
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="Announcement title"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Content</label>
                                     <textarea
                                         required
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none h-32 resize-none"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none h-32 resize-none"
                                         placeholder="Announcement content"
                                     />
                                 </div>
                                 <div className="flex items-center gap-6">
-                                    <label className="flex items-center gap-2">
+                                    <label className="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={formData.is_pinned}
                                             onChange={(e) => setFormData({ ...formData, is_pinned: e.target.checked })}
                                             className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                         />
-                                        <span className="text-sm font-medium text-gray-700">Pin this announcement</span>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pin this announcement</span>
                                     </label>
-                                    <label className="flex items-center gap-2">
+                                    <label className="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={formData.is_active}
                                             onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
                                             className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                         />
-                                        <span className="text-sm font-medium text-gray-700">Active</span>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Active</span>
                                     </label>
                                 </div>
                             </div>
@@ -254,7 +254,7 @@ export const AnnouncementManagementPage = () => {
                                         setEditingAnnouncement(null);
                                         resetForm();
                                     }}
-                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                                    className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                                 >
                                     Cancel
                                 </button>

@@ -61,7 +61,7 @@ export const StudentTestsPage = () => {
                                     <div key={test.id} className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:shadow-none border border-gray-100 dark:border-gray-800 p-8 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:hover:bg-gray-850 transition-all duration-300 transform hover:-translate-y-1">
                                         <div className="flex justify-between items-start mb-4">
                                             <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-1">{test.title}</h3>
-                                            <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide rounded-full border border-emerald-200">
+                                            <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase tracking-wide rounded-full border border-emerald-200 dark:border-emerald-800">
                                                 Active
                                             </span>
                                         </div>
@@ -169,12 +169,12 @@ export const StudentTestsPage = () => {
                                                         </td>
                                                         <td className="px-8 py-5 whitespace-nowrap">
                                                             {isPassed ? (
-                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800">
                                                                     <CheckCircle className="w-3.5 h-3.5 mr-1.5" />
                                                                     Passed
                                                                 </span>
                                                             ) : (
-                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-100">
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-800">
                                                                     <XCircle className="w-3.5 h-3.5 mr-1.5" />
                                                                     Failed
                                                                 </span>

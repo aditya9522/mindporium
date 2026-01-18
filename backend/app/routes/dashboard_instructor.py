@@ -1,11 +1,13 @@
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.api import deps
 from app.models.user import User
 from app.services.analytics_service import analytics_service
 from app.services.classroom_analytics_service import classroom_analytics_service
+from app.models.enums import RoleEnum
 
 router = APIRouter()
 
@@ -44,6 +46,25 @@ async def get_my_students(
     """
     students = await analytics_service.get_instructor_students(db, current_user.id)
     return students
+
+
+@router.get("/students/{student_id}")
+async def get_student_detail(
+    student_id: int,
+    db: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_instructor),
+) -> Any:
+    """
+    Get detailed profile for a specific student (only if enrolled in my courses).
+    """
+    student_profile = await analytics_service.get_student_profile_for_instructor(
+        db, current_user.id, student_id
+    )
+    
+    if not student_profile:
+        raise HTTPException(status_code=404, detail="Student not found or not enrolled in your courses")
+        
+    return student_profile
 
 
 @router.get("/course/{course_id}/analytics")
