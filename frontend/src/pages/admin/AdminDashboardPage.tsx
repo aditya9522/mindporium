@@ -6,6 +6,8 @@ import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Toolti
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
 
+import api from '../../lib/axios';
+
 export const AdminDashboardPage = () => {
     const [loading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState<any>(null);
@@ -24,11 +26,18 @@ export const AdminDashboardPage = () => {
     const fetchDashboardData = async () => {
         const startTime = performance.now();
         try {
-            const data = await adminService.getDashboardOverview();
+            // Run in parallel
+            const [data, healthRes] = await Promise.all([
+                adminService.getDashboardOverview(),
+                api.get('/health').catch(() => ({ data: { status: 'down', database: 'disconnected' } }))
+            ]);
+            
             setDashboardData(data);
+            
+            const isHealthy = healthRes.data?.status === 'healthy';
             setSystemHealth({
-                status: 'operational',
-                dbStatus: 'healthy',
+                status: isHealthy ? 'operational' : 'degraded',
+                dbStatus: healthRes.data?.database === 'connected' ? 'healthy' : 'disconnected',
                 responseTime: Math.round(performance.now() - startTime),
                 lastUpdated: new Date()
             });
@@ -53,10 +62,15 @@ export const AdminDashboardPage = () => {
     const topCourses = dashboardData?.top_courses || [];
 
     // Prepare chart data
-    const userDistribution = [
-        { name: 'Students', value: overview.active_students || 0 },
-        { name: 'Instructors', value: overview.active_instructors || 0 },
-    ];
+    const activeStudents = overview.active_students || 0;
+    const activeInstructors = overview.active_instructors || 0;
+    
+    // Only show user distribution pie chart data if there's actual data,
+    // otherwise Recharts looks weird with all 0s.
+    const userDistribution = (activeStudents > 0 || activeInstructors > 0) ? [
+        { name: 'Students', value: activeStudents },
+        { name: 'Instructors', value: activeInstructors },
+    ] : [];
 
     const statsCards = [
         {
@@ -147,57 +161,71 @@ export const AdminDashboardPage = () => {
                     {/* User Distribution Pie Chart */}
                     <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight uppercase tracking-widest text-sm">User Distribution</h2>
-                        <div className="h-[300px]">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={userDistribution}
-                                        cx="50%"
-                                        cy="50%"
-                                        labelLine={false}
-                                        label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
-                                        outerRadius={100}
-                                        innerRadius={60}
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {userDistribution.map((_, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }}
-                                        itemStyle={{ color: '#fff' }}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
+                        <div className="h-[300px] relative">
+                            {userDistribution.length > 0 ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={userDistribution}
+                                            cx="50%"
+                                            cy="50%"
+                                            labelLine={false}
+                                            label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
+                                            outerRadius={100}
+                                            innerRadius={60}
+                                            paddingAngle={5}
+                                            dataKey="value"
+                                        >
+                                            {userDistribution.map((_, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }}
+                                            itemStyle={{ color: '#fff' }}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
+                                    <Users className="w-12 h-12 mb-2 opacity-20" />
+                                    <p>No distribution data</p>
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     {/* Top Courses Bar Chart */}
                     <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight uppercase tracking-widest text-sm">Top Courses</h2>
-                        <div className="h-[300px]">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={topCourses}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.1} />
-                                    <XAxis
-                                        dataKey="title"
-                                        angle={-45}
-                                        textAnchor="end"
-                                        height={80}
-                                        stroke="#9ca3af"
-                                        fontSize={10}
-                                        fontWeight="bold"
-                                    />
-                                    <YAxis stroke="#9ca3af" fontSize={10} fontWeight="bold" />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }}
-                                        itemStyle={{ color: '#fff' }}
-                                    />
-                                    <Bar dataKey="enrollments" fill="#6366f1" radius={[6, 6, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                        <div className="h-[300px] relative">
+                            {topCourses.length > 0 ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={topCourses}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.1} />
+                                        <XAxis
+                                            dataKey="title"
+                                            angle={-45}
+                                            textAnchor="end"
+                                            height={80}
+                                            stroke="#9ca3af"
+                                            fontSize={10}
+                                            fontWeight="bold"
+                                        />
+                                        <YAxis stroke="#9ca3af" fontSize={10} fontWeight="bold" />
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }}
+                                            itemStyle={{ color: '#fff' }}
+                                        />
+                                        <Bar dataKey="enrollments" fill="#6366f1" radius={[6, 6, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
+                                    <BookOpen className="w-12 h-12 mb-2 opacity-20" />
+                                    <p>No enrollment data</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

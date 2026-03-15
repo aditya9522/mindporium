@@ -20,6 +20,16 @@ export const CourseCatalogPage = () => {
         loadCourses();
     }, [filters]);
 
+    // Search Debounce Effect
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (searchQuery !== filters.search) {
+                setFilters(prev => ({ ...prev, search: searchQuery, skip: 0 }));
+            }
+        }, 500);
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery, filters.search]);
+
     const loadCourses = async () => {
         try {
             setLoading(true);

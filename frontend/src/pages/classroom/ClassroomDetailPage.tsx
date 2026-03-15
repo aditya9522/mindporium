@@ -116,7 +116,7 @@ export const ClassroomDetailPage = () => {
 
     // Attach Main Video
     useEffect(() => {
-        if (mainVideoRef.current && mainStream) {
+        if (mainVideoRef.current && mainStream && mainVideoRef.current.srcObject !== mainStream) {
             mainVideoRef.current.srcObject = mainStream;
         }
     }, [mainStream]);
@@ -464,8 +464,17 @@ export const ClassroomDetailPage = () => {
     };
 
     const handleAnswer = async (data: any) => {
-        const pc = pcsRef.current[String(data.sender_user_id)];
-        if (pc) await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+        const senderId = String(data.sender_user_id);
+        const pc = pcsRef.current[senderId];
+        if (pc) {
+            await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            // Add any queued candidates for this specific PC that arrived before answer
+            const queued = candidateQueueRef.current[senderId] || [];
+            for (const candidate of queued) {
+                await pc.addIceCandidate(new RTCIceCandidate(candidate)).catch(console.error);
+            }
+            delete candidateQueueRef.current[senderId];
+        }
     };
 
     const handleCandidate = async (data: any) => {
@@ -583,7 +592,7 @@ export const ClassroomDetailPage = () => {
                                     <div key={uid} className="relative aspect-video bg-gray-800 rounded-lg border border-gray-700 flex-shrink-0 overflow-hidden">
                                         {peer.stream ? (
                                             <video
-                                                ref={el => { if (el) el.srcObject = peer.stream!; }}
+                                                ref={el => { if (el && el.srcObject !== peer.stream) el.srcObject = peer.stream!; }}
                                                 autoPlay playsInline
                                                 muted={isAudioMuted}
                                                 className="w-full h-full object-cover"

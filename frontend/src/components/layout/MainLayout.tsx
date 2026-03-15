@@ -8,7 +8,7 @@ export const MainLayout = () => {
             <main className="flex-grow">
                 <Outlet />
             </main>
-            <footer className="bg-white dark:bg-gray-900 border-t dark:border-gray-800 py-12 transition-colors duration-300">
+            <footer className="bg-white dark:bg-gray-900 border-t dark:border-gray-800 py-12 pb-24 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 dark:text-gray-400">
                     <p>&copy; {new Date().getFullYear()} Mindporium. All rights reserved.</p>
                 </div>

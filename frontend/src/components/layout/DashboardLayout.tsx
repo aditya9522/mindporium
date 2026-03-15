@@ -138,27 +138,27 @@ export const DashboardLayout = () => {
             {/* Profile Section (Bottom) */}
             <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-800 mb-2">
                 {user ? (
-                    <div className="flex items-center gap-3 p-3 mx-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:shadow-md transition-all duration-200 cursor-pointer" onClick={() => navigate('/settings')}>
+                    <div className="flex items-center gap-3 p-3 mx-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden" onClick={() => navigate('/settings')}>
                         {user.photo ? (
                             <img
                                 src={getImageUrl(user.photo)}
                                 alt={user.full_name}
-                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white group-hover:ring-primary-100 transition-all"
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white group-hover:ring-primary-100 transition-all flex-shrink-0"
                             />
                         ) : (
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary-100 flex items-center justify-center ring-2 ring-white group-hover:ring-primary-100 transition-all">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary-100 flex items-center justify-center ring-2 ring-white group-hover:ring-primary-100 transition-all flex-shrink-0">
                                 <span className="text-primary-600 font-bold text-sm">
                                     {user.full_name?.charAt(0).toUpperCase()}
                                 </span>
                             </div>
                         )}
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 pr-1 truncate">
                             <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors">
                                 {user.full_name}
                             </p>
                             <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 capitalize font-medium">{user.role}</p>
                         </div>
-                        <Settings className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-500 transition-all" />
+                        <Settings className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-500 transition-all flex-shrink-0" />
                     </div>
                 ) : (
                     <div className="space-y-3 px-3 pb-4">

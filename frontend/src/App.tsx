@@ -13,6 +13,7 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LandingPage } from './pages/public/LandingPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { ThemeInitializer } from './components/common/ThemeInitializer';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
@@ -134,61 +135,76 @@ function App() {
             </Route>
 
 
-            {/* Protected Routes */}
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/my-learning" element={<MyLearningPage />} />
-            <Route path="/student/attendance" element={<StudentAttendancePage />} />
-            <Route path="/tests" element={<StudentTestsPage />} />
-            <Route path="/instructor/dashboard" element={<InstructorDashboardPage />} />
-            <Route path="/instructor/courses" element={<MyCoursesPage />} />
-            <Route path="/instructor/courses/:id/view/*" element={<AdminCourseDetailViewPage />} />
-            <Route path="/instructor/courses/create" element={<CreateCoursePage />} />
-            <Route path="/instructor/courses/:id/edit" element={<EditCoursePage />} />
-            <Route path="/instructor/courses/:courseId/subjects/:subjectId/resources" element={<ManageResourcesPage />} />
-            <Route path="/instructor/courses/:id/analytics" element={<CourseAnalyticsPage />} />
-            <Route path="/instructor/students" element={<InstructorStudentsPage />} />
-            <Route path="/instructor/students/:id" element={<StudentProfilePage />} />
-            <Route path="/instructor/attendance" element={<InstructorAttendancePage />} />
-            <Route path="/instructor/analytics" element={<InstructorSelfAnalyticsPage />} />
-            <Route path="/instructor/performance" element={<InstructorSelfAnalyticsPage />} />
-            <Route path="/instructor/progress" element={<InstructorStudentsPage />} />
-            <Route path="/instructor/tests" element={<TestsManagementPage />} />
-            <Route path="/instructor/tests/create" element={<CreateTestPage />} />
-            <Route path="/instructor/tests/:id/edit" element={<CreateTestPage />} />
-            <Route path="/instructor/feedback" element={<FeedbackPage />} />
-            <Route path="/instructor/profile" element={<InstructorProfilePage />} />
+            {/* General Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/settings" element={<ProfilePage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/community/:id" element={<CommunityDetailPage />} />
+              <Route path="/news" element={<NewsPage />} />
+              <Route path="/classrooms" element={<ClassroomListPage />} />
+              <Route path="/classroom/:id" element={<ClassroomDetailPage />} />
+              <Route path="/chatbot" element={<ChatbotPage />} />
+              <Route path="/feedback" element={<StudentFeedbackPage />} />
+            </Route>
 
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/community/:id" element={<CommunityDetailPage />} />
-            <Route path="/news" element={<NewsPage />} />
-            <Route path="/classrooms" element={<ClassroomListPage />} />
-            <Route path="/classroom/:id" element={<ClassroomDetailPage />} />
-            <Route path="/test/:id/take" element={<TakeTestPage />} />
-            <Route path="/test/:id/submissions" element={<TestSubmissionsPage />} />
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-            <Route path="/admin/users" element={<UserManagementPage />} />
-            <Route path="/admin/courses" element={<AdminCourseManagementPage />} />
-            <Route path="/admin/courses/create" element={<AdminCreateCoursePage />} />
-            <Route path="/admin/announcements" element={<AnnouncementManagementPage />} />
-            <Route path="/admin/system" element={<SystemSettingsPage />} />
-            <Route path="/admin/feedback" element={<AdminFeedbackPage />} />
-            <Route path="/admin/instructors" element={<AdminInstructorsPage />} />
-            <Route path="/admin/instructors/:id" element={<AdminInstructorDetailsPage />} />
-            <Route path="/admin/instructors/:id/analytics" element={<InstructorAnalyticsPage />} />
-            <Route path="/admin/instructors/:id/profile" element={<InstructorProfileViewPage />} />
-            <Route path="/admin/courses/:id/analytics" element={<AdminCourseAnalyticsPage />} />
-            <Route path="/admin/courses/:id/view/*" element={<AdminCourseDetailViewPage />} />
-            <Route path="/admin/courses/:id/monitoring" element={<CourseMonitoringPage />} />
-            <Route path="/admin/courses/:id/tracking" element={<CourseTrackingPage />} />
-            <Route path="/settings" element={<ProfilePage />} />
-            <Route path="/notifications" element={<NotificationsPage />} />
-            <Route path="/students" element={<StudentsPage />} />
-            <Route path="/feedback" element={<StudentFeedbackPage />} />
-            <Route path="/chatbot" element={<ChatbotPage />} />
+            {/* Student Protected Routes */}
+            <Route element={<ProtectedRoute requiredRole={['student']} />}>
+              <Route path="/my-learning" element={<MyLearningPage />} />
+              <Route path="/student/attendance" element={<StudentAttendancePage />} />
+              <Route path="/tests" element={<StudentTestsPage />} />
+              <Route path="/test/:id/take" element={<TakeTestPage />} />
+              <Route path="/test/:id/submissions" element={<TestSubmissionsPage />} />
+            </Route>
+
+            {/* Instructor Protected Routes */}
+            <Route element={<ProtectedRoute requiredRole={['instructor', 'admin']} />}>
+              <Route path="/instructor/dashboard" element={<InstructorDashboardPage />} />
+              <Route path="/instructor/courses" element={<MyCoursesPage />} />
+              <Route path="/instructor/courses/:id/view/*" element={<AdminCourseDetailViewPage />} />
+              <Route path="/instructor/courses/create" element={<CreateCoursePage />} />
+              <Route path="/instructor/courses/:id/edit" element={<EditCoursePage />} />
+              <Route path="/instructor/courses/:courseId/subjects/:subjectId/resources" element={<ManageResourcesPage />} />
+              <Route path="/instructor/courses/:id/analytics" element={<CourseAnalyticsPage />} />
+              <Route path="/instructor/students" element={<InstructorStudentsPage />} />
+              <Route path="/instructor/students/:id" element={<StudentProfilePage />} />
+              <Route path="/instructor/attendance" element={<InstructorAttendancePage />} />
+              <Route path="/instructor/analytics" element={<InstructorSelfAnalyticsPage />} />
+              <Route path="/instructor/performance" element={<InstructorSelfAnalyticsPage />} />
+              <Route path="/instructor/progress" element={<InstructorStudentsPage />} />
+              <Route path="/instructor/tests" element={<TestsManagementPage />} />
+              <Route path="/instructor/tests/create" element={<CreateTestPage />} />
+              <Route path="/instructor/tests/:id/edit" element={<CreateTestPage />} />
+              <Route path="/instructor/feedback" element={<FeedbackPage />} />
+              <Route path="/instructor/profile" element={<InstructorProfilePage />} />
+            </Route>
+
+            {/* Admin Protected Routes */}
+            <Route element={<ProtectedRoute requiredRole={['admin']} />}>
+              <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+              <Route path="/admin/users" element={<UserManagementPage />} />
+              <Route path="/admin/courses" element={<AdminCourseManagementPage />} />
+              <Route path="/admin/courses/create" element={<AdminCreateCoursePage />} />
+              <Route path="/admin/announcements" element={<AnnouncementManagementPage />} />
+              <Route path="/admin/system" element={<SystemSettingsPage />} />
+              <Route path="/admin/feedback" element={<AdminFeedbackPage />} />
+              <Route path="/admin/instructors" element={<AdminInstructorsPage />} />
+              <Route path="/admin/instructors/:id" element={<AdminInstructorDetailsPage />} />
+              <Route path="/admin/instructors/:id/analytics" element={<InstructorAnalyticsPage />} />
+              <Route path="/admin/instructors/:id/profile" element={<InstructorProfileViewPage />} />
+              <Route path="/admin/courses/:id/analytics" element={<AdminCourseAnalyticsPage />} />
+              <Route path="/admin/courses/:id/view/*" element={<AdminCourseDetailViewPage />} />
+              <Route path="/admin/courses/:id/monitoring" element={<CourseMonitoringPage />} />
+              <Route path="/admin/courses/:id/tracking" element={<CourseTrackingPage />} />
+              <Route path="/students" element={<StudentsPage />} />
+            </Route>
           </Route>
 
           {/* Course Player (Standalone) */}
-          <Route path="/my-learning/:id" element={<CoursePlayerPage />} />
+          <Route element={<ProtectedRoute requiredRole={['student']} />}>
+            <Route path="/my-learning/:id" element={<CoursePlayerPage />} />
+          </Route>
 
           {/* Error Routes */}
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
