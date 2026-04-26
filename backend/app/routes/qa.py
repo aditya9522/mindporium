@@ -101,6 +101,7 @@ async def read_questions_by_course(
         .join(Subject, QAQuestion.subject_id == Subject.id)
         .options(
             selectinload(QAQuestion.user),
+            selectinload(QAQuestion.subject),
             selectinload(QAQuestion.answers).selectinload(QAAnswer.user)
         )
         .where(Subject.course_id == course_id)
@@ -157,3 +158,33 @@ async def answer_question(
         )
 
     return answer
+
+
+@router.patch("/questions/{question_id}/resolve", response_model=QuestionResponse)
+async def resolve_question(
+    question_id: int,
+    db: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Mark a question as resolved. Only instructor or admin can do this.
+    """
+    # Check question
+    query = select(QAQuestion).options(
+        selectinload(QAQuestion.user),
+        selectinload(QAQuestion.answers).selectinload(QAAnswer.user)
+    ).where(QAQuestion.id == question_id)
+    result = await db.execute(query)
+    question = result.scalars().first()
+    
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+        
+    if current_user.role not in [RoleEnum.instructor, RoleEnum.admin]:
+        raise HTTPException(status_code=403, detail="Not authorized to resolve questions")
+        
+    question.is_resolved = True
+    await db.commit()
+    await db.refresh(question)
+    
+    return question

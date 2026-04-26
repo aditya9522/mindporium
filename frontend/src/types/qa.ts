@@ -13,6 +13,10 @@ export interface QAQuestion {
         full_name: string;
         email: string;
     };
+    subject?: {
+        id: number;
+        title: string;
+    };
     answers?: QAAnswer[];
 }
 

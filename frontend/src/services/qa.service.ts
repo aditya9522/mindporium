@@ -16,4 +16,14 @@ export const qaService = {
         const response = await api.post<QAAnswer>('/qa/answers', data);
         return response.data;
     },
+
+    getCourseQuestions: async (courseId: number): Promise<QAQuestion[]> => {
+        const response = await api.get<QAQuestion[]>(`/qa/questions/course/${courseId}`);
+        return response.data;
+    },
+
+    resolveQuestion: async (questionId: number): Promise<QAQuestion> => {
+        const response = await api.patch<QAQuestion>(`/qa/questions/${questionId}/resolve`);
+        return response.data;
+    },
 };

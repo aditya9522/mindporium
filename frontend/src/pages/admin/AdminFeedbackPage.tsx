@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { MessageSquare, Star, User, TrendingUp, Brain, ThumbsUp, ThumbsDown, X, Edit, Trash2, Calendar, Mail } from 'lucide-react';
-import { TableSkeleton } from '../../components/ui/TableSkeleton';
 import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 import { formatDistanceToNow, format } from 'date-fns';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
@@ -115,170 +114,170 @@ export const AdminFeedbackPage = () => {
                 {loading ? (
                     <div className="mb-8"><CardGridSkeleton count={4} /></div>
                 ) : (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-                                <Star className="w-6 h-6 text-amber-600 dark:text-amber-500" />
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.average_rating || 0}</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <Star className="w-6 h-6 text-amber-600 dark:text-amber-500" />
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.average_rating || 0}</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                                <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-500" />
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.total_reviews || 0}</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">Total Reviews</div>
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                    <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-500" />
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.total_reviews || 0}</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">Total Reviews</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                                <ThumbsUp className="w-6 h-6 text-green-600 dark:text-green-500" />
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.sentiment_analysis?.positive || 0}</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">Positive Sentiment</div>
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                    <ThumbsUp className="w-6 h-6 text-green-600 dark:text-green-500" />
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.sentiment_analysis?.positive || 0}</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">Positive Sentiment</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                                <ThumbsDown className="w-6 h-6 text-red-600 dark:text-red-500" />
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.sentiment_analysis?.negative || 0}</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">Negative Sentiment</div>
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                                    <ThumbsDown className="w-6 h-6 text-red-600 dark:text-red-500" />
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.sentiment_analysis?.negative || 0}</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">Negative Sentiment</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 )}
 
                 {/* Charts Section */}
                 {loading ? (
                     <div className="mb-8"><CardGridSkeleton count={2} /></div>
                 ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    {/* Rating Distribution */}
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                            Rating Distribution
-                        </h3>
-                        <div className="h-80">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={ratingData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="rating" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar dataKey="count" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        {/* Rating Distribution */}
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                                Rating Distribution
+                            </h3>
+                            <div className="h-80">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={ratingData}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                        <XAxis dataKey="rating" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="count" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Sentiment Analysis */}
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
-                            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                            Sentiment Analysis (AI Powered)
-                        </h3>
-                        <div className="h-80">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={sentimentData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={100}
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {sentimentData.map((_, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip />
-                                </PieChart>
-                            </ResponsiveContainer>
-                            <div className="flex justify-center gap-4 mt-4">
-                                {sentimentData.map((entry, index) => (
-                                    <div key={entry.name} className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                        <span className="text-sm text-gray-600">{entry.name}</span>
-                                    </div>
-                                ))}
+                        {/* Sentiment Analysis */}
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                                <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                Sentiment Analysis (AI Powered)
+                            </h3>
+                            <div className="h-80">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={sentimentData}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={100}
+                                            paddingAngle={5}
+                                            dataKey="value"
+                                        >
+                                            {sentimentData.map((_, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div className="flex justify-center gap-4 mt-4">
+                                    {sentimentData.map((entry, index) => (
+                                        <div key={entry.name} className="flex items-center gap-2">
+                                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                            <span className="text-sm text-gray-600">{entry.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 )}
 
                 {/* Detailed Feedbacks List */}
                 {loading ? (
-                    <TableSkeleton columns={4} rows={6} />
+                    <CardGridSkeleton count={6} />
                 ) : (
-                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Recent Feedback</h3>
-                    </div>
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                        <div className="p-6 border-b border-gray-100 dark:border-gray-800">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Recent Feedback</h3>
+                        </div>
 
-                    {feedbacks.length === 0 ? (
-                        <div className="text-center py-12">
-                            <MessageSquare className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">No feedback yet</h3>
-                            <p className="text-gray-500 dark:text-gray-400 mt-2">Wait for users to submit their thoughts.</p>
-                        </div>
-                    ) : (
-                        <div className="divide-y divide-gray-200 dark:divide-gray-800">
-                            {feedbacks.map((feedback) => (
-                                <div
-                                    key={feedback.id}
-                                    className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
-                                    onClick={() => handleViewDetails(feedback)}
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center gap-3 flex-1">
-                                            <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-                                                {feedback.user?.full_name?.charAt(0).toUpperCase() || <User className="w-5 h-5" />}
+                        {feedbacks.length === 0 ? (
+                            <div className="text-center py-12">
+                                <MessageSquare className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">No feedback yet</h3>
+                                <p className="text-gray-500 dark:text-gray-400 mt-2">Wait for users to submit their thoughts.</p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-gray-200 dark:divide-gray-800">
+                                {feedbacks.map((feedback) => (
+                                    <div
+                                        key={feedback.id}
+                                        className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
+                                        onClick={() => handleViewDetails(feedback)}
+                                    >
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center gap-3 flex-1">
+                                                <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
+                                                    {feedback.user?.full_name?.charAt(0).toUpperCase() || <User className="w-5 h-5" />}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{feedback.user?.full_name || 'Anonymous'}</h3>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {feedback.created_at ? formatDistanceToNow(new Date(feedback.created_at), { addSuffix: true }) : 'Recently'}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-medium text-gray-900 dark:text-gray-100">{feedback.user?.full_name || 'Anonymous'}</h3>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    {feedback.created_at ? formatDistanceToNow(new Date(feedback.created_at), { addSuffix: true }) : 'Recently'}
-                                                </p>
+                                            <div className="flex items-center gap-3">
+                                                {getSentimentBadge(feedback.rating)}
+                                                <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full text-amber-600 dark:text-amber-500 border border-amber-100 dark:border-amber-900/10">
+                                                    <Star className="w-4 h-4 fill-current" />
+                                                    <span className="font-bold">{feedback.rating}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            {getSentimentBadge(feedback.rating)}
-                                            <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full text-amber-600 dark:text-amber-500 border border-amber-100 dark:border-amber-900/10">
-                                                <Star className="w-4 h-4 fill-current" />
-                                                <span className="font-bold">{feedback.rating}</span>
-                                            </div>
-                                        </div>
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-2">
+                                            {feedback.message || 'No comment provided'}
+                                        </p>
                                     </div>
-                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-2">
-                                        {feedback.message || 'No comment provided'}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
 

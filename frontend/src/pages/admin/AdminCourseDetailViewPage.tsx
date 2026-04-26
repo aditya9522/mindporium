@@ -4,7 +4,7 @@ import api from '../../lib/axios';
 import {
     ArrowLeft, BookOpen, Users, FileText, TestTube,
     Settings, Bell, Star, BarChart3, Activity,
-    GraduationCap, FolderOpen
+    GraduationCap, FolderOpen, MessageSquare
 } from 'lucide-react';
 import { PageLoader } from '../../components/common/PageLoader';
 import toast from 'react-hot-toast';
@@ -20,6 +20,7 @@ import { InstructorsTab } from './course-detail-tabs/InstructorsTab';
 import { SettingsTab } from './course-detail-tabs/SettingsTab';
 import { TrackingTab } from './course-detail-tabs/TrackingTab';
 import { AnalyticsTab } from './course-detail-tabs/AnalyticsTab';
+import { CommunityTab } from './course-detail-tabs/CommunityTab';
 
 export const AdminCourseDetailViewPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -104,6 +105,11 @@ export const AdminCourseDetailViewPage = () => {
             path: `${basePath}/courses/${id}/view/instructors`,
             label: 'Instructors',
             icon: Users
+        },
+        {
+            path: `${basePath}/courses/${id}/view/community`,
+            label: 'Community (QA)',
+            icon: MessageSquare
         },
         {
             path: `${basePath}/courses/${id}/view/settings`,
@@ -218,6 +224,7 @@ export const AdminCourseDetailViewPage = () => {
                             <Route path="settings" element={<SettingsTab courseData={courseData} refreshData={() => fetchCourseData(parseInt(id!))} />} />
                             <Route path="tracking" element={<TrackingTab courseId={parseInt(id!)} />} />
                             <Route path="analytics" element={<AnalyticsTab courseId={parseInt(id!)} />} />
+                            <Route path="community" element={<CommunityTab courseId={parseInt(id!)} />} />
                         </Routes>
                     </div>
                 </div>

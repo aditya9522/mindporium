@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { announcementService } from '../../services/announcement.service';
 import { useAuthStore } from '../../store/auth.store';
 import { Loader2, Plus, Edit, Trash2, Pin, MessageSquare } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
+import { AnnouncementSkeleton } from '../../components/ui/AnnouncementSkeleton';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
@@ -125,9 +125,9 @@ export const AnnouncementManagementPage = () => {
         });
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+    // if (loading) {
+    //     return <PageLoader />;
+    // }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
@@ -146,7 +146,9 @@ export const AnnouncementManagementPage = () => {
                     </button>
                 </div>
 
-                {announcements.length === 0 ? (
+                {loading ? (
+                    <AnnouncementSkeleton count={4} />
+                ) : announcements.length === 0 ? (
                     <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <MessageSquare className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">No announcements yet</h3>

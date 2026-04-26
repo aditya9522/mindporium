@@ -26,12 +26,14 @@ async def read_courses(
     skip: int = 0,
     limit: int = 100,
     search: Optional[str] = None,
+    level: Optional[str] = None,
+    category: Optional[str] = None,
 ) -> Any:
     """
     Retrieve courses. Public endpoint.
     """
     # 1. Try cache
-    cache_key = f"courses:public:{skip}:{limit}:{search or ''}"
+    cache_key = f"courses:public:{skip}:{limit}:{search or ''}:{level or ''}:{category or ''}"
     cached_data = await redis_manager.get(cache_key)
     if cached_data:
         return json.loads(cached_data)
@@ -40,6 +42,12 @@ async def read_courses(
     
     if search:
         query = query.where(Course.title.ilike(f"%{search}%"))
+
+    if level:
+        query = query.where(Course.level == level)
+
+    if category:
+        query = query.where(Course.category == category)
         
     query = query.offset(skip).limit(limit).order_by(desc(Course.created_at))
     result = await db.execute(query)

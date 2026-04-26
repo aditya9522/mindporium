@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/Button';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
-import { PageLoader } from '../../components/common/PageLoader';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 interface Notification {
     id: number;
@@ -87,9 +87,9 @@ export const NotificationsPage = () => {
 
     const unreadCount = notifications.filter(n => !n.is_read).length;
 
-    if (loading) {
-        return <PageLoader />;
-    }
+    // if (loading) {
+    //     return <PageLoader />;
+    // }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -146,7 +146,18 @@ export const NotificationsPage = () => {
 
                 {/* Notifications List */}
                 <div className="space-y-3">
-                    {filteredNotifications.length === 0 ? (
+                    {loading ? (
+                        [...Array(5)].map((_, i) => (
+                            <div key={i} className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800 animate-pulse flex gap-4">
+                                <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
+                                <div className="flex-1 space-y-2">
+                                    <Skeleton className="h-5 w-1/3" />
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-3 w-20" />
+                                </div>
+                            </div>
+                        ))
+                    ) : filteredNotifications.length === 0 ? (
                         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-12 text-center">
                             <Bell className="w-16 h-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No notifications</h3>

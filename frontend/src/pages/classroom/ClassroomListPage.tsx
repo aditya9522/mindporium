@@ -287,36 +287,9 @@ export const ClassroomListPage = () => {
     };
 
 
-    if (pageLoading) return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="mb-8 space-y-2">
-                    <div className="w-64 h-8 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
-                    <div className="w-96 h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden h-[360px] animate-pulse p-6 flex flex-col">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="w-20 h-6 bg-gray-200 dark:bg-gray-800 rounded-full" />
-                                <div className="w-6 h-6 bg-gray-200 dark:bg-gray-800 rounded" />
-                            </div>
-                            <div className="h-6 bg-gray-200 dark:bg-gray-800 w-3/4 rounded mb-2" />
-                            <div className="h-4 bg-gray-200 dark:bg-gray-800 w-full rounded mb-1" />
-                            <div className="h-4 bg-gray-200 dark:bg-gray-800 w-5/6 rounded mb-4" />
-                            
-                            <div className="space-y-3 mb-6 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-transparent">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-2/3 rounded" />
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-3/4 rounded" />
-                            </div>
-                            <div className="mt-auto h-10 bg-gray-200 dark:bg-gray-800 w-full rounded-lg" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
+    // if (pageLoading) return (
+    //     ... (skeleton code removed from here)
+    // );
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
@@ -384,8 +357,25 @@ export const ClassroomListPage = () => {
                 )}
 
                 {/* Content */}
-                {loadingClassrooms ? (
-                    <div className="flex justify-center py-20"><Loader2 className="w-10 h-10 animate-spin text-indigo-500" /></div>
+                {loadingClassrooms || pageLoading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden h-[360px] animate-pulse p-6 flex flex-col">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="w-20 h-6 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                                    <div className="w-6 h-6 bg-gray-200 dark:bg-gray-800 rounded" />
+                                </div>
+                                <div className="h-6 bg-gray-200 dark:bg-gray-800 w-3/4 rounded mb-2" />
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-full rounded mb-1" />
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-5/6 rounded mb-4" />
+                                <div className="space-y-3 mb-6 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-transparent">
+                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 w-2/3 rounded" />
+                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 w-3/4 rounded" />
+                                </div>
+                                <div className="mt-auto h-10 bg-gray-200 dark:bg-gray-800 w-full rounded-lg" />
+                            </div>
+                        ))}
+                    </div>
                 ) : (
                     <>
                         {!isInstructor && !selectedSubjectId ? (

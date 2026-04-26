@@ -198,43 +198,51 @@ export const CourseOverviewTab = ({ courseData }: CourseOverviewTabProps) => {
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-lg border border-indigo-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all">
                     <div className="flex items-center gap-3">
-                        <GraduationCap className="w-8 h-8 text-indigo-600" />
+                        <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                            <GraduationCap className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                        </div>
                         <div>
-                            <div className="text-2xl font-bold text-indigo-900">{stats.total_classes || 0}</div>
-                            <div className="text-xs text-indigo-600">Total Classes</div>
+                            <div className="text-xl font-bold text-gray-900 dark:text-gray-100">{stats.total_classes || 0}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">Total Classes</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all">
                     <div className="flex items-center gap-3">
-                        <TestTube className="w-8 h-8 text-purple-600" />
+                        <div className="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
+                            <TestTube className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                        </div>
                         <div>
-                            <div className="text-2xl font-bold text-purple-900">{stats.total_tests || 0}</div>
-                            <div className="text-xs text-purple-600">Tests</div>
+                            <div className="text-xl font-bold text-gray-900 dark:text-gray-100">{stats.total_tests || 0}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">Tests</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all">
                     <div className="flex items-center gap-3">
-                        <FileText className="w-8 h-8 text-green-600" />
+                        <div className="p-2 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                            <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
+                        </div>
                         <div>
-                            <div className="text-2xl font-bold text-green-900">-</div>
-                            <div className="text-xs text-green-600">Resources</div>
+                            <div className="text-xl font-bold text-gray-900 dark:text-gray-100">{stats.total_resources || 0}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">Resources</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-4 rounded-lg border border-amber-200">
+                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all">
                     <div className="flex items-center gap-3">
-                        <MessageSquare className="w-8 h-8 text-amber-600" />
+                        <div className="p-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+                            <MessageSquare className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                        </div>
                         <div>
-                            <div className="text-2xl font-bold text-amber-900">-</div>
-                            <div className="text-xs text-amber-600">Discussions</div>
+                            <div className="text-xl font-bold text-gray-900 dark:text-gray-100">{stats.total_questions || 0}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">Q&A</div>
                         </div>
                     </div>
                 </div>

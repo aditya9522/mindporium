@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MessageSquare, Send, Star, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Skeleton } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
@@ -92,14 +93,6 @@ export const FeedbackPage = () => {
                 return <MessageSquare className="w-4 h-4" />;
         }
     };
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-primary-600 dark:text-primary-400" />
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -239,7 +232,21 @@ export const FeedbackPage = () => {
                 <div className="space-y-4">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Feedback History</h2>
 
-                    {feedbacks.length === 0 ? (
+                    {loading ? (
+                        <div className="space-y-4">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800 animate-pulse">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <Skeleton className="h-6 w-1/3" />
+                                        <Skeleton className="h-5 w-20 rounded-full" />
+                                    </div>
+                                    <Skeleton className="h-4 w-full mb-2" />
+                                    <Skeleton className="h-4 w-2/3 mb-4" />
+                                    <Skeleton className="h-3 w-32" />
+                                </div>
+                            ))}
+                        </div>
+                    ) : feedbacks.length === 0 ? (
                         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-12 text-center">
                             <MessageSquare className="w-16 h-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No feedback yet</h3>

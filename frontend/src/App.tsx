@@ -76,6 +76,7 @@ import { AdminCreateCoursePage } from './pages/admin/AdminCreateCoursePage';
 import { TestsManagementPage } from './pages/instructor/TestsManagementPage';
 import { CreateTestPage } from './pages/instructor/CreateTestPage';
 import { NotificationsPage } from './pages/notifications/NotificationsPage';
+import { ResumeBuilderPage } from './pages/student/resume-builder/ResumeBuilderPage';
 
 function App() {
   return (
@@ -156,6 +157,7 @@ function App() {
               <Route path="/student/attendance" element={<StudentAttendancePage />} />
               <Route path="/tests" element={<StudentTestsPage />} />
               <Route path="/test/:id/take" element={<TakeTestPage />} />
+              <Route path="/resume-builder" element={<ResumeBuilderPage />} />
             </Route>
 
             {/* Instructor Protected Routes */}

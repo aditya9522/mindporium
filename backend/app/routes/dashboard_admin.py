@@ -209,6 +209,8 @@ async def get_course_overview(
     from app.models.attendance import Attendance
     from app.models.test import Test
     from app.models.feedback import CourseFeedback
+    from app.models.resource import Resource
+    from app.models.qa import QAQuestion
     
     # Get course
     course_result = await db.execute(
@@ -295,6 +297,24 @@ async def get_course_overview(
         )
     ).scalar() or 0
     
+    # Total resources
+    total_resources = (
+        await db.execute(
+            select(func.count()).select_from(Resource)
+            .join(Subject, Resource.subject_id == Subject.id)
+            .where(Subject.course_id == course_id)
+        )
+    ).scalar() or 0
+
+    # Total questions
+    total_questions = (
+        await db.execute(
+            select(func.count()).select_from(QAQuestion)
+            .join(Subject, QAQuestion.subject_id == Subject.id)
+            .where(Subject.course_id == course_id)
+        )
+    ).scalar() or 0
+    
     # Average rating and feedback count
     feedback_stats = (
         await db.execute(
@@ -333,7 +353,9 @@ async def get_course_overview(
             "total_tests": total_tests,
             "average_rating": average_rating,
             "total_feedback": total_feedback,
-            "completion_rate": completion_rate
+            "completion_rate": completion_rate,
+            "total_resources": total_resources,
+            "total_questions": total_questions
         },
         "subjects": subjects,
         "engagement": {
