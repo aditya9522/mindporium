@@ -300,7 +300,7 @@ export const ProfilePage = () => {
                     </div>
                 ) : (
                     /* Appearance Tab Content */
-                    <div className="max-w-4xl mx-auto md:mx-0">
+                    <div className="max-w-full mx-auto md:mx-0">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Theme Mode */}
                             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
@@ -346,7 +346,7 @@ export const ProfilePage = () => {
                                         <button
                                             key={t.id}
                                             onClick={() => setThemeColor(t.id as any)}
-                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${themeColor === t.id
+                                            className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${themeColor === t.id
                                                 ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 ring-1 ring-indigo-200 dark:ring-indigo-800'
                                                 : 'border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-400'
                                                 }`}

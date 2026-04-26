@@ -19,8 +19,6 @@ class TestQuestionCreate(TestQuestionBase):
 
 class TestQuestionResponse(TestQuestionBase):
     id: int
-    # Hide correct_answer for students in some views? 
-    # For now we include it, but frontend should handle visibility or we create separate schema
     
     class Config:
         from_attributes = True
@@ -42,15 +40,22 @@ class TestCreate(TestBase):
     questions: List[TestQuestionCreate] = []
 
 
+class TestQuestionUpdate(TestQuestionBase):
+    id: Optional[int] = None
+
+
 class TestUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
+    subject_id: Optional[int] = None
+    classroom_id: Optional[int] = None
     status: Optional[TestStatusEnum] = None
     results_published: Optional[bool] = None
     duration_minutes: Optional[int] = None
     passing_marks: Optional[float] = None
     total_marks: Optional[float] = None
     is_active: Optional[bool] = None
+    questions: Optional[List[TestQuestionUpdate]] = None
 
 
 class TestResponse(TestBase):

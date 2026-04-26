@@ -44,11 +44,11 @@ export const AdminInstructorDetailsPage = () => {
 
     if (!instructor) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-                <h2 className="text-2xl font-bold text-gray-900">Instructor not found</h2>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Instructor not found</h2>
                 <button
                     onClick={() => navigate('/admin/instructors')}
-                    className="mt-4 text-indigo-600 hover:text-indigo-700 font-medium"
+                    className="mt-4 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
                 >
                     Back to Instructors
                 </button>
@@ -57,12 +57,12 @@ export const AdminInstructorDetailsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <button
                     onClick={() => navigate('/admin/instructors')}
-                    className="flex items-center text-gray-500 hover:text-gray-700 mb-6 transition-colors"
+                    className="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4 mr-1" />
                     Back to Instructors
@@ -94,80 +94,80 @@ export const AdminInstructorDetailsPage = () => {
 
                 {/* Key Metrics */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800 hover:shadow-md dark:hover:shadow-indigo-900/10 transition-shadow">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 bg-indigo-50 rounded-lg">
-                                <BookOpen className="w-6 h-6 text-indigo-600" />
+                            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                                <BookOpen className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                             </div>
-                            <TrendingUp className="w-5 h-5 text-green-500" />
+                            <TrendingUp className="w-5 h-5 text-green-500 dark:text-green-400" />
                         </div>
-                        <h3 className="text-3xl font-bold text-gray-900">{dashboardData?.total_courses || 0}</h3>
-                        <p className="text-sm text-gray-600 mt-1">Total Courses</p>
-                        <p className="text-xs text-green-600 mt-2">{dashboardData?.active_courses || 0} active</p>
+                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{dashboardData?.total_courses || 0}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Total Courses</p>
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2">{dashboardData?.active_courses || 0} active</p>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800 hover:shadow-md dark:hover:shadow-indigo-900/10 transition-shadow">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 bg-blue-50 rounded-lg">
-                                <Users className="w-6 h-6 text-blue-600" />
+                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <TrendingUp className="w-5 h-5 text-green-500" />
+                            <TrendingUp className="w-5 h-5 text-green-500 dark:text-green-400" />
                         </div>
-                        <h3 className="text-3xl font-bold text-gray-900">{dashboardData?.total_students || 0}</h3>
-                        <p className="text-sm text-gray-600 mt-1">Total Students</p>
-                        <p className="text-xs text-gray-500 mt-2">Across all courses</p>
+                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{dashboardData?.total_students || 0}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Total Students</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Across all courses</p>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800 hover:shadow-md dark:hover:shadow-indigo-900/10 transition-shadow">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 bg-emerald-50 rounded-lg">
-                                <DollarSign className="w-6 h-6 text-emerald-600" />
+                            <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+                                <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                             </div>
-                            <TrendingUp className="w-5 h-5 text-green-500" />
+                            <TrendingUp className="w-5 h-5 text-green-500 dark:text-green-400" />
                         </div>
-                        <h3 className="text-3xl font-bold text-gray-900">${(dashboardData?.total_revenue || 0).toLocaleString()}</h3>
-                        <p className="text-sm text-gray-600 mt-1">Total Revenue</p>
-                        <p className="text-xs text-gray-500 mt-2">Generated revenue</p>
+                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">${(dashboardData?.total_revenue || 0).toLocaleString()}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Total Revenue</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Generated revenue</p>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800 hover:shadow-md dark:hover:shadow-indigo-900/10 transition-shadow">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 bg-purple-50 rounded-lg">
-                                <Award className="w-6 h-6 text-purple-600" />
+                            <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                                <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                             </div>
                         </div>
-                        <h3 className="text-3xl font-bold text-gray-900">{dashboardData?.upcoming_classes?.length || 0}</h3>
-                        <p className="text-sm text-gray-600 mt-1">Upcoming Classes</p>
-                        <p className="text-xs text-gray-500 mt-2">Scheduled sessions</p>
+                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{dashboardData?.upcoming_classes?.length || 0}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Upcoming Classes</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Scheduled sessions</p>
                     </div>
                 </div>
 
                 {/* Charts Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Course Stats */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <BarChart3 className="w-5 h-5 text-indigo-600" />
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <BarChart3 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                                 Course Enrollment
                             </h3>
                         </div>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={dashboardData?.course_stats || []}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis dataKey="course_title" angle={-45} textAnchor="end" height={100} />
-                                <YAxis />
-                                <Tooltip />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.1} />
+                                <XAxis dataKey="course_title" angle={-45} textAnchor="end" height={100} stroke="#9ca3af" fontSize={10} fontWeight="bold" />
+                                <YAxis stroke="#9ca3af" fontSize={10} fontWeight="bold" />
+                                <Tooltip contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#fff' }} />
                                 <Bar dataKey="total_enrollments" fill="#6366f1" radius={[8, 8, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
 
                     {/* Course Completion Rate */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <TrendingUp className="w-5 h-5 text-green-600" />
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
                                 Completion Rates
                             </h3>
                         </div>
@@ -185,22 +185,23 @@ export const AdminInstructorDetailsPage = () => {
                                     outerRadius={80}
                                     fill="#8884d8"
                                     dataKey="value"
+                                    stroke="transparent"
                                 >
                                     {dashboardData?.course_stats?.map((_: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
-                                <Tooltip />
+                                <Tooltip contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#fff' }} />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
                 {/* Recent Enrollments */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
-                    <div className="p-6 border-b border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-gray-500" />
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800 mb-8">
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <Clock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                             Recent Enrollments
                         </h3>
                     </div>
@@ -208,33 +209,33 @@ export const AdminInstructorDetailsPage = () => {
                         {dashboardData?.recent_enrollments?.length > 0 ? (
                             <div className="space-y-4">
                                 {dashboardData.recent_enrollments.slice(0, 5).map((enrollment: any, index: number) => (
-                                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">
+                                            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold">
                                                 {enrollment.user_name?.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
-                                                <p className="font-medium text-gray-900">{enrollment.user_name}</p>
-                                                <p className="text-sm text-gray-500">{enrollment.course_title}</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{enrollment.user_name}</p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">{enrollment.course_title}</p>
                                             </div>
                                         </div>
-                                        <span className="text-xs text-gray-400">
+                                        <span className="text-xs text-gray-400 dark:text-gray-500">
                                             {enrollment.enrolled_at ? formatDistanceToNow(new Date(enrollment.enrolled_at), { addSuffix: true }) : 'Recently'}
                                         </span>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-center text-gray-500 py-8">No recent enrollments</p>
+                            <p className="text-center text-gray-500 dark:text-gray-400 py-8">No recent enrollments</p>
                         )}
                     </div>
                 </div>
 
                 {/* Upcoming Classes */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                    <div className="p-6 border-b border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                            <Calendar className="w-5 h-5 text-gray-500" />
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800">
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <Calendar className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                             Upcoming Classes
                         </h3>
                     </div>
@@ -242,15 +243,15 @@ export const AdminInstructorDetailsPage = () => {
                         {dashboardData?.upcoming_classes?.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {dashboardData.upcoming_classes.slice(0, 6).map((classItem: any, index: number) => (
-                                    <div key={index} className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:shadow-sm transition-all">
-                                        <h4 className="font-semibold text-gray-900 mb-1">{classItem.title}</h4>
-                                        <p className="text-sm text-gray-600 mb-2">{classItem.subject_title}</p>
-                                        <div className="flex items-center justify-between text-xs text-gray-500">
+                                    <div key={index} className="p-4 border border-gray-200 dark:border-gray-800 rounded-lg hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:shadow-sm dark:hover:bg-gray-800/50 transition-all">
+                                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{classItem.title}</h4>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{classItem.subject_title}</p>
+                                        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                                             <span className="flex items-center gap-1">
                                                 <Clock className="w-3 h-3" />
                                                 {classItem.start_time ? new Date(classItem.start_time).toLocaleString() : 'TBD'}
                                             </span>
-                                            <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full font-medium">
+                                            <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-full font-medium">
                                                 {classItem.class_type}
                                             </span>
                                         </div>
@@ -258,7 +259,7 @@ export const AdminInstructorDetailsPage = () => {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-center text-gray-500 py-8">No upcoming classes scheduled</p>
+                            <p className="text-center text-gray-500 dark:text-gray-400 py-8">No upcoming classes scheduled</p>
                         )}
                     </div>
                 </div>

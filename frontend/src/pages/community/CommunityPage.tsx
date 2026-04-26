@@ -6,7 +6,6 @@ import type { Community } from '../../types/community';
 import { Users, MessageSquare, Plus, Search, Loader2, X, Lock, Globe, Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ImageUpload } from '../../components/common/ImageUpload';
-import { PageLoader } from '../../components/common/PageLoader';
 import { useAuthStore } from '../../store/auth.store';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import { VoiceInput } from '../../components/ui/VoiceInput';
@@ -173,7 +172,22 @@ export const CommunityPage = () => {
 
                 {/* Grid */}
                 {loading ? (
-                    <PageLoader />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl h-[330px] animate-pulse border border-gray-100 dark:border-gray-800 flex flex-col p-0 overflow-hidden">
+                                <div className="h-32 bg-gray-200 dark:bg-gray-800 w-full shrink-0" />
+                                <div className="p-6 flex flex-col flex-1">
+                                    <div className="h-6 bg-gray-200 dark:bg-gray-800 w-3/4 rounded mt-2 mb-4" />
+                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 w-full rounded mb-2" />
+                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 w-5/6 rounded" />
+                                    <div className="mt-auto pt-4 flex gap-4">
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 w-12 rounded" />
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 w-12 rounded" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 ) : communities.length === 0 ? (
                     <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <Users className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
@@ -247,7 +261,7 @@ export const CommunityPage = () => {
                                                         />
                                                     ) : (
                                                         <span className="text-2xl font-bold text-indigo-600">
-                                                            {community.name.charAt(0).toUpperCase()}
+                                                            {community.name?.charAt(0)?.toUpperCase() || 'C'}
                                                         </span>
                                                     )}
                                                 </div>

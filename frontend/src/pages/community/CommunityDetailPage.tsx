@@ -229,7 +229,7 @@ export const CommunityDetailPage = () => {
                                             />
                                         ) : (
                                             <div className="text-primary-600 dark:text-primary-400 font-extrabold text-5xl">
-                                                {community.name.charAt(0).toUpperCase()}
+                                                {community.name?.charAt(0)?.toUpperCase() || 'C'}
                                             </div>
                                         )}
                                     </div>

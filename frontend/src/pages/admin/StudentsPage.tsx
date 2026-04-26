@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, Search, Filter, Mail, BookOpen, Award, TrendingUp } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
 import { Button } from '../../components/ui/Button';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../store/auth.store';
@@ -78,9 +78,7 @@ export const StudentsPage = () => {
         s.last_active && new Date(s.last_active) > activeThreshold
     ).length;
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -175,7 +173,9 @@ export const StudentsPage = () => {
                 </div>
 
                 {/* Students List */}
-                {filteredStudents.length === 0 ? (
+                {loading ? (
+                    <CardGridSkeleton count={6} />
+                ) : filteredStudents.length === 0 ? (
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
                         <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">No students found</h3>
@@ -201,7 +201,7 @@ export const StudentsPage = () => {
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl font-bold">
-                                                    {student.full_name.charAt(0).toUpperCase()}
+                                                    {student.full_name?.charAt(0)?.toUpperCase() || 'S'}
                                                 </div>
                                             )}
                                         </div>

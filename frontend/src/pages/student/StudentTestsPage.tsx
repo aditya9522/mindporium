@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { testService } from '../../services/test.service';
 import type { Test, Submission } from '../../types/test';
 import { FileText, Clock, CheckCircle, Play, Award, XCircle } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
+import { TableSkeleton } from '../../components/ui/TableSkeleton';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 
@@ -34,9 +35,7 @@ export const StudentTestsPage = () => {
         }
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8">
@@ -49,7 +48,9 @@ export const StudentTestsPage = () => {
                     {/* Available Tests */}
                     <div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Available Tests</h2>
-                        {availableTests.length === 0 ? (
+                        {loading ? (
+                            <CardGridSkeleton count={3} />
+                        ) : availableTests.length === 0 ? (
                             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-12 text-center">
                                 <FileText className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
                                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No tests available</h3>
@@ -109,7 +110,9 @@ export const StudentTestsPage = () => {
                     {/* Completed Tests */}
                     <div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Completed Tests</h2>
-                        {completedTests.length === 0 ? (
+                        {loading ? (
+                            <TableSkeleton columns={5} rows={5} />
+                        ) : completedTests.length === 0 ? (
                             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 text-center">
                                 <CheckCircle className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-3" />
                                 <p className="text-gray-500 dark:text-gray-400">No completed tests yet</p>

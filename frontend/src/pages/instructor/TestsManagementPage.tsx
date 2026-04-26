@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { testService } from '../../services/test.service';
 import type { Test } from '../../types/test';
 import { Plus, FileText, Users, Clock, CheckCircle, Eye, Edit, Trash2, Search, X } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import { MicButton } from '../../components/common/MicButton';
@@ -99,9 +99,7 @@ export const TestsManagementPage = () => {
         }
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
@@ -185,7 +183,9 @@ export const TestsManagementPage = () => {
                 </div>
 
                 {/* Tests Grid */}
-                {filteredTests.length === 0 ? (
+                {loading ? (
+                    <CardGridSkeleton count={6} />
+                ) : filteredTests.length === 0 ? (
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-12 text-center">
                         <FileText className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
@@ -271,7 +271,7 @@ export const TestsManagementPage = () => {
                                         Submissions
                                     </Link>
                                     <Link
-                                        to={`/test/${test.id}/take`}
+                                        to={`/instructor/tests/${test.id}/preview`}
                                         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium"
                                     >
                                         <Eye className="w-4 h-4" />

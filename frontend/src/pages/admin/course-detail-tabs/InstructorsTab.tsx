@@ -25,6 +25,12 @@ export const InstructorsTab = ({ courseData, refreshData }: InstructorsTabProps)
         }
     }, [showAddModal]);
 
+    useEffect(() => {
+        if (courseData?.course?.instructors) {
+            setInstructors(courseData.course.instructors);
+        }
+    }, [courseData?.course?.instructors]);
+
     const fetchAllInstructors = async () => {
         try {
             const response = await api.get('/users/instructors');

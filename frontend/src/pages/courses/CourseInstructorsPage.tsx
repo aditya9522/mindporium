@@ -91,7 +91,7 @@ export const CourseInstructorsPage = () => {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-primary-50 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 font-bold text-2xl">
-                                                {instructor.full_name.charAt(0)}
+                                                {instructor.full_name?.charAt(0) || 'I'}
                                             </div>
                                         )}
                                     </div>

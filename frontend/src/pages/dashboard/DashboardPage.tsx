@@ -7,7 +7,8 @@ import {
     PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { Link } from 'react-router-dom';
-import { PageLoader } from '../../components/common/PageLoader';
+import { StatsCardSkeleton } from '../../components/ui/StatsCardSkeleton';
+import { WidgetSkeleton } from '../../components/ui/WidgetSkeleton';
 
 const COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'];
 
@@ -30,9 +31,7 @@ export const DashboardPage = () => {
         fetchDashboard();
     }, []);
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     const stats = [
         {
@@ -81,6 +80,9 @@ export const DashboardPage = () => {
             </div>
 
             {/* Stats Grid */}
+            {loading ? (
+                <div className="mb-6"><StatsCardSkeleton count={4} /></div>
+            ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => {
                     const Icon = stat.icon;
@@ -102,8 +104,12 @@ export const DashboardPage = () => {
                     );
                 })}
             </div>
+            )}
 
             {/* Charts Section */}
+            {loading ? (
+                <div className="mb-6"><WidgetSkeleton count={2} /></div>
+            ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Activity Chart */}
                 <div className="lg:col-span-2 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors">
@@ -174,8 +180,12 @@ export const DashboardPage = () => {
                     </div>
                 </div>
             </div>
+            )}
 
             {/* Recent Activity & Enrolled Courses */}
+            {loading ? (
+                <div className="mt-8"><WidgetSkeleton count={2} /></div>
+            ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Activity List */}
                 <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 transition-colors">
@@ -248,6 +258,7 @@ export const DashboardPage = () => {
                     </div>
                 </div>
             </div>
+            )}
         </div>
     );
 };

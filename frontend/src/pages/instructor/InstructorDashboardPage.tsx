@@ -5,7 +5,8 @@ import { StatsCard } from '../../components/instructor/StatsCard';
 import { BookOpen, Users, DollarSign, TrendingUp, Plus, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { PageLoader } from '../../components/common/PageLoader';
+import { StatsCardSkeleton } from '../../components/ui/StatsCardSkeleton';
+import { WidgetSkeleton } from '../../components/ui/WidgetSkeleton';
 
 export const InstructorDashboardPage = () => {
     const [dashboard, setDashboard] = useState<InstructorDashboard | null>(null);
@@ -25,17 +26,17 @@ export const InstructorDashboardPage = () => {
         fetchDashboard();
     }, []);
 
-    if (loading) {
-        return <PageLoader />;
-    }
 
-    if (!dashboard) {
+
+    if (!dashboard && !loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <p className="text-gray-500">Failed to load dashboard</p>
             </div>
         );
     }
+
+    const d = dashboard as InstructorDashboard;
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
@@ -56,33 +57,40 @@ export const InstructorDashboardPage = () => {
                 </div>
 
                 {/* Stats Grid */}
+                {loading ? (
+                    <div className="mb-8"><StatsCardSkeleton count={4} /></div>
+                ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <StatsCard
                         title="Total Courses"
-                        value={dashboard.total_courses}
+                        value={d.total_courses || 0}
                         icon={BookOpen}
                         color="blue"
                     />
                     <StatsCard
                         title="Total Students"
-                        value={dashboard.total_students}
+                        value={d.total_students || 0}
                         icon={Users}
                         color="green"
                     />
                     <StatsCard
                         title="Revenue"
-                        value={`$${dashboard?.total_revenue?.toLocaleString()}`}
+                        value={`$${d.total_revenue?.toLocaleString() || 0}`}
                         icon={DollarSign}
                         color="purple"
                     />
                     <StatsCard
                         title="Active Courses"
-                        value={dashboard.active_courses}
+                        value={d.active_courses || 0}
                         icon={TrendingUp}
                         color="orange"
                     />
                 </div>
+                )}
 
+                {loading ? (
+                    <div className="mb-8"><WidgetSkeleton count={2} /></div>
+                ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Recent Enrollments */}
                     <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:shadow-[0_2px_15px_rgb(0,0,0,0.2)] border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
@@ -90,9 +98,9 @@ export const InstructorDashboardPage = () => {
                             <div className="p-2 bg-primary-50 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400"><Users className="w-5 h-5" /></div>
                             Recent Enrollments
                         </h2>
-                        {dashboard.recent_enrollments && dashboard.recent_enrollments.length > 0 ? (
+                        {d.recent_enrollments && d.recent_enrollments.length > 0 ? (
                             <div className="space-y-4">
-                                {dashboard.recent_enrollments.slice(0, 5).map((enrollment) => (
+                                {d.recent_enrollments.slice(0, 5).map((enrollment) => (
                                     <div key={enrollment.id} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
                                         <div>
                                             <p className="font-bold text-gray-900 dark:text-gray-100">{enrollment.user_name}</p>
@@ -117,9 +125,9 @@ export const InstructorDashboardPage = () => {
                             <div className="p-2 bg-primary-50 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400"><Calendar className="w-5 h-5" /></div>
                             Upcoming Classes
                         </h2>
-                        {dashboard.upcoming_classes && dashboard.upcoming_classes.length > 0 ? (
+                        {d.upcoming_classes && d.upcoming_classes.length > 0 ? (
                             <div className="space-y-4">
-                                {dashboard.upcoming_classes.slice(0, 5).map((classroom) => {
+                                {d.upcoming_classes.slice(0, 5).map((classroom) => {
                                     const typeStyles: Record<string, string> = {
                                         trial: 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-800',
                                         free: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800',
@@ -170,9 +178,12 @@ export const InstructorDashboardPage = () => {
                         )}
                     </div>
                 </div>
+                )}
 
                 {/* Course Performance */}
-                {dashboard.course_stats && dashboard.course_stats.length > 0 && (
+                {loading ? (
+                    <div className="mt-8"><WidgetSkeleton count={1} className="grid grid-cols-1 w-full" /></div>
+                ) : d.course_stats && d.course_stats.length > 0 && (
                     <div className="mt-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:shadow-[0_2px_15px_rgb(0,0,0,0.2)] border border-gray-100 dark:border-gray-800 p-8 transition-colors duration-300">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
                             <div className="p-2 bg-primary-50 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400"><TrendingUp className="w-5 h-5" /></div>
@@ -189,11 +200,11 @@ export const InstructorDashboardPage = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
-                                    {dashboard.course_stats.map((course) => (
+                                    {d.course_stats.map((course) => (
                                         <tr key={course.course_id} className="hover:bg-gray-50/80 dark:hover:bg-gray-800/50 transition-colors group">
                                             <td className="py-4 px-4">
                                                 <Link
-                                                    to={`/instructor/courses/${course.course_id}`}
+                                                    to={`/instructor/courses/${course.course_id}/view`}
                                                     className="font-bold text-gray-900 dark:text-gray-100 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-lg"
                                                 >
                                                     {course.course_title}

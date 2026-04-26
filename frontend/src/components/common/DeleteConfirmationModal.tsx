@@ -31,9 +31,6 @@ export const DeleteConfirmationModal = ({
             {/* Modal Container */}
             <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-white/20 dark:border-gray-800 transform transition-all duration-300 scale-100 animate-in zoom-in-95 fade-in duration-200">
 
-                {/* Visual Accent/Header */}
-                <div className="h-2 bg-linear-to-r from-red-500 via-rose-500 to-red-600" />
-
                 <div className="p-8">
                     {/* Icon & Title */}
                     <div className="flex flex-col items-center text-center mb-6">

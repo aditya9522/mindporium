@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { Loader2, Search, UserPlus, Mail, GraduationCap, BarChart3, X, Trash2, Activity, MapPin } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 
 export const AdminInstructorsPage = () => {
     const navigate = useNavigate();
@@ -82,9 +82,7 @@ export const AdminInstructorsPage = () => {
         instructor.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
@@ -117,6 +115,9 @@ export const AdminInstructorsPage = () => {
                 </div>
 
                 {/* Instructors Grid */}
+                {loading ? (
+                    <CardGridSkeleton count={6} />
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredInstructors.map((instructor) => (
                         <div key={instructor.id} className="group bg-white dark:bg-gray-900 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 hover:shadow-lg hover:border-indigo-100 dark:hover:border-indigo-900 transition-all duration-300 overflow-hidden flex flex-col pt-0">
@@ -251,6 +252,7 @@ export const AdminInstructorsPage = () => {
                         </div>
                     ))}
                 </div>
+                )}
 
                 {filteredInstructors.length === 0 && (
                     <div className="text-center py-12 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">

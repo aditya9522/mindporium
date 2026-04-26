@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { newsService, type NewsArticle } from '../../services/news.service';
-import { PageLoader } from '../../components/common/PageLoader';
 import { format } from 'date-fns';
 import { Tag, Calendar, Newspaper, ArrowRight, Zap } from 'lucide-react';
 
@@ -22,7 +21,37 @@ export const NewsPage = () => {
         fetchNews();
     }, []);
 
-    if (loading) return <PageLoader />;
+    if (loading) return (
+        <div className="min-h-screen bg-slate-50 dark:bg-gray-950 relative selection:bg-primary-100 dark:selection:bg-primary-900 selection:text-primary-900 dark:selection:text-primary-100 overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary-50/50 dark:from-primary-950/20 to-transparent pointer-events-none" />
+            
+            {/* Hero Skeleton */}
+            <div className="relative pt-20 pb-20 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto text-center space-y-6 flex flex-col items-center">
+                    <div className="w-32 h-6 bg-gray-200 dark:bg-gray-800 rounded-full animate-pulse mb-4" />
+                    <div className="w-3/4 h-16 bg-gray-200 dark:bg-gray-800 rounded-2xl animate-pulse" />
+                    <div className="w-1/2 h-8 bg-gray-200 dark:bg-gray-800 rounded-2xl animate-pulse" />
+                </div>
+            </div>
+
+            {/* Grid Skeleton */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-slate-100 dark:border-gray-800 overflow-hidden h-[450px] animate-pulse">
+                            <div className="h-56 bg-gray-200 dark:bg-gray-800 w-full" />
+                            <div className="p-6">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-1/3 mb-4 rounded" />
+                                <div className="h-6 bg-gray-200 dark:bg-gray-800 w-full mb-3 rounded" />
+                                <div className="h-6 bg-gray-200 dark:bg-gray-800 w-5/6 mb-6 rounded" />
+                                <div className="h-20 bg-gray-200 dark:bg-gray-800 w-full rounded" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-gray-950 relative selection:bg-primary-100 dark:selection:bg-primary-900 selection:text-primary-900 dark:selection:text-primary-100">

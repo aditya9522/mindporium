@@ -4,7 +4,7 @@ import { courseService } from '../../services/course.service';
 import type { FeedbackResponse } from '../../types/feedback';
 import type { Course } from '../../types/course';
 import { Star, User as UserIcon, MessageSquare, ChevronDown } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 import toast from 'react-hot-toast';
 
 export const FeedbackPage = () => {
@@ -156,7 +156,7 @@ export const FeedbackPage = () => {
                 )}
 
                 {loading ? (
-                    <PageLoader />
+                    <CardGridSkeleton count={6} />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
                         {activeTab === 'instructor' ? (

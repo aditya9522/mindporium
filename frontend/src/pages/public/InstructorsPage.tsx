@@ -3,7 +3,6 @@ import { userService } from '../../services/user.service';
 import { GraduationCap, Star, Users, BookOpen, ArrowRight, ShieldCheck, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
-import { PageLoader } from '../../components/common/PageLoader';
 
 export const InstructorsPage = () => {
     const [instructors, setInstructors] = useState<any[]>([]);
@@ -24,9 +23,41 @@ export const InstructorsPage = () => {
         }
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+    if (loading) return (
+        <div className="min-h-screen bg-slate-50 dark:bg-gray-950 relative">
+            <div className="relative pt-20 pb-20 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto text-center space-y-6 flex flex-col items-center">
+                    <div className="w-32 h-6 bg-gray-200 dark:bg-gray-800 rounded-full animate-pulse mb-4" />
+                    <div className="w-3/4 h-12 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                    <div className="w-1/2 h-6 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-gray-800 shadow-sm flex flex-col h-[400px] animate-pulse">
+                            <div className="h-32 bg-gray-200 dark:bg-gray-800 w-full shrink-0" />
+                            <div className="px-6 relative flex justify-between items-end -mt-12 mb-4">
+                                <div className="w-24 h-24 rounded-2xl border-4 border-white dark:border-gray-900 bg-gray-300 dark:bg-gray-700" />
+                                <div className="w-16 h-6 bg-gray-200 dark:bg-gray-800 rounded-md" />
+                            </div>
+                            <div className="px-6 flex-1 flex flex-col">
+                                <div className="h-6 bg-gray-200 dark:bg-gray-800 w-1/2 rounded mb-2" />
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-1/3 rounded mb-6" />
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-full rounded mb-2" />
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 w-4/5 rounded mb-6" />
+                                <div className="grid grid-cols-2 gap-4 py-4 border-t border-slate-100 dark:border-gray-800 mt-auto">
+                                    <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded" />
+                                    <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded" />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-gray-950 relative selection:bg-primary-100 dark:selection:bg-primary-900 selection:text-primary-900 dark:selection:text-primary-100">
@@ -90,7 +121,7 @@ export const InstructorsPage = () => {
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-primary-50 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 text-3xl font-bold">
-                                                    {instructor.full_name.charAt(0).toUpperCase()}
+                                                    {instructor.full_name?.charAt(0)?.toUpperCase() || 'I'}
                                                 </div>
                                             )}
                                         </div>

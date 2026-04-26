@@ -56,6 +56,7 @@ export const DashboardLayout = () => {
                 { icon: Users, label: 'Users', path: '/admin/users' },
                 { icon: GraduationCap, label: 'Instructors', path: '/admin/instructors' },
                 { icon: BookOpen, label: 'Courses', path: '/admin/courses' },
+                { icon: Video, label: 'Classrooms', path: '/classrooms' },
                 { icon: Megaphone, label: 'Announcements', path: '/admin/announcements' },
                 { icon: Shield, label: 'System', path: '/admin/system' },
                 { icon: MessageSquare, label: 'Feedback', path: '/admin/feedback' },

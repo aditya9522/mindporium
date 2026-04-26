@@ -155,7 +155,7 @@ export const InstructorOverviewPage = () => {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-3xl font-bold">
-                                                {instructor.full_name.charAt(0)}
+                                                {instructor.full_name?.charAt(0) || 'I'}
                                             </div>
                                         )}
                                     </div>

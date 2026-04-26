@@ -201,6 +201,7 @@ async def get_course_overview(
     Get comprehensive course overview for admin.
     """
     from sqlalchemy import select, func
+    from sqlalchemy.orm import selectinload
     from app.models.course import Course
     from app.models.subject import Subject
     from app.models.enrollment import Enrollment
@@ -211,7 +212,9 @@ async def get_course_overview(
     
     # Get course
     course_result = await db.execute(
-        select(Course).where(Course.id == course_id)
+        select(Course)
+        .options(selectinload(Course.instructors))
+        .where(Course.id == course_id)
     )
     course = course_result.scalar()
     
@@ -227,7 +230,15 @@ async def get_course_overview(
         "category": course.category,
         "is_published": course.is_published,
         "price": course.price,
-        "created_at": course.created_at.isoformat() if course.created_at else None
+        "created_at": course.created_at.isoformat() if course.created_at else None,
+        "instructors": [
+            {
+                "id": inst.id,
+                "full_name": inst.full_name,
+                "email": inst.email,
+                "photo": inst.photo
+            } for inst in course.instructors
+        ] if getattr(course, 'instructors', None) else []
     }
     
     # Total enrollments

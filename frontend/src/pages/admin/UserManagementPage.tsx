@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { Loader2, Search, User, Shield, GraduationCap, MoreVertical, Plus, Trash2, X } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
+import { TableSkeleton } from '../../components/ui/TableSkeleton';
 
 export const UserManagementPage = () => {
     const [loading, setLoading] = useState(true);
@@ -102,9 +102,7 @@ export const UserManagementPage = () => {
         }
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
@@ -137,6 +135,9 @@ export const UserManagementPage = () => {
                 </div>
 
                 {/* Users Table */}
+                {loading ? (
+                    <TableSkeleton columns={5} rows={10} />
+                ) : (
                 <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
@@ -203,6 +204,7 @@ export const UserManagementPage = () => {
                         </div>
                     )}
                 </div>
+                )}
             </div>
 
             {/* Edit User Modal */}

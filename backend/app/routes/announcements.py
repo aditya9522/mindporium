@@ -29,11 +29,12 @@ async def create_announcement(
     """
     # Verify course ownership if linked to course
     if announcement_in.course_id:
-        result = await db.execute(select(Course).where(Course.id == announcement_in.course_id))
+        result = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == announcement_in.course_id))
         course = result.scalars().first()
         if not course:
             raise HTTPException(status_code=404, detail="Course not found")
-        if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
+        is_assigned = any(instructor.id == current_user.id for instructor in course.instructors)
+        if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
             raise HTTPException(status_code=403, detail="Not enough permissions")
 
     announcement = Announcement(

@@ -51,6 +51,7 @@ import { ClassroomListPage } from './pages/classroom/ClassroomListPage';
 import { ClassroomDetailPage } from './pages/classroom/ClassroomDetailPage';
 import { TakeTestPage } from './pages/test/TakeTestPage';
 import { TestSubmissionsPage } from './pages/test/TestSubmissionsPage';
+import { TestPreviewPage } from './pages/instructor/TestPreviewPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { UserManagementPage } from './pages/admin/UserManagementPage';
 import { AdminCourseManagementPage } from './pages/admin/AdminCourseManagementPage';
@@ -155,7 +156,6 @@ function App() {
               <Route path="/student/attendance" element={<StudentAttendancePage />} />
               <Route path="/tests" element={<StudentTestsPage />} />
               <Route path="/test/:id/take" element={<TakeTestPage />} />
-              <Route path="/test/:id/submissions" element={<TestSubmissionsPage />} />
             </Route>
 
             {/* Instructor Protected Routes */}
@@ -176,6 +176,8 @@ function App() {
               <Route path="/instructor/tests" element={<TestsManagementPage />} />
               <Route path="/instructor/tests/create" element={<CreateTestPage />} />
               <Route path="/instructor/tests/:id/edit" element={<CreateTestPage />} />
+              <Route path="/instructor/tests/:id/preview" element={<TestPreviewPage />} />
+              <Route path="/test/:id/submissions" element={<TestSubmissionsPage />} />
               <Route path="/instructor/feedback" element={<FeedbackPage />} />
               <Route path="/instructor/profile" element={<InstructorProfilePage />} />
             </Route>

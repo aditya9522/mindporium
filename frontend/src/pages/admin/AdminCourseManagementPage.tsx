@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { courseService } from '../../services/course.service';
 import { Search, BookOpen, Eye, BarChart3, Activity, Users, Star, DollarSign, Delete, Plus } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 
 export const AdminCourseManagementPage = () => {
     const navigate = useNavigate();
@@ -58,9 +58,7 @@ export const AdminCourseManagementPage = () => {
         course.category?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-purple-900/20 py-8 transition-colors duration-300">
@@ -95,6 +93,9 @@ export const AdminCourseManagementPage = () => {
                 </div>
 
                 {/* Premium Course Cards Grid */}
+                {loading ? (
+                    <CardGridSkeleton count={6} />
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredCourses.map((course) => (
                         <div
@@ -201,6 +202,7 @@ export const AdminCourseManagementPage = () => {
                         </div>
                     ))}
                 </div>
+                )}
 
                 {filteredCourses.length === 0 && (
                     <div className="text-center py-12 text-gray-500 dark:text-gray-400">

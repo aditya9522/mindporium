@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { Users, BookOpen, Monitor, DollarSign, GraduationCap, Activity } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
+import { StatsCardSkeleton } from '../../components/ui/StatsCardSkeleton';
+import { WidgetSkeleton } from '../../components/ui/WidgetSkeleton';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
@@ -54,9 +55,7 @@ export const AdminDashboardPage = () => {
         }
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     const overview = dashboardData?.overview || {};
     const topCourses = dashboardData?.top_courses || [];
@@ -133,6 +132,9 @@ export const AdminDashboardPage = () => {
                 </div>
 
                 {/* Stats Grid */}
+                {loading ? (
+                    <div className="mb-8"><StatsCardSkeleton count={6} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" /></div>
+                ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     {statsCards.map((stat, index) => {
                         const Icon = stat.icon;
@@ -155,8 +157,12 @@ export const AdminDashboardPage = () => {
                         );
                     })}
                 </div>
+                )}
 
                 {/* Charts Section */}
+                {loading ? (
+                    <div className="mb-8"><WidgetSkeleton count={2} /></div>
+                ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* User Distribution Pie Chart */}
                     <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
@@ -229,8 +235,12 @@ export const AdminDashboardPage = () => {
                         </div>
                     </div>
                 </div>
+                )}
 
                 {/* Platform Activity */}
+                {loading ? (
+                    <div className="mb-8"><StatsCardSkeleton count={3} className="grid grid-cols-1 md:grid-cols-3 gap-6" /></div>
+                ) : (
                 <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400">
@@ -255,8 +265,12 @@ export const AdminDashboardPage = () => {
                         </div>
                     </div>
                 </div>
+                )}
 
                 {/* System Health */}
+                {loading ? (
+                    <StatsCardSkeleton count={3} className="grid grid-cols-1 md:grid-cols-3 gap-6" />
+                ) : (
                 <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
                     <h2 className="text-xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">System Health</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -298,6 +312,7 @@ export const AdminDashboardPage = () => {
                         </div>
                     </div>
                 </div>
+                )}
             </div>
         </div>
     );

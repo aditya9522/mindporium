@@ -2,7 +2,7 @@ from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, or_
 from sqlalchemy.orm import selectinload
 
 from app.api import deps
@@ -73,7 +73,12 @@ async def get_my_subjects(
     query = (
         select(Subject)
         .join(Course, Subject.course_id == Course.id)
-        .where(Course.created_by == current_user.id)
+        .where(
+            or_(
+                Course.created_by == current_user.id,
+                Course.instructors.any(User.id == current_user.id)
+            )
+        )
         .options(selectinload(Subject.course))
         .order_by(Course.title, Subject.order_index)
     )

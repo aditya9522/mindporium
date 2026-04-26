@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, CheckCircle } from 'lucide-react';
 import api from '../../lib/axios';
-import { PageLoader } from '../../components/common/PageLoader';
+import { TableSkeleton } from '../../components/ui/TableSkeleton';
 
 interface Attendance {
     id: number;
@@ -30,9 +30,7 @@ export const StudentAttendancePage = () => {
         }
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8">
@@ -43,7 +41,9 @@ export const StudentAttendancePage = () => {
                 </div>
 
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:shadow-none border border-gray-100 dark:border-gray-800 overflow-hidden">
-                    {attendances.length === 0 ? (
+                    {loading ? (
+                        <TableSkeleton columns={4} rows={6} />
+                    ) : attendances.length === 0 ? (
                         <div className="p-16 text-center text-gray-500 dark:text-gray-400">
                             <div className="bg-gray-50 dark:bg-gray-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Clock className="w-10 h-10 text-gray-300 dark:text-gray-600" />

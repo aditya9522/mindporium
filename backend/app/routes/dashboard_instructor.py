@@ -128,9 +128,10 @@ async def get_classroom_detailed_stats(
         subject_query = await db.execute(select(Subject).where(Subject.id == classroom.subject_id))
         subject = subject_query.scalars().first()
         if subject:
-            course_query = await db.execute(select(Course).where(Course.id == subject.course_id))
+            course_query = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id))
             course = course_query.scalars().first()
-            if not course or course.created_by != current_user.id:
+            is_assigned = any(instructor.id == current_user.id for instructor in course.instructors) if course else False
+            if current_user.role != RoleEnum.admin and (not course or (course.created_by != current_user.id and not is_assigned)):
                 raise HTTPException(status_code=403, detail="Access denied")
     
     stats = await classroom_analytics_service.get_classroom_detailed_stats(db, classroom_id)

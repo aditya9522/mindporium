@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { enrollmentService } from '../../services/enrollment.service';
 import type { Enrollment } from '../../types/enrollment';
-import { PageLoader } from '../../components/common/PageLoader';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 import { EnrolledCourseCard } from '../../components/student/EnrolledCourseCard';
 import { BookOpen } from 'lucide-react';
 
@@ -32,9 +32,7 @@ export const MyLearningPage = () => {
         return true;
     });
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors">
@@ -70,7 +68,9 @@ export const MyLearningPage = () => {
                     </div>
                 </div>
 
-                {filteredEnrollments.length > 0 ? (
+                {loading ? (
+                    <CardGridSkeleton count={4} />
+                ) : filteredEnrollments.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {filteredEnrollments.map((enrollment) => (
                             <EnrolledCourseCard key={enrollment.id} enrollment={enrollment} />

@@ -3,7 +3,7 @@ import { Search, Users, BookOpen, TrendingUp, Mail, ExternalLink } from 'lucide-
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
-import { PageLoader } from '../../components/common/PageLoader';
+import { TableSkeleton } from '../../components/ui/TableSkeleton';
 
 interface StudentData {
     user_id: number;
@@ -59,9 +59,7 @@ export const InstructorStudentsPage = () => {
         return matchesSearch && student.courses.some(c => c.course_id === parseInt(selectedCourse));
     });
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
@@ -136,90 +134,94 @@ export const InstructorStudentsPage = () => {
                 </div>
 
                 {/* Students List */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-200 dark:border-gray-800 overflow-hidden transition-colors duration-300">
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Enrolled Courses</th>
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Avg. Progress</th>
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Attendance</th>
-                                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Last Active</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
-                                {filteredStudents.map((student) => (
-                                    <tr key={student.user_id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center">
-                                                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0 border-2 border-white">
-                                                    {student.full_name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div className="ml-4">
-                                                    <Link
-                                                        to={`/instructor/students/${student.user_id}`}
-                                                        className="font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex items-center gap-2"
-                                                    >
-                                                        {student.full_name}
-                                                        <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                    </Link>
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5 font-medium">
-                                                        <Mail className="w-3.5 h-3.5" />
-                                                        {student.email}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-5 text-gray-700 dark:text-gray-300">
-                                            <div className="flex flex-col gap-1.5">
-                                                {student.courses.map(c => (
-                                                    <span key={c.course_id} className="inline-flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border border-primary-100 dark:border-primary-800">
-                                                        {c.course_title}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-2 max-w-[120px] shadow-inner overflow-hidden">
-                                                    <div
-                                                        className="bg-gradient-to-r from-indigo-500 to-purple-600 h-full rounded-full"
-                                                        style={{ width: `${student.total_progress}%` }}
-                                                    />
-                                                </div>
-                                                <span className="text-sm font-bold text-gray-700 dark:text-gray-300 w-10">{Math.round(student.total_progress)}%</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center gap-2">
-                                                <span className={`px-2 py-0.5 rounded text-xs font-bold ${(student as any).attendance_percent >= 75 ? 'bg-green-50 text-green-700' :
-                                                    (student as any).attendance_percent >= 50 ? 'bg-yellow-50 text-yellow-700' :
-                                                        'bg-red-50 text-red-700'
-                                                    }`}>
-                                                    {Math.round((student as any).attendance_percent || 0)}%
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-5 text-sm font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">
-                                            {student.last_active ? new Date(student.last_active).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
-                                        </td>
+                {loading ? (
+                    <TableSkeleton columns={5} rows={8} />
+                ) : (
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-200 dark:border-gray-800 overflow-hidden transition-colors duration-300">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                                        <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
+                                        <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Enrolled Courses</th>
+                                        <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Avg. Progress</th>
+                                        <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Attendance</th>
+                                        <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Last Active</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {filteredStudents.length === 0 && (
-                        <div className="text-center py-20 text-gray-500 dark:text-gray-400 dark:text-gray-500">
-                            <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100 dark:border-gray-800">
-                                <Users className="w-10 h-10 text-gray-300 dark:text-gray-600" />
-                            </div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">No students found</h3>
-                            <p>Try adjusting your search or filters</p>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                                    {filteredStudents.map((student) => (
+                                        <tr key={student.user_id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
+                                            <td className="px-8 py-5">
+                                                <div className="flex items-center">
+                                                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0 border-2 border-white">
+                                                        {student.full_name?.charAt(0)?.toUpperCase() || 'S'}
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <Link
+                                                            to={`/instructor/students/${student.user_id}`}
+                                                            className="font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex items-center gap-2"
+                                                        >
+                                                            {student.full_name}
+                                                            <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                        </Link>
+                                                        <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5 font-medium">
+                                                            <Mail className="w-3.5 h-3.5" />
+                                                            {student.email}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-5 text-gray-700 dark:text-gray-300">
+                                                <div className="flex flex-col gap-1.5">
+                                                    {student.courses.map(c => (
+                                                        <span key={c.course_id} className="inline-flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border border-primary-100 dark:border-primary-800">
+                                                            {c.course_title}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-5">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-2 max-w-[120px] shadow-inner overflow-hidden">
+                                                        <div
+                                                            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-full rounded-full"
+                                                            style={{ width: `${student.total_progress}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="text-sm font-bold text-gray-700 dark:text-gray-300 w-10">{Math.round(student.total_progress)}%</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-5">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${(student as any).attendance_percent >= 75 ? 'bg-green-50 text-green-700' :
+                                                        (student as any).attendance_percent >= 50 ? 'bg-yellow-50 text-yellow-700' :
+                                                            'bg-red-50 text-red-700'
+                                                        }`}>
+                                                        {Math.round((student as any).attendance_percent || 0)}%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-5 text-sm font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                                                {student.last_active ? new Date(student.last_active).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                    )}
-                </div>
+
+                        {filteredStudents.length === 0 && (
+                            <div className="text-center py-20 text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                                <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100 dark:border-gray-800">
+                                    <Users className="w-10 h-10 text-gray-300 dark:text-gray-600" />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">No students found</h3>
+                                <p>Try adjusting your search or filters</p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

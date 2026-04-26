@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
 import { MessageSquare, Star, User, TrendingUp, Brain, ThumbsUp, ThumbsDown, X, Edit, Trash2, Calendar, Mail } from 'lucide-react';
-import { PageLoader } from '../../components/common/PageLoader';
+import { TableSkeleton } from '../../components/ui/TableSkeleton';
+import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 import { formatDistanceToNow, format } from 'date-fns';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { FeedbackModal } from '../../components/feedback/FeedbackModal';
@@ -84,9 +85,7 @@ export const AdminFeedbackPage = () => {
         }
     };
 
-    if (loading) {
-        return <PageLoader />;
-    }
+
 
     // Prepare chart data
     const ratingData = analysis?.rating_distribution
@@ -113,6 +112,9 @@ export const AdminFeedbackPage = () => {
                 </div>
 
                 {/* Stats Overview */}
+                {loading ? (
+                    <div className="mb-8"><CardGridSkeleton count={4} /></div>
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center gap-4">
@@ -162,8 +164,12 @@ export const AdminFeedbackPage = () => {
                         </div>
                     </div>
                 </div>
+                )}
 
                 {/* Charts Section */}
+                {loading ? (
+                    <div className="mb-8"><CardGridSkeleton count={2} /></div>
+                ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Rating Distribution */}
                     <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
@@ -220,8 +226,12 @@ export const AdminFeedbackPage = () => {
                         </div>
                     </div>
                 </div>
+                )}
 
                 {/* Detailed Feedbacks List */}
+                {loading ? (
+                    <TableSkeleton columns={4} rows={6} />
+                ) : (
                 <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
                     <div className="p-6 border-b border-gray-100 dark:border-gray-800">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Recent Feedback</h3>
@@ -269,6 +279,7 @@ export const AdminFeedbackPage = () => {
                         </div>
                     )}
                 </div>
+                )}
             </div>
 
             {/* Detailed Feedback Modal */}

@@ -35,13 +35,26 @@ async def create_test(
     # Verify context (Subject or Classroom)
     if test_in.subject_id:
         result = await db.execute(select(Subject).where(Subject.id == test_in.subject_id))
-        if not result.scalars().first():
+        subject = result.scalars().first()
+        if not subject:
             raise HTTPException(status_code=404, detail="Subject not found")
+            
+        if current_user.role != RoleEnum.admin:
+            from app.models.course import Course
+            result_course = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id))
+            course = result_course.scalars().first()
+            is_assigned = any(instructor.id == current_user.id for instructor in course.instructors) if course else False
+            if not course or (course.created_by != current_user.id and not is_assigned):
+                raise HTTPException(status_code=403, detail="Not enough permissions")
             
     if test_in.classroom_id:
         result = await db.execute(select(Classroom).where(Classroom.id == test_in.classroom_id))
-        if not result.scalars().first():
+        classroom = result.scalars().first()
+        if not classroom:
             raise HTTPException(status_code=404, detail="Classroom not found")
+            
+        if current_user.role != RoleEnum.admin and classroom.instructor_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Not enough permissions")
 
     # Create Test
     test_data = test_in.model_dump(exclude={"questions"})
@@ -241,12 +254,6 @@ async def update_test(
     if not test:
         raise HTTPException(status_code=404, detail="Test not found")
 
-    # Check permissions (Instructor who created the course/subject or Admin)
-    # Since we don't have created_by on Test directly, we check via Subject -> Course
-    # For simplicity, we'll assume if they can access it via instructor routes, they might be the owner.
-    # But ideally we should check ownership.
-    # Let's check Subject -> Course -> created_by
-
     if current_user.role != RoleEnum.admin:
         
         if test.subject_id:
@@ -254,9 +261,10 @@ async def update_test(
             subject = result_subject.scalars().first()
             if subject:
                 from app.models.course import Course
-                result_course = await db.execute(select(Course).where(Course.id == subject.course_id))
+                result_course = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id))
                 course = result_course.scalars().first()
-                if not course or course.created_by != current_user.id:
+                is_assigned = any(instructor.id == current_user.id for instructor in course.instructors) if course else False
+                if not course or (course.created_by != current_user.id and not is_assigned):
                      raise HTTPException(status_code=403, detail="Not enough permissions")
                      
         elif test.classroom_id:
@@ -266,12 +274,37 @@ async def update_test(
             if not classroom or classroom.instructor_id != current_user.id:
                  raise HTTPException(status_code=403, detail="Not enough permissions")
 
-    update_data = test_in.model_dump(exclude_unset=True)
+    update_data = test_in.model_dump(exclude_unset=True, exclude={"questions"})
 
     was_published = test.status == TestStatusEnum.published.value
     
     for field, value in update_data.items():
         setattr(test, field, value)
+
+    if getattr(test_in, "questions", None) is not None:
+        existing_questions = {q.id: q for q in test.questions}
+        incoming_ids = set()
+        
+        for q_in in test_in.questions:
+            if hasattr(q_in, "id") and q_in.id and q_in.id in existing_questions:
+                incoming_ids.add(q_in.id)
+                q_model = existing_questions[q_in.id]
+                for key, val in q_in.model_dump(exclude_unset=True).items():
+                    if key != "id":
+                        setattr(q_model, key, val)
+            else:
+                qd = q_in.model_dump(exclude_unset=True)
+                if "id" in qd:
+                    del qd["id"]
+                new_q = TestQuestion(
+                    **qd,
+                    test_id=test.id
+                )
+                db.add(new_q)
+                
+        for q_id, q_model in existing_questions.items():
+            if q_id not in incoming_ids:
+                await db.delete(q_model)
 
     db.add(test)
     await db.commit()
@@ -325,10 +358,11 @@ async def delete_test(
 
             if subject:
                 from app.models.course import Course
-                result_course = await db.execute(select(Course).where(Course.id == subject.course_id))
+                result_course = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id))
                 course = result_course.scalars().first()
 
-                if not course or course.created_by != current_user.id:
+                is_assigned = any(instructor.id == current_user.id for instructor in course.instructors) if course else False
+                if not course or (course.created_by != current_user.id and not is_assigned):
                      raise HTTPException(status_code=403, detail="Not enough permissions")
 
         elif test.classroom_id:

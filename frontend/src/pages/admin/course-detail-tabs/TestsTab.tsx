@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, CheckCircle, Clock, FileText, Plus, AlertCircle, Calendar, Edit, Trash2, X, Loader2 } from 'lucide-react';
+import { BookOpen, CheckCircle, Clock, FileText, Plus, AlertCircle, Calendar, Edit, Trash2, X } from 'lucide-react';
+import { CardGridSkeleton } from '../../../components/ui/CardGridSkeleton';
 import { testService } from '../../../services/test.service';
 import { subjectService } from '../../../services/subject.service';
 import toast from 'react-hot-toast';
@@ -161,13 +162,7 @@ export const TestsTab = ({ courseData }: TestsTabProps) => {
         });
     };
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
-            </div>
-        );
-    }
+
 
     const activeTests = tests.filter(t => t.is_active).length;
     const totalQuestions = tests.reduce((acc, t) => acc + (t.questions?.length || 0), 0);
@@ -189,6 +184,9 @@ export const TestsTab = ({ courseData }: TestsTabProps) => {
             </div>
 
             {/* Stats Cards */}
+            {loading ? (
+                <CardGridSkeleton count={3} />
+            ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                     <div className="flex items-center gap-4">
@@ -228,8 +226,12 @@ export const TestsTab = ({ courseData }: TestsTabProps) => {
                     </div>
                 </div>
             </div>
-
+            )}
+            
             {/* Tests List */}
+            {loading ? (
+                <div className="mt-8"><CardGridSkeleton count={3} /></div>
+            ) : (
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden transition-colors duration-300">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">All Tests</h3>
@@ -311,6 +313,7 @@ export const TestsTab = ({ courseData }: TestsTabProps) => {
                     </div>
                 )}
             </div>
+            )}
 
             <DeleteConfirmationModal
                 isOpen={deleteModal.isOpen}
@@ -325,7 +328,7 @@ export const TestsTab = ({ courseData }: TestsTabProps) => {
             {/* Test Modal */}
             {testModal.isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-xl w-full p-6 animate-in fade-in zoom-in duration-200">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {testModal.isEditing ? 'Edit Test' : 'Create New Test'}

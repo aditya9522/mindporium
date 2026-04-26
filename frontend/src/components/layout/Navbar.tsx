@@ -8,6 +8,7 @@ import { NotificationDropdown } from '../notifications/NotificationDropdown';
 import { FeedbackModal } from '../feedback/FeedbackModal';
 import { useThemeStore } from '../../store/theme.store';
 import { getImageUrl } from '../../lib/utils';
+import { LogoutConfirmationModal } from '../common/LogoutConfirmationModal';
 
 interface NavbarProps {
     showSidebarToggle?: boolean;
@@ -19,6 +20,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
     const { toggleSidebar } = useSidebarStore();
     const [showFeedback, setShowFeedback] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [imgError, setImgError] = useState(false);
     const { appName, appIcon, mode, setMode } = useThemeStore();
     const menuRef = React.useRef<HTMLDivElement>(null);
@@ -49,6 +51,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
 
     const logout = () => {
         logoutUser();
+        setShowLogoutModal(false);
         navigate('/');
     };
 
@@ -186,7 +189,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                                 <button
                                                     onClick={() => {
                                                         setShowUserMenu(false);
-                                                        logout();
+                                                        setShowLogoutModal(true);
                                                     }}
                                                     className="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors mx-1 rounded-lg max-w-[calc(100%-8px)]"
                                                 >
@@ -227,6 +230,12 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                 isOpen={showFeedback}
                 onClose={() => setShowFeedback(false)}
                 type="app"
+            />
+
+            <LogoutConfirmationModal
+                isOpen={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={logout}
             />
         </>
     );

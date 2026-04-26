@@ -3,6 +3,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
+from sqlalchemy.orm import selectinload
 
 from app.api import deps
 from app.models.resource import Resource
@@ -35,10 +36,12 @@ async def create_resource(
         if not subject:
             raise HTTPException(status_code=404, detail="Subject not found")
         
-        # Check course ownership
-        result_course = await db.execute(select(Course).where(Course.id == subject.course_id))
+        # Check course ownership or if assigned instructor
+        result_course = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id))
         course = result_course.scalars().first()
-        if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
+        
+        is_assigned = any(instructor.id == current_user.id for instructor in course.instructors)
+        if current_user.role != RoleEnum.admin and course.created_by != current_user.id and not is_assigned:
             raise HTTPException(status_code=403, detail="Not enough permissions")
 
     resource = Resource(**resource_in.model_dump())
@@ -128,10 +131,11 @@ async def delete_resource(
         result_subject = await db.execute(select(Subject).where(Subject.id == resource.subject_id))
         subject = result_subject.scalars().first()
         if subject:
-            result_course = await db.execute(select(Course).where(Course.id == subject.course_id))
+            result_course = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == subject.course_id))
             course = result_course.scalars().first()
             
-            if current_user.role != RoleEnum.admin and course.created_by != current_user.id:
+            is_assigned = any(instructor.id == current_user.id for instructor in course.instructors) if course else False
+            if current_user.role != RoleEnum.admin and (not course or (course.created_by != current_user.id and not is_assigned)):
                 raise HTTPException(status_code=403, detail="Not enough permissions")
     
     await db.delete(resource)

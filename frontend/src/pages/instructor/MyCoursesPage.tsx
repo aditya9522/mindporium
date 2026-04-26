@@ -7,7 +7,6 @@ import { Plus, Search, Filter, BookOpen, BarChart2, TrendingUp, Users } from 'lu
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
-import { PageLoader } from '../../components/common/PageLoader';
 
 export const MyCoursesPage = () => {
     // const navigate = useNavigate();
@@ -73,9 +72,48 @@ export const MyCoursesPage = () => {
 
     const totalStudents = courses.reduce((acc, course) => acc + (course.enrollments_count || 0), 0); // Assuming enrollments_count exists or 0
 
-    if (loading) {
-        return <PageLoader />;
-    }
+    if (loading) return (
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+                    <div className="space-y-2">
+                        <div className="w-64 h-10 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                        <div className="w-96 h-5 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="h-32 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 animate-pulse p-6">
+                            <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-800 rounded mb-4" />
+                            <div className="h-8 w-1/3 bg-gray-200 dark:bg-gray-800 rounded" />
+                        </div>
+                    ))}
+                </div>
+
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 mb-8 h-20 animate-pulse" />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col h-[380px] animate-pulse">
+                            <div className="h-48 bg-gray-200 dark:bg-gray-800 w-full shrink-0" />
+                            <div className="p-6 flex-1 flex flex-col">
+                                <div className="h-6 bg-gray-200 dark:bg-gray-800 w-3/4 rounded mb-3" />
+                                <div className="flex gap-2 mb-4">
+                                    <div className="w-16 h-5 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                                    <div className="w-20 h-5 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                                </div>
+                                <div className="mt-auto flex justify-between">
+                                    <div className="w-1/3 h-4 bg-gray-200 dark:bg-gray-800 rounded" />
+                                    <div className="w-1/3 h-4 bg-gray-200 dark:bg-gray-800 rounded" />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">

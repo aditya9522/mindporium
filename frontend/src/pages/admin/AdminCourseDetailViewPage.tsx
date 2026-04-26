@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link, Routes, Route, useLocation } from 'react-
 import api from '../../lib/axios';
 import {
     ArrowLeft, BookOpen, Users, FileText, TestTube,
-    MessageSquare, Settings, Bell, Star, BarChart3, Activity,
+    Settings, Bell, Star, BarChart3, Activity,
     GraduationCap, FolderOpen
 } from 'lucide-react';
 import { PageLoader } from '../../components/common/PageLoader';
@@ -16,7 +16,6 @@ import { ClassroomsTab } from './course-detail-tabs/ClassroomsTab';
 import { ResourcesTab } from './course-detail-tabs/ResourcesTab';
 import { TestsTab } from './course-detail-tabs/TestsTab';
 import { AnnouncementsTab } from './course-detail-tabs/AnnouncementsTab';
-import { CommunityTab } from './course-detail-tabs/CommunityTab';
 import { InstructorsTab } from './course-detail-tabs/InstructorsTab';
 import { SettingsTab } from './course-detail-tabs/SettingsTab';
 import { TrackingTab } from './course-detail-tabs/TrackingTab';
@@ -90,11 +89,6 @@ export const AdminCourseDetailViewPage = () => {
             path: `${basePath}/courses/${id}/view/feedbacks`,
             label: 'Feedbacks',
             icon: Star
-        },
-        {
-            path: `${basePath}/courses/${id}/view/community`,
-            label: 'Community',
-            icon: MessageSquare
         },
         {
             path: `${basePath}/courses/${id}/view/analytics`,
@@ -220,7 +214,6 @@ export const AdminCourseDetailViewPage = () => {
                             <Route path="resources" element={<ResourcesTab courseData={courseData} />} />
                             <Route path="tests" element={<TestsTab courseData={courseData} />} />
                             <Route path="announcements" element={<AnnouncementsTab courseData={courseData} />} />
-                            <Route path="community" element={<CommunityTab courseData={courseData} />} />
                             <Route path="instructors" element={<InstructorsTab courseData={courseData} refreshData={() => fetchCourseData(parseInt(id!))} />} />
                             <Route path="settings" element={<SettingsTab courseData={courseData} refreshData={() => fetchCourseData(parseInt(id!))} />} />
                             <Route path="tracking" element={<TrackingTab courseId={parseInt(id!)} />} />
