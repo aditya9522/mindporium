@@ -31,6 +31,38 @@ export interface ResumeData {
         period: string;
     }[];
     achievements: string[];
+    certifications: {
+        name: string;
+        issuer: string;
+        date: string;
+        details: string;
+    }[];
+    languages: string[];
+    interests: string[];
+    volunteerExperience: {
+        role: string;
+        organization: string;
+        location: string;
+        period: string;
+        description: string;
+    }[];
+    customSections: {
+        id: string;
+        title: string;
+        items: string[];
+    }[];
+    sectionVisibility: {
+        summary: boolean;
+        skills: boolean;
+        experience: boolean;
+        projects: boolean;
+        education: boolean;
+        achievements: boolean;
+        certifications: boolean;
+        languages: boolean;
+        interests: boolean;
+        volunteerExperience: boolean;
+    };
 }
 
 export const initialResumeData: ResumeData = {
@@ -42,7 +74,7 @@ export const initialResumeData: ResumeData = {
         linkedin: 'https://linkedin.com/in/johndoe',
         github: 'https://github.com/johndoe',
     },
-    summary: 'Experienced Software Engineer with a passion for building scalable web applications and exploring emerging technologies. Proven track record of delivering high-quality code and collaborating effectively with cross-functional teams.',
+    summary: 'Experienced Software Engineer with a passion for building scalable web applications and exploring emerging technologies. Experienced Software Engineer with a passion for building scalable web applications and exploring emerging technologies. Proven track record of delivering high-quality code and collaborating effectively with cross-functional teams.',
     skills: [
         { category: 'Languages', items: 'JavaScript, TypeScript, Python, Java, C++' },
         { category: 'Frontend', items: 'React, Next.js, Vue, Tailwind CSS, Redux' },
@@ -102,5 +134,45 @@ export const initialResumeData: ResumeData = {
     achievements: [
         'Employee of the Year 2023 at Tech Solutions Inc.',
         'First Place in National Hackathon 2018'
-    ]
+    ],
+    certifications: [],
+    languages: ['English', 'Spanish'],
+    interests: ['Open source', 'UI design', 'Hackathons'],
+    volunteerExperience: [],
+    customSections: [],
+    sectionVisibility: {
+        summary: true,
+        skills: true,
+        experience: true,
+        projects: true,
+        education: true,
+        achievements: true,
+        certifications: false,
+        languages: false,
+        interests: false,
+        volunteerExperience: false,
+    }
 };
+
+export const normalizeResumeData = (data: Partial<ResumeData> | null | undefined): ResumeData => ({
+    ...initialResumeData,
+    ...data,
+    personalInfo: {
+        ...initialResumeData.personalInfo,
+        ...(data?.personalInfo ?? {}),
+    },
+    skills: data?.skills ?? initialResumeData.skills,
+    experience: data?.experience ?? initialResumeData.experience,
+    projects: data?.projects ?? initialResumeData.projects,
+    education: data?.education ?? initialResumeData.education,
+    achievements: data?.achievements ?? initialResumeData.achievements,
+    certifications: data?.certifications ?? initialResumeData.certifications,
+    languages: data?.languages ?? initialResumeData.languages,
+    interests: data?.interests ?? initialResumeData.interests,
+    volunteerExperience: data?.volunteerExperience ?? initialResumeData.volunteerExperience,
+    customSections: data?.customSections ?? initialResumeData.customSections,
+    sectionVisibility: {
+        ...initialResumeData.sectionVisibility,
+        ...(data?.sectionVisibility ?? {}),
+    },
+});

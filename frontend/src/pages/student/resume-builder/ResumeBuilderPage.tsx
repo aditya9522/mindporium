@@ -1,22 +1,28 @@
-import { useState, useRef, useEffect } from 'react';
-import { Download, FileText, ChevronLeft, Save } from 'lucide-react';
+import { useMemo, useState, useEffect } from 'react';
+import { Download, FileText, ChevronLeft, Save, ShieldCheck } from 'lucide-react';
+import { pdf } from '@react-pdf/renderer';
 import { Button } from '../../../components/ui/Button';
 import { ResumeForm } from './components/ResumeForm';
+import { ResumePdfDocument } from './components/ResumePdfDocument';
 import { ResumePreview } from './components/ResumePreview';
-import { initialResumeData, type ResumeData } from './types';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { ResetResumeConfirmationModal } from './components/ResetResumeConfirmationModal';
+import { initialResumeData, normalizeResumeData, type ResumeData } from './types';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+
+const getResumeFileName = (fullName: string) => {
+    const safeName = fullName.trim().replace(/\s+/g, '_');
+    return `${safeName || 'Resume'}_ATS_Resume.pdf`;
+};
 
 export const ResumeBuilderPage = () => {
     const [resumeData, setResumeData] = useState<ResumeData>(() => {
         const saved = localStorage.getItem('resume_draft');
-        return saved ? JSON.parse(saved) : initialResumeData;
+        return saved ? normalizeResumeData(JSON.parse(saved)) : initialResumeData;
     });
-    const resumeRef = useRef<HTMLDivElement>(null);
+    const [showResetModal, setShowResetModal] = useState(false);
+    const pdfDocument = useMemo(() => <ResumePdfDocument data={resumeData} />, [resumeData]);
 
-    // Auto-save draft
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             localStorage.setItem('resume_draft', JSON.stringify(resumeData));
@@ -30,50 +36,35 @@ export const ResumeBuilderPage = () => {
     };
 
     const handleReset = () => {
-        if (window.confirm('Are you sure you want to reset to the default template? This will erase your current draft.')) {
-            setResumeData(initialResumeData);
-            localStorage.setItem('resume_draft', JSON.stringify(initialResumeData));
-            toast.success('Reset to default template');
-        }
+        setResumeData(initialResumeData);
+        localStorage.setItem('resume_draft', JSON.stringify(initialResumeData));
+        setShowResetModal(false);
+        toast.success('Reset to default template');
     };
 
     const handleDownload = async () => {
-        if (!resumeRef.current) return;
+        const toastId = toast.loading('Generating ATS-friendly PDF...');
 
-        const toastId = toast.loading('Generating PDF...');
         try {
-            const canvas = await html2canvas(resumeRef.current, {
-                scale: 2, // High resolution
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                windowWidth: 794, // A4 width in px at 96dpi (approx)
-            });
+            const blob = await pdf(pdfDocument).toBlob();
+            const fileName = getResumeFileName(resumeData.personalInfo.fullName);
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
 
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+            anchor.href = url;
+            anchor.download = fileName;
+            anchor.click();
 
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`${resumeData.personalInfo.fullName.replace(/\s+/g, '_')}_Resume.pdf`);
-
-            toast.success('PDF downloaded successfully', { id: toastId });
+            URL.revokeObjectURL(url);
+            toast.success('ATS-friendly PDF downloaded successfully', { id: toastId });
         } catch (error) {
             console.error('PDF Generation failed:', error);
-            toast.error('Failed to generate PDF', { id: toastId });
+            toast.error('Failed to generate ATS-friendly PDF', { id: toastId });
         }
     };
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-            {/* Header */}
             <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-6 sticky top-0 z-20">
                 <div className="flex items-center gap-4">
                     <Link to="/dashboard">
@@ -87,38 +78,58 @@ export const ResumeBuilderPage = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="sm" className="text-gray-500 hover:text-red-600 transition-colors" onClick={handleReset}>
+                    <Button variant="ghost" size="sm" className="text-gray-500 hover:text-red-600 transition-colors" onClick={() => setShowResetModal(true)}>
                         Reset to Default
                     </Button>
                     <Button variant="outline" size="sm" className="gap-2" onClick={handleSave}>
                         <Save className="w-4 h-4" /> Save
                     </Button>
                     <Button size="sm" className="gap-2" onClick={handleDownload}>
-                        <Download className="w-4 h-4" /> Download PDF
+                        <Download className="w-4 h-4" /> Download ATS PDF
                     </Button>
                 </div>
             </header>
 
-            {/* Content Split Layout */}
             <main className="flex-1 flex overflow-hidden">
-                {/* Form Section - Left */}
                 <div className="w-full lg:w-1/2 overflow-y-auto p-4 md:p-8 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/20">
                     <div className="max-w-2xl mx-auto">
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Personalize Your Resume</h2>
-                            <p className="text-sm text-gray-500">Your changes are automatically saved as you type.</p>
+                        <div className="mb-8 space-y-4">
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Build an ATS-Friendly Resume</h2>
+                                <p className="text-sm text-gray-500">Your changes are automatically saved as you type.</p>
+                            </div>
+
+                            <div className="rounded-2xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-950/30 p-4">
+                                <div className="flex items-start gap-3">
+                                    <div className="mt-0.5 w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0">
+                                        <ShieldCheck className="w-5 h-5 text-emerald-700 dark:text-emerald-300" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-emerald-900 dark:text-emerald-100">Resume optimized for hiring platforms</h3>
+                                        <p className="text-sm text-emerald-800/90 dark:text-emerald-100/80 mt-1">
+                                            Create a clean, professional resume with standard sections, readable structure, and a format designed to be easy for recruiters and application systems to review.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         <ResumeForm data={resumeData} onChange={setResumeData} />
                     </div>
                 </div>
 
-                {/* Preview Section - Right */}
-                <div className="hidden lg:flex w-1/2 overflow-y-auto bg-gray-100 dark:bg-gray-800/50 p-12 justify-center">
-                    <div className="scale-[0.6] xl:scale-[0.85] origin-top h-fit shadow-2xl transition-transform duration-500 hover:scale-[0.9] xl:hover:scale-[1.0]">
-                        <ResumePreview data={resumeData} ref={resumeRef} />
+                <div className="hidden lg:flex w-1/2 overflow-hidden bg-gray-100 dark:bg-gray-800/50 p-4 xl:p-8 justify-center items-start">
+                    <div className="h-full w-full max-w-4xl overflow-hidden">
+                        <ResumePreview document={pdfDocument} />
                     </div>
                 </div>
             </main>
+
+            <ResetResumeConfirmationModal
+                isOpen={showResetModal}
+                onClose={() => setShowResetModal(false)}
+                onConfirm={handleReset}
+            />
         </div>
     );
 };
