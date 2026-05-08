@@ -1,4 +1,5 @@
 import logging
+import asyncio
 import google.generativeai as genai
 from typing import List, Optional
 from app.core.config import settings
@@ -26,6 +27,30 @@ class LLMService:
         except Exception as e:
             logger.error(f"LLM Generation Error: {e}")
             return "I'm having trouble thinking right now. Please try again later."
+
+    async def generate_response_from_pdf(self, prompt: str, pdf_path: str, display_name: str = "resume.pdf") -> str:
+        if not self.model:
+            raise RuntimeError("GEMINI_API_KEY not found. LLM features are disabled.")
+
+        uploaded_file = None
+        try:
+            uploaded_file = await asyncio.to_thread(
+                genai.upload_file,
+                path=pdf_path,
+                mime_type="application/pdf",
+                display_name=display_name,
+            )
+            response = await self.model.generate_content_async([uploaded_file, prompt])
+            return response.text.strip()
+        except Exception as e:
+            logger.error(f"PDF LLM Generation Error: {e}")
+            raise
+        finally:
+            if uploaded_file:
+                try:
+                    await asyncio.to_thread(genai.delete_file, uploaded_file.name)
+                except Exception as e:
+                    logger.warning(f"Failed to delete Gemini uploaded file: {e}")
 
     async def generate_title(self, first_message: str) -> str:
         if not self.model:

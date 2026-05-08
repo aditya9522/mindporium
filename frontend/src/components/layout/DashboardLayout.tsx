@@ -5,7 +5,7 @@ import { useAuthStore } from '../../store/auth.store';
 import { useSidebarStore } from '../../store/sidebar.store';
 import { PageLoader } from '../common/PageLoader';
 import { Navbar } from '../layout/Navbar';
-import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar, X } from 'lucide-react';
+import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar, X, MicVocal, Globe2 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
 import { useThemeStore } from '../../store/theme.store';
@@ -93,6 +93,8 @@ export const DashboardLayout = () => {
             { icon: Users, label: 'Community', path: '/community' },
             { icon: GraduationCap, label: 'Instructors', path: '/instructors' },
             { icon: FileText, label: 'Resume Builder', path: '/resume-builder' },
+            { icon: MicVocal, label: 'AI Interview', path: '/career/interview-simulator', beta: true },
+            { icon: Globe2, label: 'Portfolio Builder', path: '/career/portfolio-builder', beta: true },
             { icon: MessageSquare, label: 'Feedback', path: '/feedback' },
             { icon: Bell, label: 'Notifications', path: '/notifications' },
             { icon: Bot, label: 'AI Assistant', path: '/chatbot' },
@@ -127,9 +129,14 @@ export const DashboardLayout = () => {
                                     }`}
                             >
                                 <Icon className={`h-5 w-5 transition-colors ${isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
-                                <span className="text-sm">{item.label}</span>
+                                <span className="min-w-0 flex-1 truncate text-sm">{item.label}</span>
+                                {'beta' in item && item.beta && (
+                                    <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
+                                        Beta
+                                    </span>
+                                )}
                                 {isActive && (
-                                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-600" />
+                                    <div className="h-1.5 w-1.5 rounded-full bg-primary-600" />
                                 )}
                             </Link>
                         );

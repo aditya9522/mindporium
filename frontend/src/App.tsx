@@ -62,6 +62,7 @@ import { AdminCourseAnalyticsPage } from './pages/admin/AdminCourseAnalyticsPage
 import { ChatbotPage } from './pages/chatbot/ChatbotPage';
 import { InstructorsPage } from './pages/public/InstructorsPage';
 import { InstructorOverviewPage } from './pages/public/InstructorOverviewPage';
+import { PublicPortfolioPage } from './pages/public/PublicPortfolioPage';
 import { StudentsPage } from './pages/admin/StudentsPage';
 import { FeedbackPage as StudentFeedbackPage } from './pages/common/FeedbackPage';
 import { AdminFeedbackPage } from './pages/admin/AdminFeedbackPage';
@@ -77,6 +78,8 @@ import { TestsManagementPage } from './pages/instructor/TestsManagementPage';
 import { CreateTestPage } from './pages/instructor/CreateTestPage';
 import { NotificationsPage } from './pages/notifications/NotificationsPage';
 import { ResumeBuilderPage } from './pages/student/resume-builder/ResumeBuilderPage';
+import { AIInterviewSimulatorPage } from './pages/student/career-tools/AIInterviewSimulatorPage';
+import { PortfolioBuilderPage } from './pages/student/career-tools/PortfolioBuilderPage';
 
 function App() {
   return (
@@ -116,6 +119,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/verify-otp" element={<VerifyOTPPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/portfolio/:slug" element={<PublicPortfolioPage />} />
           </Route>
 
 
@@ -158,6 +162,8 @@ function App() {
               <Route path="/tests" element={<StudentTestsPage />} />
               <Route path="/test/:id/take" element={<TakeTestPage />} />
               <Route path="/resume-builder" element={<ResumeBuilderPage />} />
+              <Route path="/career/interview-simulator" element={<AIInterviewSimulatorPage />} />
+              <Route path="/career/portfolio-builder" element={<PortfolioBuilderPage />} />
             </Route>
 
             {/* Instructor Protected Routes */}

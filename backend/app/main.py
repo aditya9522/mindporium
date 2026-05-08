@@ -48,7 +48,7 @@ from app.routes import (
     auth, users, courses, enrollments, classrooms, community, posts, admin, 
     subjects, announcements, qa, tests, chatbot, resources, submissions, 
     feedback, notifications, dashboard_admin, dashboard_instructor, dashboard_student,
-    upload, attendance, system_settings, news, public
+    upload, attendance, system_settings, news, public, resume, career_tools
 )
 from app.ws import signaling
 
@@ -70,6 +70,8 @@ app.include_router(resources.router, prefix="/resources", tags=["Resources"])
 app.include_router(feedback.router, prefix="/feedback", tags=["Feedback"])
 app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
 app.include_router(upload.router, prefix="/upload", tags=["Upload"])
+app.include_router(resume.router, prefix="/resume", tags=["Resume"])
+app.include_router(career_tools.router, prefix="/career-tools", tags=["Career Tools"])
 app.include_router(system_settings.router, prefix="/system", tags=["System Settings"])
 app.include_router(news.router, prefix="/news", tags=["News"])
 app.include_router(public.router, prefix="/public", tags=["Public"])

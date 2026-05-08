@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
         paddingHorizontal: 34,
         fontFamily: 'Helvetica',
-        fontSize: 11,
-        lineHeight: 1.28,
+        fontSize: 10.25,
+        lineHeight: 1.34,
         color: '#111827',
         backgroundColor: '#FFFFFF',
     },
@@ -31,19 +31,19 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 22,
         fontFamily: 'Helvetica-Bold',
-        marginBottom: 9.5,
+        marginBottom: 12,
         color: '#111827',
     },
     contactLine: {
-        fontSize: 10,
+        fontSize: 9.75,
         color: '#374151',
-        marginBottom: 2,
+        marginBottom: 2.5,
     },
     section: {
         marginBottom: 9,
     },
     sectionTitle: {
-        fontSize: 11,
+        fontSize: 10.25,
         fontFamily: 'Helvetica-Bold',
         textTransform: 'uppercase',
         letterSpacing: 0.5,
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#111827',
     },
     bodyText: {
-        fontSize: 11,
+        fontSize: 10.25,
+        lineHeight: 1.35,
         color: '#1F2937',
     },
     rowBetween: {
@@ -63,45 +64,48 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     subheading: {
-        fontSize: 11,
+        fontSize: 10.5,
         fontFamily: 'Helvetica-Bold',
         color: '#111827',
     },
     metaText: {
-        fontSize: 11,
+        fontSize: 9.75,
         color: '#4B5563',
         marginTop: 1,
     },
     entryBlock: {
-        marginBottom: 5,
+        marginBottom: 6,
     },
     bulletList: {
-        marginTop: 2,
+        marginTop: 3,
         paddingLeft: 10,
     },
     bulletRow: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        marginBottom: 1,
+        marginBottom: 1.75,
         paddingRight: 4,
     },
     bulletMark: {
         width: 8,
-        fontSize: 11,
+        fontSize: 10,
+        color: '#374151',
     },
     bulletText: {
         flex: 1,
-        fontSize: 11,
+        fontSize: 10.1,
+        lineHeight: 1.35,
         color: '#1F2937',
     },
     inlineList: {
-        fontSize: 11,
+        fontSize: 10.25,
         color: '#1F2937',
     },
     skillRow: {
-        flexDirection: 'row',
         marginBottom: 2,
-        gap: 4,
+        fontSize: 10.25,
+        lineHeight: 1.35,
+        color: '#1F2937',
     },
     skillCategory: {
         fontFamily: 'Helvetica-Bold',
@@ -167,10 +171,10 @@ export const ResumePdfDocument: React.FC<Props> = ({ data }) => {
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Technical Skills</Text>
                         {visibleSkills.map((skill, index) => (
-                            <View key={`skill-${index}`} style={styles.skillRow}>
-                                <Text style={styles.skillCategory}>{skill.category}:</Text>
-                                <Text style={styles.bodyText}>{skill.items}</Text>
-                            </View>
+                            <Text key={`skill-${index}`} style={styles.skillRow}>
+                                <Text style={styles.skillCategory}>{skill.category}: </Text>
+                                {skill.items}
+                            </Text>
                         ))}
                     </View>
                 ) : null}
