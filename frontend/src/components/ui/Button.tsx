@@ -38,13 +38,29 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, asChild = false, isLoading = false, children, ...props }, ref) => {
+    ({ className, variant, size, asChild = false, isLoading = false, children, disabled, tabIndex, ...props }, ref) => {
         const Comp = asChild ? Slot : "button"
+        const isDisabled = disabled || isLoading
+
+        if (asChild) {
+            return (
+                <Comp
+                    className={cn(buttonVariants({ variant, size, className }), isDisabled && "pointer-events-none opacity-50")}
+                    ref={ref}
+                    aria-disabled={isDisabled}
+                    tabIndex={isDisabled ? -1 : tabIndex}
+                    {...props}
+                >
+                    {children}
+                </Comp>
+            )
+        }
+
         return (
             <Comp
                 className={cn(buttonVariants({ variant, size, className }))}
                 ref={ref}
-                disabled={props.disabled || isLoading}
+                disabled={isDisabled}
                 {...props}
             >
                 {isLoading && (

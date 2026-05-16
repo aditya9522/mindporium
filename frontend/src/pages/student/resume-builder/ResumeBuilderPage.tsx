@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import axios from 'axios';
-import { Download, FileText, ChevronLeft, Save, ShieldCheck, UploadCloud, BriefcaseBusiness } from 'lucide-react';
+import { Download, FileText, Save, ShieldCheck, UploadCloud, BriefcaseBusiness } from 'lucide-react';
 import { pdf } from '@react-pdf/renderer';
 import { Button } from '../../../components/ui/Button';
 import { ResumeForm } from './components/ResumeForm';
@@ -12,11 +12,10 @@ import { ResetResumeConfirmationModal } from './components/ResetResumeConfirmati
 import { initialResumeData, normalizeResumeData, type ResumeData } from './types';
 import { resumeService } from '../../../services/resume.service';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
 
 const getResumeFileName = (fullName: string) => {
     const safeName = fullName.trim().replace(/\s+/g, '_');
-    return `${safeName || 'Resume'}_ATS_Resume.pdf`;
+    return `${safeName || 'Resume'}_Resume.pdf`;
 };
 
 const getSavedResumeDraft = () => {
@@ -33,7 +32,7 @@ const getSavedResumeDraft = () => {
     }
 };
 
-export const ResumeBuilderPage = () => {
+export const ResumeBuilderPage = ({ embedded = false }: { embedded?: boolean }) => {
     const [resumeData, setResumeData] = useState<ResumeData>(() => {
         return getSavedResumeDraft() ?? initialResumeData;
     });
@@ -121,7 +120,7 @@ export const ResumeBuilderPage = () => {
     };
 
     const handleDownload = async () => {
-        const toastId = toast.loading('Generating ATS-friendly PDF...');
+        const toastId = toast.loading('Generating resume...');
 
         try {
             const blob = await pdf(pdfDocument).toBlob();
@@ -134,48 +133,52 @@ export const ResumeBuilderPage = () => {
             anchor.click();
 
             URL.revokeObjectURL(url);
-            toast.success('ATS-friendly PDF downloaded successfully', { id: toastId });
+            toast.success('Resume downloaded successfully', { id: toastId });
         } catch (error) {
             console.error('PDF Generation failed:', error);
-            toast.error('Failed to generate ATS-friendly PDF', { id: toastId });
+            toast.error('Failed to generate PDF', { id: toastId });
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-            <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-6 sticky top-0 z-20">
-                <div className="flex items-center gap-4">
-                    <Link to="/dashboard">
-                        <Button variant="ghost" size="sm" className="gap-2">
-                            <ChevronLeft className="w-4 h-4" /> Back
-                        </Button>
-                    </Link>
-                    <div className="flex items-center gap-2">
+        <div className={`${embedded ? 'min-h-[720px]' : 'min-h-screen'} bg-gray-50 dark:bg-gray-950 flex flex-col`}>
+            <header className={`${embedded ? 'min-h-16' : 'sticky top-0 z-20'} bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-3 lg:px-6`}>
+                <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+                <div className="flex min-w-0 items-center gap-4">
+                    <div className="flex min-w-0 items-center gap-2">
                         <FileText className="w-5 h-5 text-primary-600" />
-                        <h1 className="text-xl font-bold text-gray-900 dark:text-white">AI Resume Builder</h1>
+                        <div className="min-w-0">
+                            <h1 className="truncate text-xl font-bold text-gray-900 dark:text-white">Resume Studio</h1>
+                            <p className="text-xs text-gray-500">ATS resume, role optimization, and PDF export</p>
+                        </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2">
                     {builderStarted && (
                         <>
-                            <Button variant="ghost" size="sm" className="gap-2" onClick={handleChangeSource}>
-                                <UploadCloud className="w-4 h-4" /> Change Source
-                            </Button>
                             <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowJobTailor(true)}>
-                                <BriefcaseBusiness className="w-4 h-4" /> Tailor To Job
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-gray-500 hover:text-red-600 transition-colors" onClick={() => setShowResetModal(true)}>
-                                Reset to Default
+                                <BriefcaseBusiness className="w-4 h-4" /> Optimize for Role
                             </Button>
                             <Button variant="outline" size="sm" className="gap-2" onClick={handleSave}>
-                                <Save className="w-4 h-4" /> Save
+                                <Save className="w-4 h-4" /> Save Draft
                             </Button>
                             <Button size="sm" className="gap-2" onClick={handleDownload}>
-                                <Download className="w-4 h-4" /> Download ATS PDF
+                                <Download className="w-4 h-4" /> Export PDF
                             </Button>
                         </>
                     )}
                 </div>
+                </div>
+                {builderStarted && (
+                    <div className="mt-3 flex flex-wrap gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
+                        <Button variant="ghost" size="sm" className="gap-2" onClick={handleChangeSource}>
+                            <UploadCloud className="w-4 h-4" /> Change Resume Source
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-gray-500 transition-colors hover:text-red-600" onClick={() => setShowResetModal(true)}>
+                            Reset Template
+                        </Button>
+                    </div>
+                )}
             </header>
 
             {builderStarted ? (

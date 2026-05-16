@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 // Layouts (Eagerly loaded for shell)
@@ -77,9 +77,7 @@ import { AdminCreateCoursePage } from './pages/admin/AdminCreateCoursePage';
 import { TestsManagementPage } from './pages/instructor/TestsManagementPage';
 import { CreateTestPage } from './pages/instructor/CreateTestPage';
 import { NotificationsPage } from './pages/notifications/NotificationsPage';
-import { ResumeBuilderPage } from './pages/student/resume-builder/ResumeBuilderPage';
-import { AIInterviewSimulatorPage } from './pages/student/career-tools/AIInterviewSimulatorPage';
-import { PortfolioBuilderPage } from './pages/student/career-tools/PortfolioBuilderPage';
+import { CareerWorkspacePage } from './pages/student/career-tools/CareerWorkspacePage';
 
 function App() {
   return (
@@ -161,9 +159,9 @@ function App() {
               <Route path="/student/attendance" element={<StudentAttendancePage />} />
               <Route path="/tests" element={<StudentTestsPage />} />
               <Route path="/test/:id/take" element={<TakeTestPage />} />
-              <Route path="/resume-builder" element={<ResumeBuilderPage />} />
-              <Route path="/career/interview-simulator" element={<AIInterviewSimulatorPage />} />
-              <Route path="/career/portfolio-builder" element={<PortfolioBuilderPage />} />
+              <Route path="/career" element={<Navigate to="/career/overview" replace />} />
+              <Route path="/career/:tab" element={<CareerWorkspacePage />} />
+              <Route path="/resume-builder" element={<Navigate to="/career/resume-builder" replace />} />
             </Route>
 
             {/* Instructor Protected Routes */}

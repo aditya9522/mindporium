@@ -5,7 +5,7 @@ import { useAuthStore } from '../../store/auth.store';
 import { useSidebarStore } from '../../store/sidebar.store';
 import { PageLoader } from '../common/PageLoader';
 import { Navbar } from '../layout/Navbar';
-import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar, X, MicVocal, Globe2 } from 'lucide-react';
+import { Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap, Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar, X, BriefcaseBusiness } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
 import { useThemeStore } from '../../store/theme.store';
@@ -92,9 +92,7 @@ export const DashboardLayout = () => {
             { icon: Calendar, label: 'Attendance', path: '/student/attendance' },
             { icon: Users, label: 'Community', path: '/community' },
             { icon: GraduationCap, label: 'Instructors', path: '/instructors' },
-            { icon: FileText, label: 'Resume Builder', path: '/resume-builder' },
-            { icon: MicVocal, label: 'AI Interview', path: '/career/interview-simulator', beta: true },
-            { icon: Globe2, label: 'Portfolio Builder', path: '/career/portfolio-builder', beta: true },
+            { icon: BriefcaseBusiness, label: 'Career Workspace', path: '/career/overview', new: true },
             { icon: MessageSquare, label: 'Feedback', path: '/feedback' },
             { icon: Bell, label: 'Notifications', path: '/notifications' },
             { icon: Bot, label: 'AI Assistant', path: '/chatbot' },
@@ -117,7 +115,7 @@ export const DashboardLayout = () => {
                 <nav className="space-y-1.5 px-3 flex-1 overflow-y-auto">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = location.pathname === item.path;
+                        const isActive = location.pathname === item.path || (item.path.startsWith('/career') && location.pathname.startsWith('/career'));
                         return (
                             <Link
                                 key={item.path}
@@ -130,7 +128,12 @@ export const DashboardLayout = () => {
                             >
                                 <Icon className={`h-5 w-5 transition-colors ${isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
                                 <span className="min-w-0 flex-1 truncate text-sm">{item.label}</span>
-                                {'beta' in item && item.beta && (
+                                {Boolean((item as any).new) && (
+                                    <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+                                        New
+                                    </span>
+                                )}
+                                {Boolean((item as any).beta) && (
                                     <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
                                         Beta
                                     </span>

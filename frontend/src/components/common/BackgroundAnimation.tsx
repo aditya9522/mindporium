@@ -4,11 +4,11 @@ export const BackgroundAnimation = () => {
     return (
         <div className="fixed inset-0 z-0 overflow-hidden bg-gray-50 dark:bg-gray-950 pointer-events-none transition-colors duration-500">
             {/* Primary Gradient Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950" />
+            <div className="absolute inset-0 bg-linear-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950" />
 
             {/* Rich Gradient Orbs - Using Dynamic Theme Colors */}
-            <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-300/30 dark:bg-primary-600/20 rounded-full blur-[120px] animate-pulse duration-[10000ms]" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-secondary-300/20 dark:bg-secondary-600/10 rounded-full blur-[120px] animate-pulse duration-[15000ms] delay-700" />
+            <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-300/30 dark:bg-primary-600/20 rounded-full blur-[120px] animate-pulse duration-10000" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-secondary-300/20 dark:bg-secondary-600/10 rounded-full blur-[120px] animate-pulse duration-15000 delay-700" />
 
             {/* Soft Center Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-primary-100/40 dark:bg-primary-900/5 rounded-full blur-[150px]" />
