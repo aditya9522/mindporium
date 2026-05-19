@@ -7,19 +7,19 @@ import {
     BriefcaseBusiness,
     CheckCircle2,
     Clock3,
-    ClipboardCheck,
     Compass,
     ExternalLink,
     FileText,
     Globe2,
     GraduationCap,
     LayoutDashboard,
-    Map,
     Search,
     Send,
     Sparkles,
     Target,
     Trash2,
+    Eye,
+    EyeOff,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '../../../components/ui/Button';
@@ -27,13 +27,12 @@ import { ResumeBuilderPage } from '../resume-builder/ResumeBuilderPage';
 import { AIInterviewSimulatorPage } from './AIInterviewSimulatorPage';
 import { PortfolioBuilderPage } from './PortfolioBuilderPage';
 import { getResumeDraft } from './utils';
-import type { PortfolioResult } from '../../../services/career-tools.service';
+import { careerToolsService, type JobSearchExperience, type JobSearchResult } from '../../../services/career-tools.service';
 
 const CAREER_PROFILE_KEY = 'mindporium_career_profile';
 const JOB_APPLICATIONS_KEY = 'mindporium_job_applications';
-const PORTFOLIO_STORAGE_KEY = 'mindporium_public_portfolios';
 
-type CareerTab = 'overview' | 'career-selection' | 'skill-improvement' | 'job-preparation' | 'resume-builder' | 'job-search' | 'job-apply' | 'interview-simulator' | 'portfolio-builder';
+type CareerTab = 'overview' | 'career-selection' | 'skill-improvement' | 'resume-builder' | 'job-search' | 'interview-simulator' | 'portfolio-builder';
 
 interface CareerProfile {
     targetRole: string;
@@ -68,10 +67,8 @@ const tabs: { id: CareerTab; label: string; description: string; icon: React.Ele
     { id: 'overview', label: 'Command Center', description: 'Roadmap, readiness, and next actions', icon: LayoutDashboard },
     { id: 'career-selection', label: 'Career Path', description: 'Choose a realistic target path', icon: Compass },
     { id: 'skill-improvement', label: 'Skill Growth', description: 'Courses and weekly skill plan', icon: BookOpen },
-    { id: 'job-preparation', label: 'Job Prep', description: 'Checklist, STAR stories, readiness', icon: ClipboardCheck },
     { id: 'resume-builder', label: 'Resume Studio', description: 'ATS resume and job tailoring', icon: FileText },
-    { id: 'job-search', label: 'Job Search', description: 'Search strategy and saved leads', icon: Search },
-    { id: 'job-apply', label: 'Application Tracker', description: 'Application tracker and follow-ups', icon: Send, badge: 'Beta' },
+    { id: 'job-search', label: 'Job Search', description: 'Find current openings from the web', icon: Search },
     { id: 'interview-simulator', label: 'AI Interview', description: 'Voice mock interview and feedback', icon: Bot, badge: 'AI' },
     { id: 'portfolio-builder', label: 'Portfolio Studio', description: 'Public project portfolio', icon: Globe2, badge: 'AI' },
 ];
@@ -90,12 +87,19 @@ const skillTracks = [
     { title: 'Hiring Proof', items: ['Portfolio case study', 'Resume metrics', 'Interview stories'], link: '/career/portfolio-builder' },
 ];
 
-const jobBoards = [
-    { name: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', note: 'Best for networking and recruiter visibility.' },
-    { name: 'Wellfound', url: 'https://wellfound.com/jobs', note: 'Good for startups and early-stage teams.' },
-    { name: 'Indeed', url: 'https://www.indeed.com/', note: 'Broad market coverage and alerts.' },
-    { name: 'Remote OK', url: 'https://remoteok.com/', note: 'Useful for remote-first searches.' },
+const experienceOptions: { value: JobSearchExperience; label: string }[] = [
+    { value: 'any', label: 'Any experience' },
+    { value: 'internship', label: 'Internship' },
+    { value: 'entry-level', label: 'Entry level' },
+    { value: 'mid-level', label: 'Mid level' },
+    { value: 'senior-level', label: 'Senior level' },
+    { value: 'leadership', label: 'Leadership' },
 ];
+
+const normalizeExperience = (value: string): JobSearchExperience => {
+    const normalized = value.toLowerCase().replace(/\s+/g, '-');
+    return experienceOptions.some((item) => item.value === normalized) ? normalized as JobSearchExperience : 'any';
+};
 
 const loadJson = <T,>(key: string, fallback: T): T => {
     try {
@@ -108,17 +112,15 @@ const loadJson = <T,>(key: string, fallback: T): T => {
 
 const getCareerSnapshot = () => {
     const profile = loadJson<CareerProfile>(CAREER_PROFILE_KEY, defaultProfile);
-    const applications = loadJson<JobApplication[]>(JOB_APPLICATIONS_KEY, []);
-    const portfolios = loadJson<Record<string, PortfolioResult>>(PORTFOLIO_STORAGE_KEY, {});
     const resume = getResumeDraft();
     const readinessItems = [
         { label: 'Career profile', done: Boolean(profile.targetRole) },
         { label: 'Resume contact', done: Boolean(resume.personalInfo.email) },
-        { label: 'Published portfolio', done: Object.keys(portfolios).length > 0 },
-        { label: 'Application pipeline', done: applications.length > 0 },
+        { label: 'Portfolio ready', done: false },
+        { label: 'Interview practice', done: false },
     ];
 
-    return { profile, applications, portfolios, readinessItems };
+    return { profile, readinessItems };
 };
 
 const useCareerSnapshot = () => {
@@ -149,6 +151,17 @@ export const CareerWorkspacePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const activeTab = (tab ?? 'overview') as CareerTab;
+    const [compactNav, setCompactNav] = useState<boolean>(() => {
+        try {
+            return JSON.parse(localStorage.getItem('mindporium_career_sidebar_compact') ?? 'false');
+        } catch {
+            return false;
+        }
+    });
+
+    useEffect(() => {
+        localStorage.setItem('mindporium_career_sidebar_compact', JSON.stringify(compactNav));
+    }, [compactNav]);
 
     if (!tabs.some((item) => item.id === activeTab)) {
         return <Navigate to="/career/overview" replace />;
@@ -178,9 +191,20 @@ export const CareerWorkspacePage = () => {
                 </div>
             </section>
 
-            <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
-                <aside className="xl:sticky xl:top-20 xl:self-start">
-                    <nav className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+            <div className={`grid gap-6 ${compactNav ? 'xl:grid-cols-[80px_minmax(0,1fr)]' : 'xl:grid-cols-[300px_minmax(0,1fr)]'}`}>
+                <aside className={`xl:sticky xl:top-20 xl:self-start ${compactNav ? 'xl:w-20' : ''}`}>
+                    <div className={`mb-3 flex items-center ${compactNav ? 'justify-center' : 'justify-between'} rounded-lg border border-gray-200 bg-white p-3 text-sm dark:border-gray-800 dark:bg-gray-900`}>
+                        {!compactNav && <span className="font-semibold text-gray-700 dark:text-gray-200">Sidebar</span>}
+                        <button
+                            type="button"
+                            onClick={() => setCompactNav((current) => !current)}
+                            className={`inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-white ${compactNav ? 'w-12 px-2' : 'px-3'} py-2 text-xs font-semibold text-gray-600 transition hover:border-primary-200 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300 dark:hover:border-primary-600 dark:hover:text-primary-200`}
+                        >
+                            {compactNav ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            {!compactNav && <span>{compactNav ? 'Expanded' : 'Compact'}</span>}
+                        </button>
+                    </div>
+                    <nav className={`rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900 ${compactNav ? 'w-20' : ''}`}>
                         {tabs.map((item) => {
                             const Icon = item.icon;
                             const isActive = activeTab === item.id;
@@ -188,19 +212,22 @@ export const CareerWorkspacePage = () => {
                                 <button
                                     key={item.id}
                                     type="button"
+                                    title={item.label}
                                     onClick={() => navigate(`/career/${item.id}`)}
-                                    className={`mb-1 flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left transition ${isActive
+                                    className={`mb-1 flex w-full ${compactNav ? 'justify-center' : 'items-start'} gap-3 rounded-lg ${compactNav ? 'px-2 py-3' : 'px-3 py-3 text-left'} transition ${isActive
                                         ? 'bg-primary-50 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300'
                                         : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800'
                                         }`}
                                 >
                                     <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${isActive ? 'text-primary-600' : 'text-gray-400'}`} />
-                                    <span className="min-w-0 flex-1">
-                                        <span className="flex items-center gap-2 text-sm font-bold">
-                                            {item.label}
-                                            {item.badge && <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-300">{item.badge}</span>}
+                                    {!compactNav && (
+                                        <span className="min-w-0 flex-1">
+                                            <span className="flex items-center gap-2 text-sm font-bold">
+                                                {item.label}
+                                                {item.badge && <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-300">{item.badge}</span>}
+                                            </span>
                                         </span>
-                                    </span>
+                                    )}
                                 </button>
                             );
                         })}
@@ -211,10 +238,8 @@ export const CareerWorkspacePage = () => {
                     {activeTab === 'overview' && <CareerOverview />}
                     {activeTab === 'career-selection' && <CareerSelection />}
                     {activeTab === 'skill-improvement' && <SkillImprovement />}
-                    {activeTab === 'job-preparation' && <JobPreparation />}
                     {activeTab === 'resume-builder' && <EmbeddedFeature path={location.pathname}><ResumeBuilderPage embedded /></EmbeddedFeature>}
                     {activeTab === 'job-search' && <JobSearchTool />}
-                    {activeTab === 'job-apply' && <JobApplyTracker />}
                     {activeTab === 'interview-simulator' && <AIInterviewSimulatorPage />}
                     {activeTab === 'portfolio-builder' && <PortfolioBuilderPage />}
                 </main>
@@ -224,25 +249,33 @@ export const CareerWorkspacePage = () => {
 };
 
 const CareerOverview = () => {
-    const { profile, applications, portfolios, readinessItems, now } = useCareerSnapshot();
-    const readiness = readinessItems.filter((item) => item.done).length;
-    const readinessPercent = Math.round((readiness / readinessItems.length) * 100);
-    const interviewingCount = applications.filter((item) => item.status === 'Interviewing').length;
-    const appliedCount = applications.filter((item) => ['Applied', 'Interviewing', 'Offer'].includes(item.status)).length;
-    const portfolioCount = Object.keys(portfolios).length;
-    const pipelineStages = ['Saved', 'Applied', 'Interviewing', 'Offer'].map((status) => ({
-        status,
-        count: applications.filter((item) => item.status === status).length,
-    }));
-    const maxPipeline = Math.max(...pipelineStages.map((item) => item.count), 1);
+    const { profile, readinessItems, now } = useCareerSnapshot();
+    const [portfolioCount, setPortfolioCount] = useState(0);
+    const liveReadinessItems = readinessItems.map((item) => (
+        item.label === 'Portfolio ready' ? { ...item, done: portfolioCount > 0 } : item
+    ));
+    const readiness = liveReadinessItems.filter((item) => item.done).length;
+    const readinessPercent = Math.round((readiness / liveReadinessItems.length) * 100);
+    const workspaceSteps = [
+        { label: 'Profile', value: profile.targetRole ? 100 : 30, color: 'bg-emerald-500' },
+        { label: 'Resume', value: readinessItems[1]?.done ? 100 : 35, color: 'bg-sky-500' },
+        { label: 'Portfolio', value: Math.min(100, portfolioCount * 50), color: 'bg-primary-500' },
+        { label: 'Interview', value: 25, color: 'bg-amber-500' },
+    ];
+
+    useEffect(() => {
+        careerToolsService.listMyPortfolios()
+            .then((items) => setPortfolioCount(items.length))
+            .catch(() => setPortfolioCount(0));
+    }, []);
 
     return (
         <div className="space-y-6">
             <div className="grid gap-4 md:grid-cols-4">
-                <MetricCard label="Readiness" value={`${readiness}/4`} note="Profile, resume, portfolio, applications" />
+                <MetricCard label="Readiness" value={`${readiness}/4`} note="Profile, resume, portfolio, interview" />
                 <MetricCard label="Target Role" value={profile.targetRole || 'Unset'} note={profile.targetIndustry || 'Pick a focused market'} />
-                <MetricCard label="Applications" value={String(applications.length)} note="Track every role and next step" />
-                <MetricCard label="Interviews" value={String(interviewingCount)} note={`Live check ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`} />
+                <MetricCard label="Portfolios" value={String(portfolioCount)} note="Public links stored on server" />
+                <MetricCard label="Live Check" value={now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} note="Workspace state refreshed" />
             </div>
             <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)_320px]">
                 <section className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
@@ -253,31 +286,27 @@ const CareerOverview = () => {
                             <span className="text-xs font-bold uppercase text-gray-400">Ready</span>
                         </div>
                     </div>
-                    <p className="mt-4 text-center text-xs text-gray-500">Circle updates from your profile, resume, portfolio, and application activity.</p>
+                    <p className="mt-4 text-center text-xs text-gray-500">Circle updates from your profile, resume, portfolio, and practice readiness.</p>
                 </section>
 
                 <section className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
                     <div className="flex items-center justify-between gap-3">
                         <div>
-                            <p className="text-xs font-bold uppercase text-gray-500">Application Pipeline</p>
-                            <h3 className="mt-1 text-xl font-bold text-gray-950 dark:text-white">Hiring Flow</h3>
+                            <p className="text-xs font-bold uppercase text-gray-500">Workspace Progress</p>
+                            <h3 className="mt-1 text-xl font-bold text-gray-950 dark:text-white">Hiring Assets</h3>
                         </div>
-                        <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-bold text-primary-700 dark:bg-primary-950 dark:text-primary-300">{appliedCount} active</span>
+                        <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-bold text-primary-700 dark:bg-primary-950 dark:text-primary-300">Live</span>
                     </div>
                     <div className="mt-6 grid gap-4 sm:grid-cols-4">
-                        {pipelineStages.map((stage, index) => {
-                            const height = 28 + (stage.count / maxPipeline) * 92;
-                            const colors = ['from-slate-400 to-slate-500', 'from-sky-400 to-blue-500', 'from-violet-400 to-indigo-500', 'from-emerald-400 to-teal-500'];
-                            return (
-                                <div key={stage.status} className="flex flex-col items-center gap-2">
+                        {workspaceSteps.map((step) => (
+                                <div key={step.label} className="flex flex-col items-center gap-2">
                                     <div className="flex h-32 w-full items-end rounded-xl bg-gray-50 p-2 dark:bg-gray-800">
-                                        <div className={`w-full rounded-lg bg-gradient-to-t ${colors[index]} transition-all`} style={{ height }} />
+                                        <div className={`w-full rounded-lg ${step.color} transition-all`} style={{ height: `${Math.max(18, step.value)}%` }} />
                                     </div>
-                                    <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{stage.status}</span>
-                                    <span className="text-lg font-black text-gray-950 dark:text-white">{stage.count}</span>
+                                    <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{step.label}</span>
+                                    <span className="text-lg font-black text-gray-950 dark:text-white">{step.value}%</span>
                                 </div>
-                            );
-                        })}
+                            ))}
                     </div>
                 </section>
 
@@ -286,11 +315,11 @@ const CareerOverview = () => {
                     <div className="mt-5 space-y-4">
                         <ProofAsset label="Resume Contact" value={readinessItems[1]?.done ? 100 : 25} color="bg-emerald-500" />
                         <ProofAsset label="Portfolio Links" value={Math.min(100, portfolioCount * 50)} color="bg-primary-500" />
-                        <ProofAsset label="Interview Pipeline" value={Math.min(100, interviewingCount * 40)} color="bg-amber-500" />
+                        <ProofAsset label="Interview Practice" value={25} color="bg-amber-500" />
                     </div>
                     <div className="mt-6 rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
                         <p className="text-sm font-bold text-gray-950 dark:text-white">{portfolioCount} portfolios published</p>
-                        <p className="mt-1 text-xs text-gray-500">Publish links from Portfolio Studio and reuse them in job applications.</p>
+                        <p className="mt-1 text-xs text-gray-500">Publish links from Portfolio Studio and share them across devices.</p>
                     </div>
                 </section>
             </div>
@@ -299,7 +328,7 @@ const CareerOverview = () => {
                     <div className="h-full bg-primary-600 transition-all" style={{ width: `${readinessPercent}%` }} />
                 </div>
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                    {readinessItems.map((item) => (
+                    {liveReadinessItems.map((item) => (
                         <div key={item.label} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm dark:bg-gray-800">
                             <CheckCircle2 className={`h-4 w-4 ${item.done ? 'text-emerald-500' : 'text-gray-300'}`} />
                             <span className={item.done ? 'text-gray-800 dark:text-gray-200' : 'text-gray-500'}>{item.label}</span>
@@ -323,9 +352,7 @@ const CareerOverview = () => {
                     ['Browse courses', '/career/skill-improvement'],
                 ]} />
                 <WorkflowCard title="Get Hired" icon={<Target className="h-5 w-5" />} links={[
-                    ['Prepare stories', '/career/job-preparation'],
                     ['Search jobs', '/career/job-search'],
-                    ['Track applications', '/career/job-apply'],
                     ['Practice interview', '/career/interview-simulator'],
                 ]} />
             </div>
@@ -417,59 +444,94 @@ const SkillImprovement = () => (
     </div>
 );
 
-const JobPreparation = () => (
-    <div className="grid gap-6 lg:grid-cols-2">
-        <InfoPanel title="Preparation Checklist" icon={<ClipboardCheck className="h-5 w-5" />}>
-            <ActionList items={[
-                'Resume has role keywords, metrics, and a clean ATS layout.',
-                'Portfolio has two strong projects with problem, approach, stack, and results.',
-                'LinkedIn/GitHub match the same target role story.',
-                'You have five STAR stories for ownership, conflict, failure, learning, and impact.',
-            ]} />
-        </InfoPanel>
-        <InfoPanel title="Interview Story Bank" icon={<Map className="h-5 w-5" />}>
-            <ActionList items={[
-                'Situation: set the context in one sentence.',
-                'Task: name your responsibility clearly.',
-                'Action: explain decisions and tradeoffs.',
-                'Result: quantify outcome or learning honestly.',
-            ]} />
-        </InfoPanel>
-        <InfoPanel title="Disclaimer" icon={<Target className="h-5 w-5" />}>
-            <p className="text-sm leading-6 text-gray-600 dark:text-gray-400">AI feedback and recommendations are coaching aids, not guarantees of job placement. Always verify job posts, company legitimacy, salary terms, and personal data requests before applying.</p>
-        </InfoPanel>
-    </div>
-);
-
 const JobSearchTool = () => {
     const profile = loadJson<CareerProfile>(CAREER_PROFILE_KEY, defaultProfile);
-    const query = encodeURIComponent(profile.targetRole || 'software developer');
+    const [query, setQuery] = useState(profile.targetRole);
+    const [location, setLocation] = useState('');
+    const [experience, setExperience] = useState<JobSearchExperience>(() => normalizeExperience(profile.experienceLevel));
+    const [remote, setRemote] = useState(false);
+    const [result, setResult] = useState<JobSearchResult | null>(null);
+    const [isSearching, setIsSearching] = useState(false);
+
+    const runSearch = async (event?: React.FormEvent<HTMLFormElement>) => {
+        event?.preventDefault();
+        const trimmedQuery = query.trim();
+        if (!trimmedQuery) {
+            toast.error('Enter a role or keyword to search');
+            return;
+        }
+        setIsSearching(true);
+        try {
+            const response = await careerToolsService.searchJobs(trimmedQuery, location.trim(), remote, experience);
+            setResult(response);
+        } catch (error) {
+            console.error(error);
+            toast.error('Job search agent failed');
+        } finally {
+            setIsSearching(false);
+        }
+    };
 
     return (
         <div className="space-y-6">
-            <InfoPanel title="Job Search Strategy" icon={<Search className="h-5 w-5" />}>
-                <ActionList items={[
-                    'Search with one target title plus two adjacent titles.',
-                    'Create alerts, but manually inspect company career pages for serious targets.',
-                    'Prioritize roles posted in the last 7 days and roles where you match at least 60 percent of must-have skills.',
-                ]} />
-            </InfoPanel>
-            <div className="grid gap-4 md:grid-cols-2">
-                {jobBoards.map((board) => (
-                    <a key={board.name} href={`${board.url}${board.name === 'LinkedIn Jobs' ? `search/?keywords=${query}` : ''}`} target="_blank" rel="noreferrer" className="rounded-lg border border-gray-200 bg-white p-5 transition hover:border-primary-200 hover:shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                        <div className="flex items-center justify-between gap-3">
-                            <h3 className="font-bold text-gray-950 dark:text-white">{board.name}</h3>
-                            <ExternalLink className="h-4 w-4 text-gray-400" />
-                        </div>
-                        <p className="mt-2 text-sm text-gray-500">{board.note}</p>
-                    </a>
-                ))}
-            </div>
+            <form onSubmit={runSearch} className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+                <div className="flex items-center gap-2 text-primary-600 dark:text-primary-300">
+                    <Search className="h-5 w-5" />
+                    <h3 className="text-lg font-bold text-gray-950 dark:text-white">Job Search Agent</h3>
+                </div>
+                <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px_160px_auto]">
+                    <CareerInput label="Role or keywords" value={query} onChange={setQuery} placeholder="Frontend developer, data analyst..." required />
+                    <CareerInput label="Location" value={location} onChange={setLocation} placeholder="Bengaluru, Remote, USA" />
+                    <label className="block">
+                        <span className="mb-1 block text-xs font-bold uppercase text-gray-500">Experience</span>
+                        <select value={experience} onChange={(event) => setExperience(event.target.value as JobSearchExperience)} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800">
+                            {experienceOptions.map((option) => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <label className="flex items-end gap-2 pb-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
+                        <input type="checkbox" checked={remote} onChange={(event) => setRemote(event.target.checked)} className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+                        Remote
+                    </label>
+                </div>
+                <Button type="submit" isLoading={isSearching} className="mt-4 gap-2">
+                    <Search className="h-4 w-4" /> Search Current Jobs
+                </Button>
+                <p className="mt-3 text-xs text-gray-500">The backend agent searches current public hiring pages and normalizes matching vacancies. Always verify salary, company identity, and application requirements on the source page.</p>
+            </form>
+
+            {result && (
+                <div className="grid gap-3">
+                    <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{result.jobs.length} current results</p>
+                        <p className="text-xs text-gray-500">Updated {new Date(result.generatedAt).toLocaleString()}</p>
+                    </div>
+                    {result.jobs.length === 0 ? (
+                        <InfoPanel title="No Live Matches" icon={<Target className="h-5 w-5" />}>
+                            <p className="text-sm text-gray-500">Try a broader role title, a different location, or remove the experience filter.</p>
+                        </InfoPanel>
+                    ) : result.jobs.map((job) => (
+                        <a key={`${job.id}-${job.url}`} href={job.url} target="_blank" rel="noreferrer" className="rounded-lg border border-gray-200 bg-white p-5 transition hover:border-primary-200 hover:shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                <div className="min-w-0">
+                                    <h3 className="text-base font-bold text-gray-950 dark:text-white">{job.title}</h3>
+                                    <p className="mt-1 text-sm font-semibold text-gray-500">{job.company} · {job.location}</p>
+                                </div>
+                                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                    {job.source} <ExternalLink className="h-3.5 w-3.5" />
+                                </span>
+                            </div>
+                            <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">{job.summary}</p>
+                        </a>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
 
-const JobApplyTracker = () => {
+export const JobApplyTracker = () => {
     const [applications, setApplications] = useState<JobApplication[]>(() => loadJson(JOB_APPLICATIONS_KEY, []));
     const [draft, setDraft] = useState({ company: '', role: '', source: '', nextStep: '', status: 'Saved' });
 
@@ -635,10 +697,10 @@ const WorkflowCard = ({ title, icon, links }: { title: string; icon: React.React
     </div>
 );
 
-const CareerInput = ({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string }) => (
+const CareerInput = ({ label, value, onChange, placeholder, required = false }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; required?: boolean }) => (
     <label className="block">
-        <span className="mb-1 block text-xs font-bold uppercase text-gray-500">{label}</span>
-        <input value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800" />
+        <span className="mb-1 block text-xs font-bold uppercase text-gray-500">{label}{required && <span className="text-red-500"> *</span>}</span>
+        <input required={required} value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800" />
     </label>
 );
 

@@ -1,13 +1,18 @@
 import json
 import logging
 import re
-from typing import Any
+import asyncio
+from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
+from app.models.career import PublishedPortfolio
 from app.models.user import User
+from app.services.job_search_agent import JobSearchCriteria, job_search_agent
 from app.services.llm_service import llm_service
 
 router = APIRouter()
@@ -38,6 +43,23 @@ class PortfolioRequest(BaseModel):
     resume_data: dict[str, Any] = Field(default_factory=dict)
     headline: str = ""
     portfolio_goal: str = ""
+
+
+class PublishPortfolioRequest(BaseModel):
+    content: dict[str, Any] = Field(default_factory=dict)
+    preferred_slug: str = ""
+
+
+class JobSearchRequest(BaseModel):
+    query: str = Field(min_length=2, max_length=120)
+    location: str = Field(default="", max_length=120)
+    remote: bool = False
+    experience: Literal["any", "internship", "entry-level", "mid-level", "senior-level", "leadership"] = "any"
+
+
+def _slugify(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug[:80] or "portfolio"
 
 
 def _extract_json_object(text: str) -> dict[str, Any]:
@@ -104,6 +126,95 @@ Resume JSON:
 {json.dumps(payload.resume_data)[:14000]}
 """.strip()
     return await _generate_json(prompt)
+
+
+@router.post("/jobs/search", response_model=dict)
+async def search_jobs(
+    payload: JobSearchRequest,
+    current_user: User = Depends(deps.get_current_active_user),
+) -> Any:
+    try:
+        return await asyncio.to_thread(
+            job_search_agent.search,
+            JobSearchCriteria(
+                query=payload.query,
+                location=payload.location,
+                remote=payload.remote,
+                experience=payload.experience,
+            ),
+        )
+    except Exception as exc:
+        logger.exception("Job search agent failed")
+        raise HTTPException(status_code=502, detail="Job search agent failed. Please try a narrower search.") from exc
+
+
+@router.post("/portfolio/publish", response_model=dict, status_code=status.HTTP_201_CREATED)
+async def publish_portfolio(
+    payload: PublishPortfolioRequest,
+    current_user: User = Depends(deps.get_current_active_user),
+    db: AsyncSession = Depends(deps.get_db),
+) -> Any:
+    hero = payload.content.get("hero") if isinstance(payload.content, dict) else {}
+    name = hero.get("name") if isinstance(hero, dict) else ""
+    base_slug = _slugify(payload.preferred_slug or str(name or current_user.full_name or "portfolio"))
+    slug = base_slug
+    suffix = 1
+    while True:
+        existing = await db.execute(select(PublishedPortfolio).where(PublishedPortfolio.slug == slug))
+        if existing.scalars().first() is None:
+            break
+        suffix += 1
+        slug = f"{base_slug}-{suffix}"
+
+    portfolio = PublishedPortfolio(slug=slug, owner_id=current_user.id, content=payload.content)
+    db.add(portfolio)
+    await db.commit()
+    await db.refresh(portfolio)
+    return {"slug": portfolio.slug, "content": portfolio.content, "createdAt": portfolio.created_at}
+
+
+@router.get("/portfolio/mine", response_model=list[dict])
+async def list_my_portfolios(
+    current_user: User = Depends(deps.get_current_active_user),
+    db: AsyncSession = Depends(deps.get_db),
+) -> Any:
+    result = await db.execute(
+        select(PublishedPortfolio)
+        .where(PublishedPortfolio.owner_id == current_user.id)
+        .order_by(PublishedPortfolio.created_at.desc())
+    )
+    return [
+        {"slug": item.slug, "content": item.content, "createdAt": item.created_at, "updatedAt": item.updated_at}
+        for item in result.scalars().all()
+    ]
+
+
+@router.get("/portfolio/{slug}", response_model=dict)
+async def get_public_portfolio(slug: str, db: AsyncSession = Depends(deps.get_db)) -> Any:
+    result = await db.execute(select(PublishedPortfolio).where(PublishedPortfolio.slug == slug))
+    portfolio = result.scalars().first()
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    return {"slug": portfolio.slug, "content": portfolio.content, "updatedAt": portfolio.updated_at}
+
+
+@router.delete("/portfolio/{slug}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_portfolio(
+    slug: str,
+    current_user: User = Depends(deps.get_current_active_user),
+    db: AsyncSession = Depends(deps.get_db),
+) -> None:
+    result = await db.execute(
+        select(PublishedPortfolio).where(
+            PublishedPortfolio.slug == slug,
+            PublishedPortfolio.owner_id == current_user.id,
+        )
+    )
+    portfolio = result.scalars().first()
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    await db.delete(portfolio)
+    await db.commit()
 
 
 @router.post("/interview/questions", response_model=dict)

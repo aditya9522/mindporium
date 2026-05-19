@@ -57,6 +57,31 @@ export interface PortfolioResult {
     };
 }
 
+export interface PublishedPortfolio {
+    slug: string;
+    content: PortfolioResult;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface JobSearchResult {
+    query: string;
+    location: string;
+    experience: JobSearchExperience;
+    generatedAt: string;
+    jobs: {
+        id: string;
+        title: string;
+        company: string;
+        location: string;
+        source: string;
+        url: string;
+        summary: string;
+    }[];
+}
+
+export type JobSearchExperience = 'any' | 'internship' | 'entry-level' | 'mid-level' | 'senior-level' | 'leadership';
+
 export const careerToolsService = {
     generateJobMatchedResume: async (
         resumeData: ResumeData,
@@ -110,6 +135,46 @@ export const careerToolsService = {
             resume_data: resumeData,
             headline,
             portfolio_goal: portfolioGoal,
+        });
+        return response.data;
+    },
+
+    publishPortfolio: async (
+        content: PortfolioResult,
+        preferredSlug: string
+    ): Promise<PublishedPortfolio> => {
+        const response = await api.post<PublishedPortfolio>('/career-tools/portfolio/publish', {
+            content,
+            preferred_slug: preferredSlug,
+        });
+        return response.data;
+    },
+
+    listMyPortfolios: async (): Promise<PublishedPortfolio[]> => {
+        const response = await api.get<PublishedPortfolio[]>('/career-tools/portfolio/mine');
+        return response.data;
+    },
+
+    getPublicPortfolio: async (slug: string): Promise<PublishedPortfolio> => {
+        const response = await api.get<PublishedPortfolio>(`/career-tools/portfolio/${slug}`);
+        return response.data;
+    },
+
+    deletePortfolio: async (slug: string): Promise<void> => {
+        await api.delete(`/career-tools/portfolio/${slug}`);
+    },
+
+    searchJobs: async (
+        query: string,
+        location: string,
+        remote: boolean,
+        experience: JobSearchExperience
+    ): Promise<JobSearchResult> => {
+        const response = await api.post<JobSearchResult>('/career-tools/jobs/search', {
+            query,
+            location,
+            remote,
+            experience,
         });
         return response.data;
     },

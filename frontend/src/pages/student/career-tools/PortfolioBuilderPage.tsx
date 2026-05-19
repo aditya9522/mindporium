@@ -1,20 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type React from 'react';
 import toast from 'react-hot-toast';
 import { ArrowUpRight, Award, BriefcaseBusiness, CheckCircle2, Code2, Copy, Edit3, ExternalLink, Github, Globe2, GraduationCap, Linkedin, Link2, Mail, MapPin, Rocket, Sparkles, Trash2 } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
-import { careerToolsService, type PortfolioResult } from '../../../services/career-tools.service';
+import { careerToolsService, type PortfolioResult, type PublishedPortfolio } from '../../../services/career-tools.service';
 import { getResumeDraft, listItems, toText } from './utils';
-
-const PORTFOLIO_STORAGE_KEY = 'mindporium_public_portfolios';
-
-const getPublishedPortfolios = (): Record<string, PortfolioResult> => {
-    try {
-        return JSON.parse(localStorage.getItem(PORTFOLIO_STORAGE_KEY) || '{}');
-    } catch {
-        return {};
-    }
-};
 
 export const PortfolioBuilderPage = () => {
     const resumeData = useMemo(() => getResumeDraft(), []);
@@ -22,8 +12,15 @@ export const PortfolioBuilderPage = () => {
     const [portfolioGoal, setPortfolioGoal] = useState('');
     const [result, setResult] = useState<PortfolioResult | null>(null);
     const [publishedUrl, setPublishedUrl] = useState('');
-    const [publishedPortfolios, setPublishedPortfolios] = useState<Record<string, PortfolioResult>>(() => getPublishedPortfolios());
+    const [publishedPortfolios, setPublishedPortfolios] = useState<PublishedPortfolio[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isPublishing, setIsPublishing] = useState(false);
+
+    useEffect(() => {
+        careerToolsService.listMyPortfolios()
+            .then(setPublishedPortfolios)
+            .catch(() => setPublishedPortfolios([]));
+    }, []);
 
     const handleGenerate = async () => {
         setIsGenerating(true);
@@ -49,41 +46,49 @@ export const PortfolioBuilderPage = () => {
     const handlePublishPreview = async () => {
         if (!result) return;
         const portfolioName = toText(result.hero?.name) || 'portfolio';
-        const slug = `${portfolioName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'portfolio'}-${Date.now().toString(36)}`;
-        const portfolios = getPublishedPortfolios();
-        portfolios[slug] = result;
-        localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(portfolios));
-        const url = `${window.location.origin}/portfolio/${slug}`;
-        setPublishedUrl(url);
-        setPublishedPortfolios(portfolios);
-        await navigator.clipboard.writeText(url);
-        toast.success('Public preview link copied');
+        setIsPublishing(true);
+        try {
+            const published = await careerToolsService.publishPortfolio(result, portfolioName);
+            const url = `${window.location.origin}/portfolio/${published.slug}`;
+            setPublishedUrl(url);
+            setPublishedPortfolios((current) => [published, ...current]);
+            await navigator.clipboard.writeText(url);
+            toast.success('Public portfolio link copied');
+        } catch (error) {
+            console.error(error);
+            toast.error('Unable to publish portfolio');
+        } finally {
+            setIsPublishing(false);
+        }
     };
 
     const handleEditPublished = (slug: string) => {
-        const portfolio = publishedPortfolios[slug];
+        const portfolio = publishedPortfolios.find((item) => item.slug === slug)?.content;
         if (!portfolio) return;
         setResult(portfolio);
         setPublishedUrl(`${window.location.origin}/portfolio/${slug}`);
         toast.success('Loaded published portfolio for editing');
     };
 
-    const handleRemovePublished = (slug: string) => {
-        const nextPortfolios = { ...publishedPortfolios };
-        delete nextPortfolios[slug];
-        localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(nextPortfolios));
-        setPublishedPortfolios(nextPortfolios);
-        if (publishedUrl.endsWith(`/portfolio/${slug}`)) {
-            setPublishedUrl('');
+    const handleRemovePublished = async (slug: string) => {
+        try {
+            await careerToolsService.deletePortfolio(slug);
+            setPublishedPortfolios((current) => current.filter((item) => item.slug !== slug));
+            if (publishedUrl.endsWith(`/portfolio/${slug}`)) {
+                setPublishedUrl('');
+            }
+            toast.success('Published preview removed');
+        } catch (error) {
+            console.error(error);
+            toast.error('Unable to remove portfolio');
         }
-        toast.success('Published preview removed');
     };
 
-    const publishedEntries = Object.entries(publishedPortfolios).map(([slug, portfolio]) => ({
+    const publishedEntries = publishedPortfolios.map(({ slug, content }) => ({
         slug,
-        portfolio,
+        portfolio: content,
         url: `${window.location.origin}/portfolio/${slug}`,
-    })).reverse();
+    }));
 
     return (
         <div className="mx-auto max-w-7xl space-y-6">
@@ -137,7 +142,7 @@ export const PortfolioBuilderPage = () => {
                         </Button>
                         {result && (
                             <div className="grid gap-2">
-                                <Button variant="outline" onClick={handlePublishPreview} className="gap-2">
+                                <Button variant="outline" onClick={handlePublishPreview} isLoading={isPublishing} className="gap-2">
                                     <Link2 className="h-4 w-4" /> Publish Public Preview
                                 </Button>
                                 <Button variant="ghost" onClick={handleCopy} className="gap-2">

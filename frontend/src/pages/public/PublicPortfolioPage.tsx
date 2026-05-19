@@ -1,25 +1,35 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Globe2 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import type { PortfolioResult } from '../../services/career-tools.service';
+import { careerToolsService } from '../../services/career-tools.service';
 import { PortfolioPreview } from '../student/career-tools/PortfolioBuilderPage';
 import { toText } from '../student/career-tools/utils';
 
-const PORTFOLIO_STORAGE_KEY = 'mindporium_public_portfolios';
-
-const getPublishedPortfolios = (): Record<string, PortfolioResult> => {
-    try {
-        const saved = localStorage.getItem(PORTFOLIO_STORAGE_KEY);
-        return saved ? JSON.parse(saved) : {};
-    } catch {
-        return {};
-    }
-};
-
 export const PublicPortfolioPage = () => {
     const { slug } = useParams();
-    const portfolios = getPublishedPortfolios();
-    const portfolio = slug ? portfolios[slug] : null;
+    const [portfolio, setPortfolio] = useState<PortfolioResult | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!slug) {
+            setIsLoading(false);
+            return;
+        }
+        careerToolsService.getPublicPortfolio(slug)
+            .then((response) => setPortfolio(response.content))
+            .catch(() => setPortfolio(null))
+            .finally(() => setIsLoading(false));
+    }, [slug]);
+
+    if (isLoading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 dark:bg-gray-950">
+                <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Loading portfolio...</div>
+            </div>
+        );
+    }
 
     if (!portfolio) {
         return (
@@ -27,7 +37,7 @@ export const PublicPortfolioPage = () => {
                 <div className="max-w-md rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <Globe2 className="mx-auto h-12 w-12 text-gray-300" />
                     <h1 className="mt-4 text-xl font-bold text-gray-900 dark:text-white">Portfolio preview not found</h1>
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">This preview may have been removed from this browser.</p>
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">This portfolio may have been removed or the link may be incorrect.</p>
                     <Button asChild className="mt-6">
                         <Link to="/">Go Home</Link>
                     </Button>
