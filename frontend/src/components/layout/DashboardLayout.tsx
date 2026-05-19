@@ -18,7 +18,7 @@ export const DashboardLayout = () => {
     const location = useLocation();
 
     const isPublicRoute = (path: string) => {
-        const publicPaths = ['/courses', '/instructors', '/news'];
+        const publicPaths = ['/courses', '/instructors'];
         return publicPaths.some(p => path.startsWith(p));
     };
 
@@ -155,10 +155,10 @@ export const DashboardLayout = () => {
                             <img
                                 src={getImageUrl(user.photo)}
                                 alt={user.full_name}
-                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white group-hover:ring-primary-100 transition-all flex-shrink-0"
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white group-hover:ring-primary-100 transition-all shrink-0"
                             />
                         ) : (
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary-100 flex items-center justify-center ring-2 ring-white group-hover:ring-primary-100 transition-all flex-shrink-0">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary-100 flex items-center justify-center ring-2 ring-white group-hover:ring-primary-100 transition-all shrink-0">
                                 <span className="text-primary-600 font-bold text-sm">
                                     {user.full_name?.charAt(0).toUpperCase()}
                                 </span>
@@ -170,7 +170,7 @@ export const DashboardLayout = () => {
                             </p>
                             <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 capitalize font-medium">{user.role}</p>
                         </div>
-                        <Settings className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-500 transition-all flex-shrink-0" />
+                        <Settings className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-500 transition-all shrink-0" />
                     </div>
                 ) : (
                     <div className="space-y-3 px-3 pb-4">

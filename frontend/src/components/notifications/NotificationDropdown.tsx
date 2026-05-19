@@ -75,7 +75,7 @@ export const NotificationDropdown = () => {
                                             }`}
                                     >
                                         <div className="flex gap-3">
-                                            <div className="flex-shrink-0 mt-1">
+                                            <div className="shrink-0 mt-1">
                                                 {getIcon(notification.type)}
                                             </div>
                                             <div className="flex-1 min-w-0">

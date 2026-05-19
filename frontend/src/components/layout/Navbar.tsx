@@ -90,8 +90,12 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                             <div className="hidden md:flex ml-10 space-x-1">
                                 <Link to="/courses" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Courses</Link>
                                 <Link to="/instructors" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Instructors</Link>
-                                <Link to="/community" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Community</Link>
-                                <Link to="/news" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">News</Link>
+                                {isAuthenticated && (
+                                    <>
+                                        <Link to="/community" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Community</Link>
+                                        <Link to="/news" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">News</Link>
+                                    </>
+                                )}
                             </div>
                         </div>
 

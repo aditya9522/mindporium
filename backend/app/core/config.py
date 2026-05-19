@@ -28,6 +28,7 @@ class Settings(BaseSettings):
 
     # AI
     GEMINI_API_KEY: Optional[str] = Field(None, env="GEMINI_API_KEY")
+    NEWSAPI_KEY: Optional[str] = Field(None, env="NEWSAPI_KEY")
 
     # Storage (Supabase)
     SUPABASE_URL: Optional[str] = Field(None, env="SUPABASE_URL")

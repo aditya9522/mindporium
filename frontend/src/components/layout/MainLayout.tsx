@@ -5,7 +5,7 @@ export const MainLayout = () => {
     return (
         <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
             <Navbar />
-            <main className="flex-grow relative z-10">
+            <main className="grow relative z-10">
                 <Outlet />
             </main>
             <footer className="relative z-10 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-12 transition-colors duration-300">
