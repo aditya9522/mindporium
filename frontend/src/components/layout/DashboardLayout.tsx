@@ -91,7 +91,7 @@ export const DashboardLayout = () => {
             { icon: Calendar, label: 'Attendance', path: '/student/attendance' },
             { icon: Users, label: 'Community', path: '/community' },
             { icon: GraduationCap, label: 'Instructors', path: '/instructors' },
-            { icon: BriefcaseBusiness, label: 'Career Workspace', path: '/career/overview', new: true },
+            { icon: BriefcaseBusiness, label: 'Career Workspace', path: '/career/job-search', new: true },
             { icon: MessageSquare, label: 'Feedback', path: '/feedback' },
             { icon: Bell, label: 'Notifications', path: '/notifications' },
             { icon: Bot, label: 'AI Assistant', path: '/chatbot' },

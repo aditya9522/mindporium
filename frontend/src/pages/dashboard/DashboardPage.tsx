@@ -95,7 +95,7 @@ export const DashboardPage = () => {
                         </p>
                         <div className="mt-6 flex flex-wrap gap-3">
                             <Link to="/my-learning" className="rounded-xl bg-primary-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-700">Continue Learning</Link>
-                            <Link to="/career/overview" className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Career Workspace</Link>
+                            <Link to="/career/job-search" className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Career Workspace</Link>
                         </div>
                     </div>
                     <div className="border-t border-gray-100 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-950/50 lg:border-l lg:border-t-0">

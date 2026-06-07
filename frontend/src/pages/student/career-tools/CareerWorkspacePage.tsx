@@ -108,7 +108,7 @@ export const CareerWorkspacePage = () => {
     const title = tabs.find((item) => item.id === activeTab)?.label ?? 'Career Workspace';
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
+        <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 transition-colors sm:px-6 lg:px-8">
             <section className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
                 <div className="grid gap-0 xl:grid-cols-[minmax(0,1fr)_360px]">
                     <div className="p-6">
@@ -129,9 +129,9 @@ export const CareerWorkspacePage = () => {
                 </div>
             </section>
 
-            <div className={`grid gap-6 ${compactNav ? 'xl:grid-cols-[80px_minmax(0,1fr)]' : 'xl:grid-cols-[300px_minmax(0,1fr)]'}`}>
-                <aside className={`xl:sticky xl:top-20 xl:self-start ${compactNav ? 'xl:w-20' : ''}`}>
-                    <div className={`mb-3 flex items-center ${compactNav ? 'justify-center' : 'justify-between'} rounded-lg border border-gray-200 bg-white p-3 text-sm dark:border-gray-800 dark:bg-gray-900`}>
+            <div className={`grid min-w-0 gap-6 ${compactNav ? 'xl:grid-cols-[80px_minmax(0,1fr)]' : 'xl:grid-cols-[300px_minmax(0,1fr)]'}`}>
+                <aside className={`min-w-0 xl:sticky xl:top-20 xl:self-start ${compactNav ? 'xl:w-20' : ''}`}>
+                    <div className={`mb-3 hidden items-center ${compactNav ? 'justify-center' : 'justify-between'} rounded-lg border border-gray-200 bg-white p-3 text-sm dark:border-gray-800 dark:bg-gray-900 xl:flex`}>
                         {!compactNav && <span className="font-semibold text-gray-700 dark:text-gray-200">Sidebar</span>}
                         <button
                             type="button"
@@ -142,7 +142,7 @@ export const CareerWorkspacePage = () => {
                             {!compactNav && <span>{compactNav ? 'Expanded' : 'Compact'}</span>}
                         </button>
                     </div>
-                    <nav className={`rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900 ${compactNav ? 'w-20' : ''}`}>
+                    <nav className={`flex min-w-0 gap-2 overflow-x-auto rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-gray-900 xl:block xl:overflow-visible xl:p-3 ${compactNav ? 'xl:w-20' : ''}`}>
                         {tabs.map((item) => {
                             const Icon = item.icon;
                             const isActive = activeTab === item.id;
@@ -152,20 +152,18 @@ export const CareerWorkspacePage = () => {
                                     type="button"
                                     title={item.label}
                                     onClick={() => navigate(`/career/${item.id}`)}
-                                    className={`mb-1 flex w-full ${compactNav ? 'justify-center' : 'items-start'} gap-3 rounded-lg ${compactNav ? 'px-2 py-3' : 'px-3 py-3 text-left'} transition ${isActive
+                                    className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm transition xl:mb-1 xl:w-full ${compactNav ? 'xl:justify-center xl:px-2 xl:py-3' : 'xl:items-start xl:gap-3 xl:px-3 xl:py-3 xl:text-left'} ${isActive
                                         ? 'bg-primary-50 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300'
                                         : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800'
                                         }`}
                                 >
-                                    <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${isActive ? 'text-primary-600' : 'text-gray-400'}`} />
-                                    {!compactNav && (
-                                        <span className="min-w-0 flex-1">
-                                            <span className="flex items-center gap-2 text-sm font-bold">
-                                                {item.label}
-                                                {item.badge && <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-300">{item.badge}</span>}
-                                            </span>
+                                    <Icon className={`h-5 w-5 shrink-0 xl:mt-0.5 ${isActive ? 'text-primary-600' : 'text-gray-400'}`} />
+                                    <span className={`min-w-0 flex-1 ${compactNav ? 'xl:hidden' : ''}`}>
+                                        <span className="flex items-center gap-2 text-sm font-bold">
+                                            {item.label}
+                                            {item.badge && <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-300">{item.badge}</span>}
                                         </span>
-                                    )}
+                                    </span>
                                 </button>
                             );
                         })}
