@@ -30,6 +30,7 @@ export const AdminCourseDetailViewPage = () => {
     const [courseData, setCourseData] = useState<any>(null);
 
     const basePath = location.pathname.startsWith('/instructor') ? '/instructor' : '/admin';
+    const isAdminView = basePath === '/admin';
 
     useEffect(() => {
         if (id) {
@@ -66,11 +67,11 @@ export const AdminCourseDetailViewPage = () => {
             label: 'Enrolled Students',
             icon: Users
         },
-        {
+        ...(!isAdminView ? [{
             path: `${basePath}/courses/${id}/view/classrooms`,
             label: 'Classrooms',
             icon: GraduationCap
-        },
+        }] : []),
         {
             path: `${basePath}/courses/${id}/view/resources`,
             label: 'Resources',
@@ -216,7 +217,7 @@ export const AdminCourseDetailViewPage = () => {
                             <Route path="subjects" element={<SubjectsTab courseData={courseData} />} />
                             <Route path="students" element={<EnrolledStudentsTab courseData={courseData} />} />
                             <Route path="feedbacks" element={<FeedbacksTab courseData={courseData} />} />
-                            <Route path="classrooms" element={<ClassroomsTab courseData={courseData} />} />
+                            {!isAdminView && <Route path="classrooms" element={<ClassroomsTab courseData={courseData} />} />}
                             <Route path="resources" element={<ResourcesTab courseData={courseData} />} />
                             <Route path="tests" element={<TestsTab courseData={courseData} />} />
                             <Route path="announcements" element={<AnnouncementsTab courseData={courseData} />} />

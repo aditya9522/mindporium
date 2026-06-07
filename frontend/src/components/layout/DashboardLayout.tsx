@@ -56,7 +56,6 @@ export const DashboardLayout = () => {
                 { icon: Users, label: 'Users', path: '/admin/users' },
                 { icon: GraduationCap, label: 'Instructors', path: '/admin/instructors' },
                 { icon: BookOpen, label: 'Courses', path: '/admin/courses' },
-                { icon: Video, label: 'Classrooms', path: '/classrooms' },
                 { icon: Megaphone, label: 'Announcements', path: '/admin/announcements' },
                 { icon: Shield, label: 'System', path: '/admin/system' },
                 { icon: MessageSquare, label: 'Feedback', path: '/admin/feedback' },
@@ -104,9 +103,6 @@ export const DashboardLayout = () => {
 
     const SidebarContent = () => (
         <div className="h-full flex flex-col py-0 bg-white dark:bg-gray-900 transition-colors duration-300">
-            <div className="h-4" /> {/* Spacer */}
-
-
             {customSidebarContent ? (
                 <div className="animate-in fade-in slide-in-from-left-4 duration-300">
                     {customSidebarContent}
@@ -216,7 +212,7 @@ export const DashboardLayout = () => {
                     </aside>
                 )}
 
-                <main className="flex-1 p-4">
+                <main className="flex-1 min-w-0">
                     <Outlet />
                 </main>
             </div>

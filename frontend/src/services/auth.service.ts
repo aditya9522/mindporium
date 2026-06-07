@@ -26,6 +26,9 @@ export const authService = {
     },
 
     logout: () => {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('refresh_token');
+        sessionStorage.removeItem('auth-storage');
         localStorage.removeItem('token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('auth-storage');

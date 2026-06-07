@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type CSSProperties } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { classroomService, type Classroom, type ClassMessage } from '../../services/classroom.service';
 import { PageLoader } from '../../components/common/PageLoader';
 import { useAuthStore } from '../../store/auth.store';
-import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Send, Hand, Monitor, X, Calendar, Clock, User as UserIcon, Maximize, Minimize, Volume2, VolumeX, Copy } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare, Send, Hand, Monitor, X, Calendar, Clock, User as UserIcon, Maximize, Minimize, Volume2, VolumeX, Loader2, Users, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
@@ -17,6 +17,15 @@ interface Peer {
     };
     handRaised?: boolean;
 }
+
+const pulseOptions = [
+    'I agree',
+    'Correct',
+    'Give example',
+    'Repeat',
+    'Too fast',
+    'Confused',
+];
 
 export const ClassroomDetailPage = () => {
     const { id } = useParams();
@@ -40,6 +49,14 @@ export const ClassroomDetailPage = () => {
     const [showChat, setShowChat] = useState(false); // Default hidden for full screen
     const [sendingMsg, setSendingMsg] = useState(false);
     const [actionLoading, setActionLoading] = useState(false); // For Start/Join/End
+    const [chatWidth, setChatWidth] = useState(360);
+    const [isResizingChat, setIsResizingChat] = useState(false);
+    const [showParticipants, setShowParticipants] = useState(false);
+    const [endingClass, setEndingClass] = useState(false);
+    const [screenShareOwner, setScreenShareOwner] = useState<{ id: number; name: string } | null>(null);
+    const [showPulseMenu, setShowPulseMenu] = useState(false);
+    const [lastLearningPulse, setLastLearningPulse] = useState<{ userId: number; userName: string; pulse: string } | null>(null);
+    const [selectedStageUserId, setSelectedStageUserId] = useState<string | null>(null);
 
     // WebRTC / WS Refs
     const wsRef = useRef<WebSocket | null>(null);
@@ -107,19 +124,59 @@ export const ClassroomDetailPage = () => {
         return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
     }, []);
 
+    useEffect(() => {
+        if (!isResizingChat) return;
+
+        const handlePointerMove = (event: PointerEvent) => {
+            const bounds = containerRef.current?.getBoundingClientRect();
+            if (!bounds) return;
+
+            const nextWidth = bounds.right - event.clientX - 16;
+            const maxWidth = Math.min(620, bounds.width * 0.48);
+            setChatWidth(Math.max(300, Math.min(maxWidth, nextWidth)));
+        };
+
+        const stopResizing = () => setIsResizingChat(false);
+
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', stopResizing);
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+
+        return () => {
+            window.removeEventListener('pointermove', handlePointerMove);
+            window.removeEventListener('pointerup', stopResizing);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        };
+    }, [isResizingChat]);
+
     // --- View Logic / Hooks must be before returns ---
 
     // View Logic - compute main stream
     const isInstructor = Number(user?.id) === Number(classroom?.instructor_id);
     const instructorId = String(classroom?.instructor_id || '');
-    const mainStream = isInstructor ? localStream : remotePeers.get(instructorId)?.stream;
+    const selectedStagePeer = selectedStageUserId ? remotePeers.get(selectedStageUserId) : undefined;
+    const selectedStageIsLocal = selectedStageUserId === String(user?.id);
+    const defaultMainStream = isInstructor ? localStream : remotePeers.get(instructorId)?.stream;
+    const mainStream = selectedStageIsLocal ? localStream : selectedStagePeer?.stream || defaultMainStream;
+    const isMainLocal = selectedStageIsLocal || (!selectedStageUserId && isInstructor);
 
     // Attach Main Video
     useEffect(() => {
         if (mainVideoRef.current && mainStream && mainVideoRef.current.srcObject !== mainStream) {
             mainVideoRef.current.srcObject = mainStream;
+        } else if (mainVideoRef.current && !mainStream) {
+            mainVideoRef.current.srcObject = null;
         }
     }, [mainStream]);
+
+    useEffect(() => {
+        if (!selectedStageUserId || selectedStageIsLocal) return;
+        if (!remotePeers.has(selectedStageUserId)) {
+            setSelectedStageUserId(null);
+        }
+    }, [remotePeers, selectedStageIsLocal, selectedStageUserId]);
 
 
     const cleanupMedia = () => {
@@ -210,11 +267,25 @@ export const ClassroomDetailPage = () => {
     };
 
     const startScreenShare = async () => {
+        if (screenShareOwner && Number(screenShareOwner.id) !== Number(user?.id)) {
+            toast(`${screenShareOwner.name} is already sharing. Ask them to stop sharing before you start.`);
+            return;
+        }
+
         try {
             const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
             stream.getVideoTracks()[0].onended = () => stopScreenShare();
             setLocalStream(stream);
             setIsScreenSharing(true);
+            if (user?.id) {
+                setScreenShareOwner({ id: user.id, name: user.full_name || 'You' });
+                wsRef.current?.send(JSON.stringify({
+                    type: 'screen_share_state',
+                    user_id: user.id,
+                    user_name: user.full_name || 'Participant',
+                    active: true
+                }));
+            }
 
             // Replace Video Track
             const videoTrack = stream.getVideoTracks()[0];
@@ -223,12 +294,21 @@ export const ClassroomDetailPage = () => {
                 if (sender) sender.replaceTrack(videoTrack);
             });
         } catch (error) {
-            toast.error('Could not share screen');
+            toast('Screen share was not started. If someone else is presenting, wait until they stop sharing.');
         }
     };
 
     const stopScreenShare = async () => {
         setIsScreenSharing(false);
+        if (user?.id) {
+            setScreenShareOwner(null);
+            wsRef.current?.send(JSON.stringify({
+                type: 'screen_share_state',
+                user_id: user.id,
+                user_name: user.full_name || 'Participant',
+                active: false
+            }));
+        }
         if (localStream) localStream.getTracks().forEach(t => t.stop());
         await startCamera();
     };
@@ -267,6 +347,37 @@ export const ClassroomDetailPage = () => {
             }));
         }
         toast.success(newState ? 'Hand raised' : 'Hand lowered');
+    };
+
+    const sendLearningPulse = (pulse: string) => {
+        if (!user?.id) return;
+
+        const payload = {
+            type: 'learning_pulse',
+            user_id: user.id,
+            user_name: user.full_name || 'Participant',
+            pulse
+        };
+
+        setLastLearningPulse({ userId: user.id, userName: user.full_name || 'You', pulse });
+        setShowPulseMenu(false);
+        wsRef.current?.send(JSON.stringify({
+            ...payload
+        }));
+        // toast.success(`Pulse sent: ${pulse}`);
+    };
+
+    const clearLearningPulse = () => {
+        if (!user?.id) return;
+
+        setLastLearningPulse(null);
+        wsRef.current?.send(JSON.stringify({
+            type: 'learning_pulse',
+            user_id: user.id,
+            user_name: user.full_name || 'Participant',
+            pulse: null,
+            cleared: true
+        }));
     };
 
     // --- Signaling ---
@@ -328,6 +439,13 @@ export const ClassroomDetailPage = () => {
         cleanupMedia();
         setJoined(false);
         setHandRaised(false);
+        setShowChat(false);
+        setShowParticipants(false);
+        setScreenShareOwner(null);
+        setShowPulseMenu(false);
+        setLastLearningPulse(null);
+        setSelectedStageUserId(null);
+        setEndingClass(false);
         toast('Left session');
     };
 
@@ -376,6 +494,45 @@ export const ClassroomDetailPage = () => {
                         }
                         return next;
                     });
+                }
+                break;
+            case 'screen_share_state':
+                if (data.active) {
+                    setScreenShareOwner({ id: Number(data.user_id), name: data.user_name || 'A participant' });
+                    if (Number(data.user_id) !== Number(user?.id)) {
+                        toast(`${data.user_name || 'A participant'} started sharing their screen`);
+                    }
+                } else {
+                    setScreenShareOwner(prev => Number(data.user_id) === Number(prev?.id) ? null : prev);
+                    if (Number(data.user_id) !== Number(user?.id)) {
+                        toast(`${data.user_name || 'A participant'} stopped sharing`);
+                    }
+                }
+                break;
+            case 'learning_pulse':
+                if (Number(data.user_id) !== Number(user?.id)) {
+                    if (data.cleared || data.pulse === null) {
+                        setLastLearningPulse(null);
+                        return;
+                    }
+                    const pulse = data.pulse || 'Shared a pulse';
+                    setLastLearningPulse({
+                        userId: Number(data.user_id),
+                        userName: data.user_name || 'A participant',
+                        pulse
+                    });
+                    toast(`${data.user_name || 'A participant'}: ${pulse}`);
+                }
+                break;
+            case 'class_ended':
+                if (Number(data.user_id) !== Number(user?.id)) {
+                    setEndingClass(true);
+                    toast(`${data.user_name || 'Instructor'} ended the class`);
+                    await new Promise(resolve => setTimeout(resolve, 1600));
+                    if (id) {
+                        fetchClassroom(parseInt(id));
+                    }
+                    handleLeave();
                 }
                 break;
         }
@@ -513,48 +670,115 @@ export const ClassroomDetailPage = () => {
 
     const handleEndClass = async () => {
         if (!id) return;
+        setEndingClass(true);
+        setActionLoading(true);
         try {
             await classroomService.endClassroom(parseInt(id));
+            wsRef.current?.send(JSON.stringify({
+                type: 'class_ended',
+                user_id: user?.id,
+                user_name: user?.full_name || 'Instructor'
+            }));
             toast.success('Class ended');
+            await new Promise(resolve => setTimeout(resolve, 1600));
             fetchClassroom(parseInt(id));
             handleLeave();
         } catch (error) {
             toast.error('Failed to end class');
+            setEndingClass(false);
+        } finally {
+            setActionLoading(false);
         }
     };
 
     if (loading) return <PageLoader />;
     if (!classroom) return null;
 
-    // Remote participants (exclude instructor from this list if we are student, showing them in main)
-    const participants = Array.from(remotePeers.entries()).filter(([uid]) => {
-        if (!isInstructor && uid === instructorId) return false;
-        return true;
-    });
-
     if (joined) {
+        const participantCards = [
+            {
+                uid: String(user?.id || 'local'),
+                name: `${user?.full_name || 'You'} (You)`,
+                stream: localStream,
+                isLocal: true,
+                handRaised
+            },
+            ...Array.from(remotePeers.entries()).map(([uid, peer]) => ({
+                uid,
+                name: peer.user?.name || `User ${uid}`,
+                stream: peer.stream,
+                isLocal: false,
+                handRaised: !!peer.handRaised
+            }))
+        ];
+        const controlButtonClass = 'group relative h-12 w-12 rounded-full p-0 shadow-lg';
+        const controlIconClass = 'w-4 h-4 sm:w-5 sm:h-5';
+        const ControlTitle = ({ label }: { label: string }) => (
+            <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-black/80 px-2.5 py-1 text-[11px] font-bold text-white shadow-lg group-hover:block">
+                {label}
+            </span>
+        );
+
         return (
-            <div ref={containerRef} className="min-h-screen bg-gray-900 flex flex-col">
-                <div className="flex-1 p-4 flex gap-4 overflow-hidden relative">
-                    {/* Full Screen Toggle (Top Right Overlay) */}
-                    <button
-                        onClick={toggleFullscreen}
-                        className="absolute top-6 right-6 z-50 p-2 bg-black/50 text-white rounded-lg hover:bg-black/70 transition-colors backdrop-blur-sm"
-                        title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
-                    >
-                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                    </button>
+            <div ref={containerRef} className="fixed inset-0 z-60 bg-gray-950 flex flex-col text-white">
+                {endingClass && (
+                    <div className="absolute inset-0 z-80 flex items-center justify-center bg-gray-950/90 backdrop-blur-md">
+                        <div className="text-center">
+                            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-primary-400/40 bg-primary-500/10 shadow-[0_0_60px_rgba(99,102,241,0.45)] animate-ping" />
+                            <div className="relative -mt-24 mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-primary-600 mx-auto">
+                                <PhoneOff className="h-10 w-10 text-white" />
+                            </div>
+                            <p className="text-3xl font-black text-white">Wrapping up the class</p>
+                            <p className="mt-2 text-sm font-semibold text-gray-400">Saving attendance and closing the live room...</p>
+                        </div>
+                    </div>
+                )}
+                <div className="flex-1 p-3 sm:p-4 flex gap-3 sm:gap-4 overflow-hidden relative">
+                    {showPulseMenu && (
+                        <div className="absolute bottom-4 left-1/2 z-70 w-48 -translate-x-1/2 rounded-xl border border-gray-700 bg-gray-900 p-2 shadow-2xl sm:bottom-5">
+                            {pulseOptions.map((option) => (
+                                <button
+                                    key={option}
+                                    type="button"
+                                    onClick={() => sendLearningPulse(option)}
+                                    className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold text-gray-100 transition hover:bg-primary-600 hover:text-white"
+                                >
+                                    {option}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="absolute right-5 top-5 z-50 flex items-center gap-2">
+                        {selectedStageUserId && (
+                            <button
+                                onClick={() => setSelectedStageUserId(null)}
+                                className="rounded-lg bg-black/55 px-3 py-2 text-xs font-semibold text-white backdrop-blur-sm transition-colors hover:bg-black/75"
+                                title="Switch back to the default main screen"
+                            >
+                                Back to main screen
+                            </button>
+                        )}
+                        <button
+                            onClick={toggleFullscreen}
+                            className="flex items-center gap-2 rounded-lg bg-black/55 px-3 py-2 text-xs font-semibold text-white backdrop-blur-sm transition-colors hover:bg-black/75"
+                            title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
+                        >
+                            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                            <span className="hidden sm:inline">{isFullscreen ? 'Exit Full Screen' : 'Full Screen'}</span>
+                        </button>
+                    </div>
 
                     {/* Main Video Area */}
-                    <div className="flex-1 flex flex-col gap-4">
+                    <div className="min-w-0 flex-1 flex flex-col gap-4">
                         <div className="flex-1 bg-gray-800 rounded-xl overflow-hidden relative border border-gray-700">
                             <video
                                 ref={mainVideoRef}
                                 autoPlay
-                                muted={isInstructor || isAudioMuted}
+                                muted={isMainLocal || isAudioMuted}
                                 playsInline
-                                className={`w-full h-full object-cover ${isInstructor && !isScreenSharing ? 'transform scale-x-[-1]' : ''}`}
-                                style={isScreenSharing && isInstructor ? { objectFit: 'contain' } : {}}
+                                className={`w-full h-full object-cover ${isMainLocal && !isScreenSharing ? 'transform scale-x-[-1]' : ''}`}
+                                style={isScreenSharing && isMainLocal ? { objectFit: 'contain' } : {}}
                             />
                             {!mainStream && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
@@ -570,57 +794,120 @@ export const ClassroomDetailPage = () => {
                                     </div>
                                 </div>
                             )}
-
                             {/* Badges */}
                             <div className="absolute top-4 left-4 flex gap-2">
                                 <div className="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full animate-pulse flex items-center gap-1">
                                     <div className="w-2 h-2 bg-white rounded-full"></div>
                                     LIVE
                                 </div>
+                                {screenShareOwner && (
+                                    <div className="px-3 py-1 bg-primary-600 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                                        <Monitor className="w-3 h-3" /> {screenShareOwner.name} sharing
+                                    </div>
+                                )}
                                 {handRaised && (
                                     <div className="px-3 py-1 bg-yellow-500 text-black text-xs font-bold rounded-full animate-bounce flex items-center gap-1">
                                         <Hand className="w-3 h-3" /> Hand Raised
                                     </div>
                                 )}
                             </div>
+                            {lastLearningPulse && (
+                                <div className="absolute bottom-4 left-4 max-w-[min(26rem,calc(100%-2rem))] rounded-xl border border-emerald-400/30 bg-gray-950/80 px-4 py-3 text-white shadow-2xl backdrop-blur-md">
+                                    <div className="flex items-start gap-3">
+                                        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-gray-950">
+                                            <Sparkles className="h-4 w-4" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-bold uppercase tracking-wide text-emerald-300">Learning Pulse</p>
+                                            <p className="truncate text-sm font-bold">{lastLearningPulse.userName}: {lastLearningPulse.pulse}</p>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={clearLearningPulse}
+                                            className="-mr-1 -mt-1 rounded-md p-1 text-gray-300 transition hover:bg-white/10 hover:text-white"
+                                            title="Clear pulse"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Participants Strip */}
-                        {participants.length > 0 && (
-                            <div className="h-32 flex gap-4 overflow-x-auto pb-2">
-                                {participants.map(([uid, peer]) => (
-                                    <div key={uid} className="relative aspect-video bg-gray-800 rounded-lg border border-gray-700 flex-shrink-0 overflow-hidden">
-                                        {peer.stream ? (
-                                            <video
-                                                ref={el => { if (el && el.srcObject !== peer.stream) el.srcObject = peer.stream!; }}
-                                                autoPlay playsInline
-                                                muted={isAudioMuted}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
-                                                No Video
-                                            </div>
-                                        )}
-                                        <div className="absolute top-1 right-1 flex gap-1">
-                                            {peer.handRaised && (
-                                                <div className="bg-yellow-500 p-1 rounded-full shadow-lg animate-bounce">
-                                                    <Hand className="w-3 h-3 text-black" />
+                    </div>
+
+                    {showParticipants && (
+                        <div className="fixed inset-x-3 bottom-24 top-16 z-40 flex flex-col rounded-xl border border-gray-700 bg-gray-900 shadow-2xl md:static md:inset-auto md:w-96 md:shrink-0">
+                            <div className="flex items-center justify-between border-b border-gray-700 p-4">
+                                <h3 className="flex items-center gap-2 font-bold text-white"><Users className="h-4 w-4" /> Participants</h3>
+                                <button onClick={() => setShowParticipants(false)} className="text-gray-400 hover:text-white"><X className="h-4 w-4" /></button>
+                            </div>
+                            <div className="grid flex-1 auto-rows-min grid-cols-1 gap-3 overflow-y-auto p-4 sm:grid-cols-2 md:grid-cols-1">
+                                {participantCards.map((participant) => (
+                                    <button
+                                        key={participant.uid}
+                                        type="button"
+                                        onClick={() => participant.stream && setSelectedStageUserId(participant.uid)}
+                                        disabled={!participant.stream}
+                                        className={`overflow-hidden rounded-xl border bg-gray-800 text-left transition hover:border-primary-400 disabled:cursor-not-allowed disabled:opacity-70 ${selectedStageUserId === participant.uid ? 'border-primary-400 ring-2 ring-primary-500/70' : 'border-gray-700'}`}
+                                        title={participant.stream ? 'Show on main screen' : 'No video available'}
+                                    >
+                                        <div className="relative aspect-video bg-gray-950">
+                                            {participant.stream && participant.stream.getVideoTracks().some(track => track.enabled) ? (
+                                                <video
+                                                    ref={el => { if (el && el.srcObject !== participant.stream) el.srcObject = participant.stream!; }}
+                                                    autoPlay
+                                                    muted={participant.isLocal || isAudioMuted || selectedStageUserId === participant.uid}
+                                                    playsInline
+                                                    className={`h-full w-full object-cover ${participant.isLocal && !isScreenSharing ? 'scale-x-[-1]' : ''}`}
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center">
+                                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-900/50 text-xl font-black text-primary-200">
+                                                        {participant.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {participant.handRaised && (
+                                                <div className="absolute right-2 top-2 rounded-full bg-yellow-400 p-1 text-black">
+                                                    <Hand className="h-3.5 w-3.5" />
+                                                </div>
+                                            )}
+                                            {selectedStageUserId === participant.uid && (
+                                                <div className="absolute bottom-2 right-2 rounded bg-primary-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                                                    Main
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="absolute bottom-1 left-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white">
-                                            {peer.user?.name || `User ${uid}`}
+                                        <div className="flex items-center justify-between px-3 py-2">
+                                            <p className="truncate text-xs font-bold text-white">{participant.name}</p>
+                                            <span className="text-[10px] font-bold text-gray-400">{participant.stream ? 'Camera' : 'No camera'}</span>
                                         </div>
-                                    </div>
+                                    </button>
                                 ))}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     {/* Chat Sidebar */}
                     {showChat && (
-                        <div className="w-80 bg-gray-800 rounded-xl flex flex-col border border-gray-700 transition-all duration-300 z-40">
+                        <>
+                            <div
+                                className="hidden md:flex w-2 cursor-col-resize items-center justify-center rounded-full hover:bg-primary-500/20 transition-colors"
+                                onPointerDown={(event) => {
+                                    event.preventDefault();
+                                    setIsResizingChat(true);
+                                }}
+                                title="Drag to resize chat"
+                                role="separator"
+                                aria-orientation="vertical"
+                            >
+                                <div className="h-16 w-1 rounded-full bg-gray-600" />
+                            </div>
+                            <div
+                                className="fixed inset-x-3 bottom-24 top-16 z-40 flex flex-col rounded-xl border border-gray-700 bg-gray-900 shadow-2xl md:static md:inset-auto md:z-40 md:w-(--chat-width) md:shrink-0 md:bg-gray-800"
+                                style={{ '--chat-width': `${chatWidth}px` } as CSSProperties & Record<'--chat-width', string>}
+                            >
                             <div className="p-4 border-b border-gray-700 flex justify-between items-center">
                                 <h3 className="text-white font-medium flex gap-2"><MessageSquare className="w-4 h-4" /> Chat</h3>
                                 <button onClick={() => setShowChat(false)} className="text-gray-400 hover:text-white"><X className="w-4 h-4" /></button>
@@ -629,7 +916,7 @@ export const ClassroomDetailPage = () => {
                                 {messages.length === 0 ? <p className="text-center text-gray-500 text-sm mt-10">No messages</p> :
                                     messages.map(msg => (
                                         <div key={msg.id} className={`flex gap-3 ${msg.user_id === user?.id ? 'flex-row-reverse' : ''}`}>
-                                            <div className={`px-3 py-2 rounded-2xl text-sm break-words max-w-[85%] ${msg.user_id === user?.id ? 'bg-indigo-600' : 'bg-gray-700'} text-white`}>
+                                            <div className={`px-3 py-2 rounded-2xl text-sm wrap-break-word max-w-[85%] ${msg.user_id === user?.id ? 'bg-indigo-600' : 'bg-gray-700'} text-white`}>
                                                 <div className="text-[10px] opacity-75 mb-1">{msg.user?.full_name}</div>
                                                 {msg.message_text}
                                             </div>
@@ -640,57 +927,71 @@ export const ClassroomDetailPage = () => {
                             <div className="p-4 border-t border-gray-700">
                                 <form onSubmit={handleSendMessage} className="flex gap-2">
                                     <input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)} className="flex-1 bg-gray-700 text-white rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Type..." />
-                                    <Button type="submit" isLoading={sendingMsg} disabled={!newMessage.trim()} className="bg-indigo-600 p-2 rounded text-white hover:bg-indigo-700 disabled:opacity-50"><Send className="w-4 h-4" /></Button>
+                                    <button
+                                        type="submit"
+                                        disabled={sendingMsg || !newMessage.trim()}
+                                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600 text-white transition-colors hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        title={sendingMsg ? 'Sending...' : 'Send Message'}
+                                    >
+                                        {sendingMsg ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                                    </button>
                                 </form>
                             </div>
-                        </div>
+                            </div>
+                        </>
                     )}
                 </div>
 
                 {/* Controls */}
-                <div className="h-20 bg-gray-800 border-t border-gray-700 flex items-center justify-between px-4 sm:px-8 z-10">
+                <div className="min-h-24 bg-gray-900 border-t border-gray-800 flex items-center justify-between gap-3 px-3 sm:px-6 z-10">
                     <div className="text-white hidden lg:block max-w-[200px]">
                         <h2 className="font-bold text-sm truncate">{classroom.title}</h2>
                         <div className="flex gap-2 text-[10px] text-gray-400">
                             <span>Connected</span>
                         </div>
                     </div>
-                    <div className="flex gap-1.5 sm:gap-4 flex-1 justify-center">
-                        <Button onClick={toggleMic} variant={micOn ? 'secondary' : 'destructive'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg">
-                            {micOn ? <Mic className="w-4 h-4 sm:w-5 sm:h-5" /> : <MicOff className="w-4 h-4 sm:w-5 sm:h-5" />}
+                    <div className="flex gap-2 sm:gap-3 flex-1 justify-center overflow-x-auto py-2">
+                        <Button onClick={toggleMic} variant={micOn ? 'secondary' : 'destructive'} className={controlButtonClass} title={micOn ? 'Mic On' : 'Mic Off'}>
+                            {micOn ? <Mic className={controlIconClass} /> : <MicOff className={controlIconClass} />}
+                            <ControlTitle label={micOn ? 'Mic On' : 'Mic Off'} />
                         </Button>
-                        <Button onClick={toggleCamera} variant={cameraOn ? 'secondary' : 'destructive'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg">
-                            {cameraOn ? <Video className="w-4 h-4 sm:w-5 sm:h-5" /> : <VideoOff className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        <Button onClick={toggleCamera} variant={cameraOn ? 'secondary' : 'destructive'} className={controlButtonClass} title={cameraOn ? 'Camera On' : 'Camera Off'}>
+                            {cameraOn ? <Video className={controlIconClass} /> : <VideoOff className={controlIconClass} />}
+                            <ControlTitle label={cameraOn ? 'Camera On' : 'Camera Off'} />
                         </Button>
-                        <Button onClick={isScreenSharing ? stopScreenShare : startScreenShare} variant={isScreenSharing ? 'default' : 'secondary'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg">
-                            {isScreenSharing ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        <Button onClick={isScreenSharing ? stopScreenShare : startScreenShare} variant={isScreenSharing ? 'default' : 'secondary'} className={controlButtonClass} title={isScreenSharing ? 'Stop Share' : 'Share Screen'}>
+                            {isScreenSharing ? <X className={controlIconClass} /> : <Monitor className={controlIconClass} />}
+                            <ControlTitle label={isScreenSharing ? 'Stop Share' : 'Share Screen'} />
                         </Button>
-                        <Button onClick={toggleHandRaise} variant={handRaised ? 'default' : 'secondary'} className={`rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg ${handRaised ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-600' : ''}`}>
-                            <Hand className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Button onClick={toggleHandRaise} variant={handRaised ? 'default' : 'secondary'} className={`${controlButtonClass} ${handRaised ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-600 text-black' : ''}`} title={handRaised ? 'Lower Hand' : 'Raise Hand'}>
+                            <Hand className={controlIconClass} />
+                            <ControlTitle label={handRaised ? 'Lower Hand' : 'Raise Hand'} />
                         </Button>
                         <Button
                             onClick={() => setIsAudioMuted(!isAudioMuted)}
                             variant={isAudioMuted ? 'destructive' : 'secondary'}
-                            className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg"
+                            className={controlButtonClass}
+                            title={isAudioMuted ? 'Audio Muted' : 'Audio On'}
                         >
-                            {isAudioMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
+                            {isAudioMuted ? <VolumeX className={controlIconClass} /> : <Volume2 className={controlIconClass} />}
+                            <ControlTitle label={isAudioMuted ? 'Audio Muted' : 'Audio On'} />
                         </Button>
-                        <Button
-                            onClick={() => {
-                                navigator.clipboard.writeText(window.location.href);
-                                toast.success('Class link copied');
-                            }}
-                            variant="secondary"
-                            className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg"
-                        >
-                            <Copy className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Button onClick={() => setShowPulseMenu(prev => !prev)} variant={showPulseMenu ? 'default' : 'secondary'} className={controlButtonClass} title="Learning Pulse">
+                            <Sparkles className={controlIconClass} />
+                            <ControlTitle label="Learning Pulse" />
                         </Button>
-                        <Button onClick={() => setShowChat(!showChat)} variant={showChat ? 'default' : 'secondary'} className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg" title="Toggle Chat">
-                            <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Button onClick={() => setShowParticipants(!showParticipants)} variant={showParticipants ? 'default' : 'secondary'} className={controlButtonClass} title="Participants">
+                            <Users className={controlIconClass} />
+                            <ControlTitle label="Participants" />
+                        </Button>
+                        <Button onClick={() => setShowChat(!showChat)} variant={showChat ? 'default' : 'secondary'} className={controlButtonClass} title="Toggle Chat">
+                            <MessageSquare className={controlIconClass} />
+                            <ControlTitle label={showChat ? 'Hide Chat' : 'Chat'} />
                         </Button>
                         <div className="hidden sm:block w-px h-8 bg-gray-600 mx-1 self-center"></div>
-                        <Button onClick={handleLeave} variant="destructive" className="rounded-full w-9 h-9 sm:w-12 sm:h-12 p-0 shadow-lg hover:brightness-110">
-                            <PhoneOff className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Button onClick={handleLeave} variant="destructive" className={controlButtonClass} title="Leave">
+                            <PhoneOff className={controlIconClass} />
+                            <ControlTitle label="Leave" />
                         </Button>
                     </div>
                     <div className="flex items-center gap-4">
@@ -768,7 +1069,7 @@ export const ClassroomDetailPage = () => {
                 {/* Right Side: Action */}
                 <div className="p-8 md:p-12 w-full md:w-[380px] bg-gray-900/50 flex flex-col justify-center items-center text-center">
 
-                    <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20 transform rotate-3">
+                    <div className="w-24 h-24 bg-linear-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20 transform rotate-3">
                         <Video className="w-10 h-10 text-white" />
                     </div>
 

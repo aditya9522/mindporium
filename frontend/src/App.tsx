@@ -159,7 +159,7 @@ function App() {
               <Route path="/student/attendance" element={<StudentAttendancePage />} />
               <Route path="/tests" element={<StudentTestsPage />} />
               <Route path="/test/:id/take" element={<TakeTestPage />} />
-              <Route path="/career" element={<Navigate to="/career/overview" replace />} />
+              <Route path="/career" element={<Navigate to="/career/job-search" replace />} />
               <Route path="/career/:tab" element={<CareerWorkspacePage />} />
               <Route path="/resume-builder" element={<Navigate to="/career/resume-builder" replace />} />
             </Route>

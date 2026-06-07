@@ -106,7 +106,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300" role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-100 p-4 animate-in fade-in duration-300" role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title">
             <div className="bg-white dark:bg-gray-900 rounded-3xl w-full max-w-md p-8 shadow-2xl animate-in zoom-in-95 duration-300 relative border border-gray-100 dark:border-gray-800 transition-colors">
                 <button
                     onClick={onClose}

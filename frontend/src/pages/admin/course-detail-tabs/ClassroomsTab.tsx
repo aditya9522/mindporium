@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Video, Calendar, Clock, CheckCircle, Users, Plus, Edit, Trash2, X, Loader2, Copy } from 'lucide-react';
+import { Video, Calendar, Clock, CheckCircle, Users, Plus, Edit, Trash2, X, Loader2 } from 'lucide-react';
 import api from '../../../lib/axios';
 import { classroomService } from '../../../services/classroom.service';
 import { subjectService } from '../../../services/subject.service';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 import { format } from 'date-fns';
+import { useAuthStore } from '../../../store/auth.store';
 
 interface ClassroomsTabProps {
     courseData: any;
 }
 
 export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
+    const { user } = useAuthStore();
     const [classrooms, setClassrooms] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; classroomId: number | null; title: string }>({
@@ -35,6 +37,7 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
     });
     const [saving, setSaving] = useState(false);
     const [subjects, setSubjects] = useState<any[]>([]);
+    const canManageClassroom = (classroom: any) => user?.role === 'admin' || Number(classroom.instructor_id) === Number(user?.id);
 
     useEffect(() => {
         if (courseData?.course?.id) {
@@ -158,6 +161,12 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
 
     const handleDelete = async () => {
         if (!deleteModal.classroomId) return;
+        const classroom = classrooms.find(c => c.id === deleteModal.classroomId);
+        if (!classroom || !canManageClassroom(classroom)) {
+            toast.error('Only the class instructor can delete this class');
+            setDeleteModal({ isOpen: false, classroomId: null, title: '' });
+            return;
+        }
         setDeleting(true);
         try {
             await classroomService.deleteClassroom(deleteModal.classroomId);
@@ -307,27 +316,18 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <button
-                                            onClick={() => {
-                                                const url = `${window.location.origin}/classroom/${classroom.id}`;
-                                                navigator.clipboard.writeText(url);
-                                                toast.success('Class link copied');
-                                            }}
-                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
-                                            title="Copy Class Link"
-                                        >
-                                            <Copy className="w-4 h-4" />
-                                        </button>
-                                        <button
                                             onClick={() => openEditModal(classroom)}
-                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-                                            title="Edit Class"
+                                            disabled={!canManageClassroom(classroom)}
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                                            title={canManageClassroom(classroom) ? 'Edit Class' : 'Only the class instructor can edit this class'}
                                         >
                                             <Edit className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => setDeleteModal({ isOpen: true, classroomId: classroom.id, title: classroom.title })}
-                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                                            title="Delete Class"
+                                            disabled={!canManageClassroom(classroom)}
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                                            title={canManageClassroom(classroom) ? 'Delete Class' : 'Only the class instructor can delete this class'}
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>

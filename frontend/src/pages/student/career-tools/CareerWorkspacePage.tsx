@@ -1,21 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-    Award,
-    BookOpen,
     Bot,
     BriefcaseBusiness,
-    CheckCircle2,
-    Clock3,
-    Compass,
     ExternalLink,
     FileText,
     Globe2,
-    GraduationCap,
-    LayoutDashboard,
     Search,
     Send,
-    Sparkles,
     Target,
     Trash2,
     Eye,
@@ -26,13 +18,12 @@ import { Button } from '../../../components/ui/Button';
 import { ResumeBuilderPage } from '../resume-builder/ResumeBuilderPage';
 import { AIInterviewSimulatorPage } from './AIInterviewSimulatorPage';
 import { PortfolioBuilderPage } from './PortfolioBuilderPage';
-import { getResumeDraft } from './utils';
 import { careerToolsService, type JobSearchExperience, type JobSearchResult } from '../../../services/career-tools.service';
 
 const CAREER_PROFILE_KEY = 'mindporium_career_profile';
 const JOB_APPLICATIONS_KEY = 'mindporium_job_applications';
 
-type CareerTab = 'overview' | 'career-selection' | 'skill-improvement' | 'resume-builder' | 'job-search' | 'interview-simulator' | 'portfolio-builder';
+type CareerTab = 'resume-builder' | 'job-search' | 'interview-simulator' | 'portfolio-builder';
 
 interface CareerProfile {
     targetRole: string;
@@ -64,27 +55,10 @@ const defaultProfile: CareerProfile = {
 };
 
 const tabs: { id: CareerTab; label: string; description: string; icon: React.ElementType; badge?: string }[] = [
-    { id: 'overview', label: 'Command Center', description: 'Roadmap, readiness, and next actions', icon: LayoutDashboard },
-    { id: 'career-selection', label: 'Career Path', description: 'Choose a realistic target path', icon: Compass },
-    { id: 'skill-improvement', label: 'Skill Growth', description: 'Courses and weekly skill plan', icon: BookOpen },
     { id: 'resume-builder', label: 'Resume Studio', description: 'ATS resume and job tailoring', icon: FileText },
     { id: 'job-search', label: 'Job Search', description: 'Find current openings from the web', icon: Search },
     { id: 'interview-simulator', label: 'AI Interview', description: 'Voice mock interview and feedback', icon: Bot, badge: 'AI' },
     { id: 'portfolio-builder', label: 'Portfolio Studio', description: 'Public project portfolio', icon: Globe2, badge: 'AI' },
-];
-
-const careerPaths = [
-    { role: 'Frontend Developer', demand: 'High', fit: 'UI logic, React, accessibility', starter: 'React, TypeScript, testing, API integration' },
-    { role: 'Backend Developer', demand: 'High', fit: 'APIs, databases, system design', starter: 'Node/FastAPI, SQL, auth, deployment' },
-    { role: 'Data Analyst', demand: 'High', fit: 'Insights, dashboards, reporting', starter: 'SQL, Excel, Python, BI dashboards' },
-    { role: 'AI Engineer', demand: 'Emerging', fit: 'LLM apps, RAG, model integration', starter: 'Python, vectors, agents, evaluation' },
-    { role: 'Product Designer', demand: 'Steady', fit: 'UX, research, prototyping', starter: 'Figma, UX writing, usability testing' },
-];
-
-const skillTracks = [
-    { title: 'Foundation', items: ['Core programming refresh', 'Git workflow', 'Debugging discipline'], link: '/courses?search=programming' },
-    { title: 'Role Skills', items: ['Role-specific projects', 'Framework depth', 'Testing and documentation'], link: '/courses' },
-    { title: 'Hiring Proof', items: ['Portfolio case study', 'Resume metrics', 'Interview stories'], link: '/career/portfolio-builder' },
 ];
 
 const experienceOptions: { value: JobSearchExperience; label: string }[] = [
@@ -110,47 +84,11 @@ const loadJson = <T,>(key: string, fallback: T): T => {
     }
 };
 
-const getCareerSnapshot = () => {
-    const profile = loadJson<CareerProfile>(CAREER_PROFILE_KEY, defaultProfile);
-    const resume = getResumeDraft();
-    const readinessItems = [
-        { label: 'Career profile', done: Boolean(profile.targetRole) },
-        { label: 'Resume contact', done: Boolean(resume.personalInfo.email) },
-        { label: 'Portfolio ready', done: false },
-        { label: 'Interview practice', done: false },
-    ];
-
-    return { profile, readinessItems };
-};
-
-const useCareerSnapshot = () => {
-    const [snapshot, setSnapshot] = useState(() => getCareerSnapshot());
-    const [now, setNow] = useState(() => new Date());
-
-    useEffect(() => {
-        const refresh = () => setSnapshot(getCareerSnapshot());
-        const interval = window.setInterval(() => {
-            refresh();
-            setNow(new Date());
-        }, 5000);
-
-        window.addEventListener('storage', refresh);
-        window.addEventListener('focus', refresh);
-        return () => {
-            window.clearInterval(interval);
-            window.removeEventListener('storage', refresh);
-            window.removeEventListener('focus', refresh);
-        };
-    }, []);
-
-    return { ...snapshot, now };
-};
-
 export const CareerWorkspacePage = () => {
     const { tab } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const activeTab = (tab ?? 'overview') as CareerTab;
+    const activeTab = (tab ?? 'job-search') as CareerTab;
     const [compactNav, setCompactNav] = useState<boolean>(() => {
         try {
             return JSON.parse(localStorage.getItem('mindporium_career_sidebar_compact') ?? 'false');
@@ -164,7 +102,7 @@ export const CareerWorkspacePage = () => {
     }, [compactNav]);
 
     if (!tabs.some((item) => item.id === activeTab)) {
-        return <Navigate to="/career/overview" replace />;
+        return <Navigate to="/career/job-search" replace />;
     }
 
     const title = tabs.find((item) => item.id === activeTab)?.label ?? 'Career Workspace';
@@ -180,7 +118,7 @@ export const CareerWorkspacePage = () => {
                         </div>
                         <h1 className="mt-3 text-2xl font-bold text-gray-950 dark:text-white">Career Workspace</h1>
                         <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600 dark:text-gray-400">
-                            One workspace for choosing a career path, improving skills with courses, preparing job materials, practicing interviews, applying to roles, and publishing a portfolio.
+                            A focused hiring workspace for preparing job materials, searching current roles, practicing interviews, and publishing a portfolio.
                         </p>
                     </div>
                     <div className="border-t border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950/50 xl:border-l xl:border-t-0">
@@ -235,9 +173,6 @@ export const CareerWorkspacePage = () => {
                 </aside>
 
                 <main className="min-w-0">
-                    {activeTab === 'overview' && <CareerOverview />}
-                    {activeTab === 'career-selection' && <CareerSelection />}
-                    {activeTab === 'skill-improvement' && <SkillImprovement />}
                     {activeTab === 'resume-builder' && <EmbeddedFeature path={location.pathname}><ResumeBuilderPage embedded /></EmbeddedFeature>}
                     {activeTab === 'job-search' && <JobSearchTool />}
                     {activeTab === 'interview-simulator' && <AIInterviewSimulatorPage />}
@@ -247,202 +182,6 @@ export const CareerWorkspacePage = () => {
         </div>
     );
 };
-
-const CareerOverview = () => {
-    const { profile, readinessItems, now } = useCareerSnapshot();
-    const [portfolioCount, setPortfolioCount] = useState(0);
-    const liveReadinessItems = readinessItems.map((item) => (
-        item.label === 'Portfolio ready' ? { ...item, done: portfolioCount > 0 } : item
-    ));
-    const readiness = liveReadinessItems.filter((item) => item.done).length;
-    const readinessPercent = Math.round((readiness / liveReadinessItems.length) * 100);
-    const workspaceSteps = [
-        { label: 'Profile', value: profile.targetRole ? 100 : 30, color: 'bg-emerald-500' },
-        { label: 'Resume', value: readinessItems[1]?.done ? 100 : 35, color: 'bg-sky-500' },
-        { label: 'Portfolio', value: Math.min(100, portfolioCount * 50), color: 'bg-primary-500' },
-        { label: 'Interview', value: 25, color: 'bg-amber-500' },
-    ];
-
-    useEffect(() => {
-        careerToolsService.listMyPortfolios()
-            .then((items) => setPortfolioCount(items.length))
-            .catch(() => setPortfolioCount(0));
-    }, []);
-
-    return (
-        <div className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-4">
-                <MetricCard label="Readiness" value={`${readiness}/4`} note="Profile, resume, portfolio, interview" />
-                <MetricCard label="Target Role" value={profile.targetRole || 'Unset'} note={profile.targetIndustry || 'Pick a focused market'} />
-                <MetricCard label="Portfolios" value={String(portfolioCount)} note="Public links stored on server" />
-                <MetricCard label="Live Check" value={now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} note="Workspace state refreshed" />
-            </div>
-            <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)_320px]">
-                <section className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-                    <p className="text-xs font-bold uppercase text-gray-500">Career Readiness</p>
-                    <div className="relative mx-auto mt-5 h-44 w-44 rounded-full" style={{ background: `conic-gradient(#6366f1 ${readinessPercent * 3.6}deg, #e5e7eb 0deg)` }}>
-                        <div className="absolute inset-4 flex flex-col items-center justify-center rounded-full bg-white dark:bg-gray-900">
-                            <span className="text-4xl font-black text-gray-950 dark:text-white">{readinessPercent}%</span>
-                            <span className="text-xs font-bold uppercase text-gray-400">Ready</span>
-                        </div>
-                    </div>
-                    <p className="mt-4 text-center text-xs text-gray-500">Circle updates from your profile, resume, portfolio, and practice readiness.</p>
-                </section>
-
-                <section className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-                    <div className="flex items-center justify-between gap-3">
-                        <div>
-                            <p className="text-xs font-bold uppercase text-gray-500">Workspace Progress</p>
-                            <h3 className="mt-1 text-xl font-bold text-gray-950 dark:text-white">Hiring Assets</h3>
-                        </div>
-                        <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-bold text-primary-700 dark:bg-primary-950 dark:text-primary-300">Live</span>
-                    </div>
-                    <div className="mt-6 grid gap-4 sm:grid-cols-4">
-                        {workspaceSteps.map((step) => (
-                                <div key={step.label} className="flex flex-col items-center gap-2">
-                                    <div className="flex h-32 w-full items-end rounded-xl bg-gray-50 p-2 dark:bg-gray-800">
-                                        <div className={`w-full rounded-lg ${step.color} transition-all`} style={{ height: `${Math.max(18, step.value)}%` }} />
-                                    </div>
-                                    <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{step.label}</span>
-                                    <span className="text-lg font-black text-gray-950 dark:text-white">{step.value}%</span>
-                                </div>
-                            ))}
-                    </div>
-                </section>
-
-                <section className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-                    <p className="text-xs font-bold uppercase text-gray-500">Proof Assets</p>
-                    <div className="mt-5 space-y-4">
-                        <ProofAsset label="Resume Contact" value={readinessItems[1]?.done ? 100 : 25} color="bg-emerald-500" />
-                        <ProofAsset label="Portfolio Links" value={Math.min(100, portfolioCount * 50)} color="bg-primary-500" />
-                        <ProofAsset label="Interview Practice" value={25} color="bg-amber-500" />
-                    </div>
-                    <div className="mt-6 rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
-                        <p className="text-sm font-bold text-gray-950 dark:text-white">{portfolioCount} portfolios published</p>
-                        <p className="mt-1 text-xs text-gray-500">Publish links from Portfolio Studio and share them across devices.</p>
-                    </div>
-                </section>
-            </div>
-            <InfoPanel title="Live Readiness Monitor" icon={<Clock3 className="h-5 w-5" />}>
-                <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                    <div className="h-full bg-primary-600 transition-all" style={{ width: `${readinessPercent}%` }} />
-                </div>
-                <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                    {liveReadinessItems.map((item) => (
-                        <div key={item.label} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm dark:bg-gray-800">
-                            <CheckCircle2 className={`h-4 w-4 ${item.done ? 'text-emerald-500' : 'text-gray-300'}`} />
-                            <span className={item.done ? 'text-gray-800 dark:text-gray-200' : 'text-gray-500'}>{item.label}</span>
-                        </div>
-                    ))}
-                </div>
-                <p className="mt-3 text-xs text-gray-500">This dashboard refreshes automatically while you work across resume, portfolio, interview, and application tabs.</p>
-            </InfoPanel>
-            <InfoPanel title="Recommended Next Actions" icon={<Sparkles className="h-5 w-5" />}>
-                <ActionList items={[
-                    'Choose one target role before applying. Recruiters read focus as confidence.',
-                    'Use Skill Improvement to select courses and close only the gaps required by your target role.',
-                    'Tailor your resume for each serious job application before submitting.',
-                    'Practice the first five interview questions aloud and review the AI feedback before applying widely.',
-                ]} />
-            </InfoPanel>
-            <div className="grid gap-6 lg:grid-cols-2">
-                <WorkflowCard title="Build Proof" icon={<Award className="h-5 w-5" />} links={[
-                    ['Create resume', '/career/resume-builder'],
-                    ['Generate portfolio', '/career/portfolio-builder'],
-                    ['Browse courses', '/career/skill-improvement'],
-                ]} />
-                <WorkflowCard title="Get Hired" icon={<Target className="h-5 w-5" />} links={[
-                    ['Search jobs', '/career/job-search'],
-                    ['Practice interview', '/career/interview-simulator'],
-                ]} />
-            </div>
-        </div>
-    );
-};
-
-const CareerSelection = () => {
-    const [profile, setProfile] = useState<CareerProfile>(() => loadJson(CAREER_PROFILE_KEY, defaultProfile));
-    const [saveState, setSaveState] = useState<'saved' | 'saving'>('saved');
-
-    useEffect(() => {
-        setSaveState('saving');
-        const timeout = window.setTimeout(() => {
-            localStorage.setItem(CAREER_PROFILE_KEY, JSON.stringify({ ...profile, updatedAt: new Date().toISOString() }));
-            setSaveState('saved');
-        }, 450);
-
-        return () => window.clearTimeout(timeout);
-    }, [profile]);
-
-    return (
-        <div className="space-y-6">
-            <InfoPanel title="Career Selection" icon={<Compass className="h-5 w-5" />}>
-                <p className="text-sm leading-6 text-gray-600 dark:text-gray-400">
-                    Pick a role by matching interest, proof you can show, market demand, and time available. Avoid applying to five unrelated roles with one generic resume.
-                </p>
-            </InfoPanel>
-            <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-                <div className="grid gap-4">
-                    {careerPaths.map((path) => (
-                        <button key={path.role} type="button" onClick={() => setProfile((current) => ({ ...current, targetRole: path.role }))} className="rounded-lg border border-gray-200 bg-white p-5 text-left transition hover:border-primary-200 hover:shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <h3 className="text-lg font-bold text-gray-950 dark:text-white">{path.role}</h3>
-                                    <p className="mt-1 text-sm text-gray-500">{path.fit}</p>
-                                </div>
-                                <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">{path.demand}</span>
-                            </div>
-                            <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Starter stack: {path.starter}</p>
-                        </button>
-                    ))}
-                </div>
-                <div className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-                    <div className="flex items-center justify-between gap-3">
-                        <h3 className="text-lg font-bold text-gray-950 dark:text-white">Career Profile</h3>
-                        <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-bold text-gray-500 dark:bg-gray-800">
-                            {saveState === 'saving' ? 'Saving...' : 'Saved'}
-                        </span>
-                    </div>
-                    <div className="mt-4 space-y-3">
-                        <CareerInput label="Target Role" value={profile.targetRole} onChange={(value) => setProfile({ ...profile, targetRole: value })} />
-                        <CareerInput label="Industry" value={profile.targetIndustry} onChange={(value) => setProfile({ ...profile, targetIndustry: value })} placeholder="Fintech, EdTech, SaaS..." />
-                        <CareerInput label="Experience Level" value={profile.experienceLevel} onChange={(value) => setProfile({ ...profile, experienceLevel: value })} />
-                        <CareerInput label="Weekly Hours" value={profile.weeklyHours} onChange={(value) => setProfile({ ...profile, weeklyHours: value })} />
-                        <CareerTextArea label="Strengths" value={profile.strengths} onChange={(value) => setProfile({ ...profile, strengths: value })} />
-                        <CareerTextArea label="Skill Gaps" value={profile.gaps} onChange={(value) => setProfile({ ...profile, gaps: value })} />
-                        <p className="text-xs text-gray-500">Autosaves as you type, so the dashboard and job tools stay in sync.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const SkillImprovement = () => (
-    <div className="space-y-6">
-        <InfoPanel title="Skill Improvement Plan" icon={<BookOpen className="h-5 w-5" />}>
-            <p className="text-sm leading-6 text-gray-600 dark:text-gray-400">Learn in hiring loops: study one concept, build one proof artifact, publish or document it, then practice explaining tradeoffs.</p>
-        </InfoPanel>
-        <div className="grid gap-5 lg:grid-cols-3">
-            {skillTracks.map((track) => (
-                <div key={track.title} className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-                    <h3 className="text-lg font-bold text-gray-950 dark:text-white">{track.title}</h3>
-                    <ActionList items={track.items} />
-                    <Button asChild variant="outline" className="mt-5 w-full gap-2">
-                        <Link to={track.link}>Open Learning Path <ExternalLink className="h-4 w-4" /></Link>
-                    </Button>
-                </div>
-            ))}
-        </div>
-        <InfoPanel title="Course Recommendation Rule" icon={<GraduationCap className="h-5 w-5" />}>
-            <ActionList items={[
-                'Choose courses that end with a project, not only passive video watching.',
-                'For every two hours of learning, spend at least one hour applying it to your portfolio or resume.',
-                'Stop adding courses once you can prove the skill with a small shipped artifact.',
-            ]} />
-        </InfoPanel>
-    </div>
-);
 
 const JobSearchTool = () => {
     const profile = loadJson<CareerProfile>(CAREER_PROFILE_KEY, defaultProfile);
@@ -635,18 +374,6 @@ const MetricCard = ({ label, value, note }: { label: string; value: string; note
     </div>
 );
 
-const ProofAsset = ({ label, value, color }: { label: string; value: number; color: string }) => (
-    <div>
-        <div className="mb-1 flex items-center justify-between gap-3">
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{label}</span>
-            <span className="text-xs font-bold text-gray-400">{value}%</span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-            <div className={`h-full rounded-full ${color} transition-all`} style={{ width: `${value}%` }} />
-        </div>
-    </div>
-);
-
 const formatRelativeTime = (value?: string) => {
     if (!value) return 'just now';
     const timestamp = new Date(value).getTime();
@@ -669,34 +396,6 @@ const InfoPanel = ({ title, icon, children }: { title: string; icon: React.React
     </section>
 );
 
-const ActionList = ({ items }: { items: string[] }) => (
-    <ul className="space-y-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
-        {items.map((item) => (
-            <li key={item} className="flex gap-2">
-                <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-500" />
-                <span>{item}</span>
-            </li>
-        ))}
-    </ul>
-);
-
-const WorkflowCard = ({ title, icon, links }: { title: string; icon: React.ReactNode; links: [string, string][] }) => (
-    <div className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-        <div className="flex items-center gap-2 text-primary-600 dark:text-primary-300">
-            {icon}
-            <h3 className="text-lg font-bold text-gray-950 dark:text-white">{title}</h3>
-        </div>
-        <div className="mt-4 grid gap-2">
-            {links.map(([label, href]) => (
-                <Link key={href} to={href} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:text-primary-600 dark:bg-gray-800 dark:text-gray-300">
-                    {label}
-                    <ExternalLink className="h-4 w-4" />
-                </Link>
-            ))}
-        </div>
-    </div>
-);
-
 const CareerInput = ({ label, value, onChange, placeholder, required = false }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; required?: boolean }) => (
     <label className="block">
         <span className="mb-1 block text-xs font-bold uppercase text-gray-500">{label}{required && <span className="text-red-500"> *</span>}</span>
@@ -704,9 +403,3 @@ const CareerInput = ({ label, value, onChange, placeholder, required = false }: 
     </label>
 );
 
-const CareerTextArea = ({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) => (
-    <label className="block">
-        <span className="mb-1 block text-xs font-bold uppercase text-gray-500">{label}</span>
-        <textarea value={value} onChange={(event) => onChange(event.target.value)} rows={4} className="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800" />
-    </label>
-);

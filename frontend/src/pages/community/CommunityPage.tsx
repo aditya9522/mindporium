@@ -8,8 +8,6 @@ import toast from 'react-hot-toast';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { useAuthStore } from '../../store/auth.store';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
-import { VoiceInput } from '../../components/ui/VoiceInput';
-import { SpeakerButton } from '../../components/ui/SpeakerButton';
 
 export const CommunityPage = () => {
     const { user } = useAuthStore();
@@ -161,13 +159,6 @@ export const CommunityPage = () => {
                             className="w-full pl-12 pr-4 py-3 bg-transparent border-none focus:ring-0 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 font-medium text-lg outline-none"
                         />
                     </form>
-                    <div className="pr-4">
-                        <VoiceInput onResult={(text) => {
-                            setSearchTerm(text);
-                            // Optionally trigger search immediately
-                            communityService.getCommunities(text).then(setCommunities);
-                        }} />
-                    </div>
                 </div>
 
                 {/* Grid */}
@@ -204,10 +195,10 @@ export const CommunityPage = () => {
                                 {/* Edit/Delete Overlay */}
                                 {(user?.role === 'admin' || user?.id == community.created_by) && (
                                     <div className="absolute top-3 right-12 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-30 pointer-events-none">
-                                        <div className="flex bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-sm border border-gray-100 dark:border-gray-700 rounded-lg p-1 pointer-events-auto">
+                                        <div className="flex bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border border-gray-100 dark:border-gray-700 rounded-lg p-1 pointer-events-auto">
                                             <button
                                                 onClick={(e) => handleEditClick(e, community)}
-                                                className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-md transition-colors"
+                                                className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-md transition-colors"
                                                 title="Edit Community"
                                             >
                                                 <Edit className="w-4 h-4" />
@@ -215,7 +206,7 @@ export const CommunityPage = () => {
                                             <div className="w-px bg-gray-200 dark:bg-gray-700 my-1 mx-1"></div>
                                             <button
                                                 onClick={(e) => handleDeleteClick(e, community)}
-                                                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-colors"
+                                                className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-colors"
                                                 title="Delete Community"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -223,9 +214,6 @@ export const CommunityPage = () => {
                                         </div>
                                     </div>
                                 )}
-                                <div className="absolute top-3 right-3 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <SpeakerButton text={`${community.name}. ${community.description}`} />
-                                </div>
 
                                 <Link
                                     to={`/community/${community.id}`}
@@ -340,10 +328,7 @@ export const CommunityPage = () => {
                                         />
                                     </div>
                                     <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">Description <span className="text-red-500">*</span></label>
-                                            <VoiceInput onResult={(text) => setNewCommunityDesc(prev => prev + ' ' + text)} />
-                                        </div>
+                                        <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">Description <span className="text-red-500">*</span></label>
                                         <textarea
                                             required
                                             value={newCommunityDesc}

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import type { User, LoginCredentials, RegisterData } from '../types/auth';
 import { authService } from '../services/auth.service';
 
@@ -32,8 +32,8 @@ export const useAuthStore = create<AuthState>()(
                 set({ isLoading: true, error: null });
                 try {
                     const response = await authService.login(credentials);
-                    localStorage.setItem('token', response.access_token);
-                    localStorage.setItem('refresh_token', response.refresh_token);
+                    sessionStorage.setItem('token', response.access_token);
+                    sessionStorage.setItem('refresh_token', response.refresh_token);
 
                     // Fetch user details immediately after login
                     const user = await authService.getCurrentUser();
@@ -87,7 +87,7 @@ export const useAuthStore = create<AuthState>()(
             },
 
             checkAuth: async () => {
-                const token = localStorage.getItem('token');
+                const token = sessionStorage.getItem('token');
                 if (!token) {
                     set({ isAuthenticated: false, user: null, token: null, isLoading: false });
                     return;
@@ -119,6 +119,7 @@ export const useAuthStore = create<AuthState>()(
         }),
         {
             name: 'auth-storage',
+            storage: createJSONStorage(() => sessionStorage),
             partialize: (state) => ({
                 token: state.token,
                 user: state.user,

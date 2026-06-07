@@ -69,6 +69,7 @@ export interface JobSearchResult {
     location: string;
     experience: JobSearchExperience;
     generatedAt: string;
+    warning?: string;
     jobs: {
         id: string;
         title: string;

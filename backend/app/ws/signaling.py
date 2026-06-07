@@ -66,6 +66,9 @@ async def websocket_endpoint(
                 
             elif message_type == "hand_raise":
                 await manager.broadcast_to_room(classroom_id, data, exclude_user=user_id)
+                
+            elif message_type in ["learning_pulse", "screen_share_state", "class_ended"]:
+                await manager.broadcast_to_room(classroom_id, data, exclude_user=user_id)
 
     except WebSocketDisconnect:
         if user_id:

@@ -4,12 +4,14 @@ import { announcementService } from '../../../services/announcement.service';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../../components/common/DeleteConfirmationModal';
 import { format } from 'date-fns';
+import { useAuthStore } from '../../../store/auth.store';
 
 interface AnnouncementsTabProps {
     courseData: any;
 }
 
 export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
+    const { user } = useAuthStore();
     const [announcements, setAnnouncements] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; announcementId: number | null; title: string }>({
@@ -29,6 +31,7 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
         is_pinned: false
     });
     const [saving, setSaving] = useState(false);
+    const canManageAnnouncement = (announcement: any) => user?.role === 'admin' || Number(announcement.created_by) === Number(user?.id);
 
     useEffect(() => {
         if (courseData?.course?.id) {
@@ -50,6 +53,12 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
 
     const handleDelete = async () => {
         if (!deleteModal.announcementId) return;
+        const announcement = announcements.find(a => a.id === deleteModal.announcementId);
+        if (!announcement || !canManageAnnouncement(announcement)) {
+            toast.error('Only the announcement creator can delete this announcement');
+            setDeleteModal({ isOpen: false, announcementId: null, title: '' });
+            return;
+        }
         setDeleting(true);
         try {
             await announcementService.deleteAnnouncement(deleteModal.announcementId);
@@ -207,15 +216,17 @@ export const AnnouncementsTab = ({ courseData }: AnnouncementsTabProps) => {
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => openEditModal(announcement)}
-                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-                                            title="Edit Announcement"
+                                            disabled={!canManageAnnouncement(announcement)}
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                                            title={canManageAnnouncement(announcement) ? 'Edit Announcement' : 'Only the creator can edit this announcement'}
                                         >
                                             <Edit className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => setDeleteModal({ isOpen: true, announcementId: announcement.id, title: announcement.title })}
-                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                                            title="Delete Announcement"
+                                            disabled={!canManageAnnouncement(announcement)}
+                                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                                            title={canManageAnnouncement(announcement) ? 'Delete Announcement' : 'Only the creator can delete this announcement'}
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>

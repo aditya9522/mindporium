@@ -13,26 +13,26 @@ interface StatsCardProps {
 
 export const StatsCard = ({ title, value, icon: Icon, trend, color = 'blue' }: StatsCardProps) => {
     const colorClasses = {
-        blue: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
-        green: 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400',
-        purple: 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
-        orange: 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400',
+        blue: 'from-sky-500 to-blue-600',
+        green: 'from-emerald-500 to-teal-600',
+        purple: 'from-fuchsia-500 to-violet-600',
+        orange: 'from-amber-500 to-orange-600',
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 hover:shadow-md transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 rounded-lg ${colorClasses[color]} flex items-center justify-center`}>
-                    <Icon className="w-6 h-6" />
+        <div className="group overflow-hidden rounded-3xl border border-gray-100 bg-white p-6 shadow-[0_2px_15px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:border-gray-800 dark:bg-gray-900">
+            <div className="mb-5 flex items-center justify-between">
+                <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br ${colorClasses[color]} shadow-lg transition-transform group-hover:scale-110`}>
+                    <Icon className="h-7 w-7 text-white" />
                 </div>
                 {trend && (
-                    <span className={`text-sm font-medium ${trend.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-black ${trend.isPositive ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300'}`}>
                         {trend.isPositive ? '+' : ''}{trend.value}%
                     </span>
                 )}
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{value}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">{title}</p>
+            <h3 className="text-3xl font-black text-gray-950 dark:text-white">{value}</h3>
         </div>
     );
 };

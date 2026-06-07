@@ -58,6 +58,7 @@ export const ClassroomListPage = () => {
     const [deleting, setDeleting] = useState(false);
 
     const isInstructor = user?.role === 'instructor' || user?.role === 'admin';
+    const canManageClassroom = (classroom: Classroom) => user?.role === 'admin' || Number(classroom.instructor_id) === Number(user?.id);
 
     useEffect(() => {
         initializePage();
@@ -273,6 +274,11 @@ export const ClassroomListPage = () => {
 
     const handleDelete = async () => {
         if (!deleteModal.classroom || deleting) return;
+        if (!canManageClassroom(deleteModal.classroom)) {
+            toast.error('Only the class instructor can delete this class');
+            setDeleteModal({ isOpen: false, classroom: null });
+            return;
+        }
         setDeleting(true);
         try {
             await classroomService.deleteClassroom(deleteModal.classroom.id);
@@ -403,19 +409,21 @@ export const ClassroomListPage = () => {
 
                                             {isInstructor && (
                                                 <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
-                                                    <div className="flex bg-white/90 backdrop-blur-sm shadow-sm border border-gray-100 rounded-lg p-1">
+                                                    <div className="flex bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border border-gray-100 dark:border-gray-700 rounded-lg p-1">
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); openEditModal(classroom); }}
-                                                            className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
-                                                            title="Edit Class"
+                                                            disabled={!canManageClassroom(classroom)}
+                                                            className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-gray-500 disabled:hover:bg-transparent"
+                                                            title={canManageClassroom(classroom) ? 'Edit Class' : 'Only the class instructor can edit this class'}
                                                         >
                                                             <Edit className="w-4 h-4" />
                                                         </button>
-                                                        <div className="w-px bg-gray-200 my-1 mx-1"></div>
+                                                        <div className="w-px bg-gray-200 dark:bg-gray-700 my-1 mx-1"></div>
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); setDeleteModal({ isOpen: true, classroom }); }}
-                                                            className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                                                            title="Cancel Class"
+                                                            disabled={!canManageClassroom(classroom)}
+                                                            className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-gray-500 disabled:hover:bg-transparent"
+                                                            title={canManageClassroom(classroom) ? 'Cancel Class' : 'Only the class instructor can cancel this class'}
                                                         >
                                                             <Trash2 className="w-4 h-4" />
                                                         </button>

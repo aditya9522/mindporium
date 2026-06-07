@@ -102,7 +102,7 @@ export const InstructorAttendancePage = () => {
                 <div className="w-full space-y-8">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                         <div>
-                            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 tracking-tight">
+                            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 tracking-tight">
                                 Classroom Attendance
                             </h1>
                             <p className="text-lg text-gray-500 dark:text-gray-400 font-medium mt-2">
@@ -129,7 +129,7 @@ export const InstructorAttendancePage = () => {
 
                     {/* Context Card */}
                     {activeClassroom?.subject && (
-                        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 p-8 shadow-2xl group">
+                        <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-indigo-900 via-purple-900 to-slate-900 p-8 shadow-2xl group">
                             <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 opacity-20 group-hover:opacity-30 transition-opacity duration-700">
                                 <BookOpen className="w-96 h-96 text-white blur-3xl" />
                             </div>
@@ -168,7 +168,7 @@ export const InstructorAttendancePage = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+                    <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 dark:border-gray-800 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
@@ -198,7 +198,7 @@ export const InstructorAttendancePage = () => {
                                                         <Search className="w-8 h-8 text-gray-300" />
                                                     </div>
                                                     <p className="text-gray-900 font-semibold text-lg mb-1">No records found</p>
-                                                    <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">{searchQuery ? 'Try adjusting your search terms' : 'No attendance recorded for this session yet'}</p>
+                                                    <p className="text-gray-500 dark:text-gray-400">{searchQuery ? 'Try adjusting your search terms' : 'No attendance recorded for this session yet'}</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -210,7 +210,7 @@ export const InstructorAttendancePage = () => {
                                                         {record.user?.photo ? (
                                                             <img src={getImageUrl(record.user.photo)} alt={record.user.full_name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 shadow-sm" />
                                                         ) : (
-                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold text-sm ring-2 ring-white dark:ring-gray-800 shadow-sm">
+                                                            <div className="w-10 h-10 rounded-full bg-linear-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold text-sm ring-2 ring-white dark:ring-gray-800 shadow-sm">
                                                                 {record.user?.full_name?.charAt(0).toUpperCase() || '?'}
                                                             </div>
                                                         )}

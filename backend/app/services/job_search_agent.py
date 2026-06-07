@@ -2,6 +2,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from html import unescape
+from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, quote_plus, unquote, urlparse
 from urllib.request import Request, urlopen
 
@@ -25,7 +26,10 @@ class JobSearchAgent:
         jobs: list[dict[str, str]] = []
         seen: set[str] = set()
         for search_url in self._build_search_urls(criteria):
-            html = self._read_text_url(search_url)
+            try:
+                html = self._read_text_url(search_url)
+            except (HTTPError, URLError, TimeoutError, OSError):
+                continue
             for job in self._extract_jobs(html, criteria):
                 if job["url"] in seen:
                     continue
@@ -35,6 +39,9 @@ class JobSearchAgent:
                     break
             if len(jobs) >= self.max_results:
                 break
+
+        if not jobs:
+            jobs = self._fallback_job_board_searches(criteria)
 
         return {
             "query": criteria.query,
@@ -66,7 +73,10 @@ class JobSearchAgent:
             if cleaned not in deduped_queries:
                 deduped_queries.append(cleaned)
 
-        return [f"https://duckduckgo.com/html/?q={quote_plus(' '.join(query))}" for query in deduped_queries]
+        return [
+            f"https://duckduckgo.com/html/?q={quote_plus(' '.join(query))}"
+            for query in deduped_queries
+        ]
 
     def _read_text_url(self, url: str) -> str:
         request = Request(
@@ -116,6 +126,59 @@ class JobSearchAgent:
 
         return jobs
 
+    def _fallback_job_board_searches(self, criteria: JobSearchCriteria) -> list[dict[str, str]]:
+        """Return verified search entry points when live scraping is blocked or empty."""
+        query = quote_plus(criteria.query.strip())
+        location = quote_plus(criteria.location.strip())
+        remote_term = "remote" if criteria.remote else ""
+        experience = "" if criteria.experience == "any" else criteria.experience.replace("-", " ")
+        search_text = quote_plus(" ".join(term for term in [criteria.query, criteria.location, remote_term, experience] if term).strip())
+
+        boards = [
+            (
+                "LinkedIn Jobs",
+                f"https://www.linkedin.com/jobs/search/?keywords={query}&location={location}",
+                "linkedin.com",
+            ),
+            (
+                "Indeed",
+                f"https://www.indeed.com/jobs?q={query}&l={location}",
+                "indeed.com",
+            ),
+            (
+                "Google Careers Search",
+                f"https://www.google.com/search?q={search_text}+jobs+apply",
+                "google.com",
+            ),
+            (
+                "Wellfound",
+                f"https://wellfound.com/jobs?keyword={query}",
+                "wellfound.com",
+            ),
+            (
+                "Remote OK",
+                f"https://remoteok.com/remote-{quote_plus(criteria.query.strip().lower().replace(' ', '-'))}-jobs",
+                "remoteok.com",
+            ),
+        ]
+
+        location_label = criteria.location or ("Remote" if criteria.remote else "Multiple locations")
+        return [
+            {
+                "id": f"fallback-{index}",
+                "title": f"{criteria.query.strip()} roles on {name}",
+                "company": name,
+                "location": location_label,
+                "source": source,
+                "url": url,
+                "summary": (
+                    "Live search results were temporarily limited, so this opens a filtered job-board search. "
+                    "Review current postings, salary, company identity, and requirements on the source page."
+                ),
+            }
+            for index, (name, url, source) in enumerate(boards[: self.max_results])
+        ]
+
     @staticmethod
     def _decode_result_url(href: str) -> str:
         if href.startswith("//"):
@@ -142,7 +205,7 @@ class JobSearchAgent:
     def _looks_like_job(title: str, snippet: str, query: str) -> bool:
         haystack = f"{title} {snippet}".lower()
         role_tokens = [token for token in re.split(r"[^a-z0-9+#.]+", query.lower()) if len(token) >= 2]
-        hiring_terms = ("job", "jobs", "career", "careers", "hiring", "vacancy", "opening", "apply")
+        hiring_terms = ("job", "jobs", "career", "careers", "hiring", "vacancy", "opening", "apply", "role")
         has_role_match = any(token in haystack for token in role_tokens)
         has_hiring_signal = any(term in haystack for term in hiring_terms)
         return bool(title) and has_role_match and has_hiring_signal

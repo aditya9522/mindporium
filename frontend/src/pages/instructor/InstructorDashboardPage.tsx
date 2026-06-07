@@ -39,22 +39,42 @@ export const InstructorDashboardPage = () => {
     const d = dashboard as InstructorDashboard;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-                    <div>
-                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 tracking-tight">Instructor Dashboard</h1>
-                        <p className="mt-2 text-lg text-gray-500 dark:text-gray-400 font-medium">Manage your courses and track your teaching performance.</p>
+        <div className="space-y-8 px-4 py-6 transition-colors sm:px-6 lg:px-8">
+            <div className="contents">
+                <section className="mb-8 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:border-gray-800 dark:bg-gray-900">
+                    <div className="grid gap-0 lg:grid-cols-[1fr_360px]">
+                        <div className="p-8">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-black uppercase tracking-wide text-primary-700 dark:bg-primary-950 dark:text-primary-300">Instructor Dashboard</span>
+                                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">Teaching Ops</span>
+                            </div>
+                            <h1 className="mt-4 text-4xl font-black tracking-tight text-gray-950 dark:text-white">Build momentum across every course</h1>
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">Manage courses, enrollments, live classes, and learner progress from one consistent teaching workspace.</p>
+                            <Link
+                                to="/instructor/courses/create"
+                                className="mt-6 inline-flex items-center rounded-xl bg-primary-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-700"
+                            >
+                                <Plus className="mr-2 h-5 w-5" />
+                                Create Course
+                            </Link>
+                        </div>
+                        <div className="border-t border-gray-100 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-950/50 lg:border-l lg:border-t-0">
+                            <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Teaching Snapshot</p>
+                            <p className="mt-4 text-4xl font-black text-gray-950 dark:text-white">{d?.active_courses || 0}</p>
+                            <p className="mt-1 text-sm font-semibold text-gray-500">active courses running now</p>
+                            <div className="mt-6 grid grid-cols-2 gap-3">
+                                <div className="rounded-2xl bg-white p-4 dark:bg-gray-900">
+                                    <p className="text-xs font-bold uppercase text-gray-400">Students</p>
+                                    <p className="mt-1 text-2xl font-black text-gray-950 dark:text-white">{d?.total_students || 0}</p>
+                                </div>
+                                <div className="rounded-2xl bg-white p-4 dark:bg-gray-900">
+                                    <p className="text-xs font-bold uppercase text-gray-400">Courses</p>
+                                    <p className="mt-1 text-2xl font-black text-gray-950 dark:text-white">{d?.total_courses || 0}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <Link
-                        to="/instructor/courses/create"
-                        className="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl shadow-lg shadow-primary-200 dark:shadow-primary-900/30 hover:shadow-primary-300 dark:hover:shadow-primary-800/50 transition-all transform hover:-translate-y-0.5 font-bold"
-                    >
-                        <Plus className="w-5 h-5 mr-2" />
-                        Create Course
-                    </Link>
-                </div>
+                </section>
 
                 {/* Stats Grid */}
                 {loading ? (

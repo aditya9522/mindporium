@@ -181,14 +181,16 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                                         My Courses
                                                     </Link>
                                                 )}
-                                                <Link
-                                                    to="/classrooms"
-                                                    className="flex items-center px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors mx-1 rounded-lg"
-                                                    onClick={() => setShowUserMenu(false)}
-                                                >
-                                                    <Video className="w-4 h-4 mr-3 text-gray-400 group-hover:text-gray-300" />
-                                                    Classrooms
-                                                </Link>
+                                                {user.role !== 'admin' && (
+                                                    <Link
+                                                        to="/classrooms"
+                                                        className="flex items-center px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors mx-1 rounded-lg"
+                                                        onClick={() => setShowUserMenu(false)}
+                                                    >
+                                                        <Video className="w-4 h-4 mr-3 text-gray-400 group-hover:text-gray-300" />
+                                                        Classrooms
+                                                    </Link>
+                                                )}
                                                 <div className="h-px bg-gray-100 dark:bg-gray-800 my-1 mx-4"></div>
                                                 <button
                                                     onClick={() => {

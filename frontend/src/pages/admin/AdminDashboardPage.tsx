@@ -123,13 +123,27 @@ export const AdminDashboardPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Header */}
-                <div className="mb-10">
-                    <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-400 tracking-tight">Admin Overview</h1>
-                    <p className="mt-2 text-lg text-gray-500 dark:text-gray-400 font-medium tracking-tight">Platform insights and performance metrics</p>
-                </div>
+        <div className="space-y-8 px-4 py-6 transition-colors sm:px-6 lg:px-8">
+            <div className="contents">
+                <section className="mb-8 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:border-gray-800 dark:bg-gray-900">
+                    <div className="grid gap-0 lg:grid-cols-[1fr_380px]">
+                        <div className="p-8">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-black uppercase tracking-wide text-primary-700 dark:bg-primary-950 dark:text-primary-300">Admin Overview</span>
+                                <span className={`rounded-full px-3 py-1 text-xs font-bold ${systemHealth.status === 'operational' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300'}`}>
+                                    {systemHealth.status === 'operational' ? 'Operational' : 'Needs Attention'}
+                                </span>
+                            </div>
+                            <h1 className="mt-4 text-4xl font-black tracking-tight text-gray-950 dark:text-white">Platform command room</h1>
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">A clear view of users, courses, enrollments, revenue, live classrooms, and system health.</p>
+                        </div>
+                        <div className="border-t border-gray-100 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-950/50 lg:border-l lg:border-t-0">
+                            <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Platform Scale</p>
+                            <p className="mt-4 text-4xl font-black text-gray-950 dark:text-white">{overview.total_users || 0}</p>
+                            <p className="mt-1 text-sm font-semibold text-gray-500">registered users across the platform</p>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Stats Grid */}
                 {loading ? (
@@ -166,7 +180,7 @@ export const AdminDashboardPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* User Distribution Pie Chart */}
                     <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight uppercase tracking-widest text-sm">User Distribution</h2>
+                        <h2 className="text-sm font-black text-gray-900 dark:text-white mb-6 uppercase tracking-widest">User Distribution</h2>
                         <div className="h-[300px] relative">
                             {userDistribution.length > 0 ? (
                                 <ResponsiveContainer width="100%" height="100%">
@@ -203,7 +217,7 @@ export const AdminDashboardPage = () => {
 
                     {/* Top Courses Bar Chart */}
                     <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight uppercase tracking-widest text-sm">Top Courses</h2>
+                        <h2 className="text-sm font-black text-gray-900 dark:text-white mb-6 uppercase tracking-widest">Top Courses</h2>
                         <div className="h-[300px] relative">
                             {topCourses.length > 0 ? (
                                 <ResponsiveContainer width="100%" height="100%">
@@ -304,7 +318,7 @@ export const AdminDashboardPage = () => {
                         <div className="p-6 bg-gray-50 dark:bg-gray-800/20 rounded-2xl border border-gray-100 dark:border-gray-700/50">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full"></div>
-                                <span className="text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white">API Latecy</span>
+                                <span className="text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white">API Latency</span>
                             </div>
                             <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {systemHealth.responseTime > 0 ? `${systemHealth.responseTime}ms` : 'Measuring...'}

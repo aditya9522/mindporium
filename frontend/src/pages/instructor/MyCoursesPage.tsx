@@ -7,9 +7,11 @@ import { Plus, Search, Filter, BookOpen, BarChart2, TrendingUp, Users } from 'lu
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
+import { useAuthStore } from '../../store/auth.store';
 
 export const MyCoursesPage = () => {
     // const navigate = useNavigate();
+    const { user } = useAuthStore();
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -38,6 +40,11 @@ export const MyCoursesPage = () => {
     };
 
     const handleDeleteClick = (courseId: number) => {
+        const course = courses.find(c => c.id === courseId);
+        if (!course || Number(course.created_by) !== Number(user?.id)) {
+            toast.error('Only the course creator can delete this course');
+            return;
+        }
         setDeleteModal({ isOpen: true, courseId });
     };
 
@@ -209,6 +216,7 @@ export const MyCoursesPage = () => {
                                 course={course}
                                 enrollmentCount={course.enrollments_count || 0}
                                 onDelete={handleDeleteClick}
+                                canDelete={Number(course.created_by) === Number(user?.id)}
                             />
                         ))}
                     </div>

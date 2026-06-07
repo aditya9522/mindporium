@@ -2,6 +2,7 @@ import json
 import logging
 import re
 import asyncio
+from datetime import datetime, timezone
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -145,7 +146,14 @@ async def search_jobs(
         )
     except Exception as exc:
         logger.exception("Job search agent failed")
-        raise HTTPException(status_code=502, detail="Job search agent failed. Please try a narrower search.") from exc
+        return {
+            "query": payload.query,
+            "location": payload.location,
+            "experience": payload.experience,
+            "generatedAt": datetime.now(timezone.utc).isoformat(),
+            "jobs": [],
+            "warning": "Job search is temporarily unavailable. Please try again shortly.",
+        }
 
 
 @router.post("/portfolio/publish", response_model=dict, status_code=status.HTTP_201_CREATED)

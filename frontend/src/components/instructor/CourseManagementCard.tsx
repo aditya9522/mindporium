@@ -7,9 +7,10 @@ interface CourseManagementCardProps {
     course: Course;
     enrollmentCount?: number;
     onDelete?: (courseId: number) => void;
+    canDelete?: boolean;
 }
 
-export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: CourseManagementCardProps) => {
+export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete, canDelete = true }: CourseManagementCardProps) => {
     const [showMenu, setShowMenu] = useState(false);
 
     return (
@@ -144,12 +145,14 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete }: 
                                     </Link>
                                     <button
                                         onClick={() => {
-                                            if (onDelete) {
+                                            if (canDelete && onDelete) {
                                                 onDelete(course.id);
                                             }
                                             setShowMenu(false);
                                         }}
-                                        className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
+                                        disabled={!canDelete}
+                                        className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
+                                        title={canDelete ? 'Delete Course' : 'Only the course creator can delete this course'}
                                     >
                                         <div className="flex items-center gap-2">
                                             <Trash2 className="w-4 h-4" />

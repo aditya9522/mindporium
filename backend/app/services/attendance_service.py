@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 from app.models.attendance import Attendance
@@ -6,6 +6,11 @@ from app.models.enums import AttendanceStatusEnum
 from app.db.database import get_sessionmaker
 
 class AttendanceService:
+    def _as_utc_aware(self, value: datetime) -> datetime:
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
     async def mark_attendance_join(self, classroom_id: int, user_id: int, ip_address: str = None):
         async_session = get_sessionmaker()
         async with async_session() as db:
@@ -14,7 +19,7 @@ class AttendanceService:
             attendance = Attendance(
                 classroom_id=classroom_id,
                 user_id=user_id,
-                joined_at=datetime.utcnow(),
+                joined_at=datetime.now(timezone.utc),
                 ip_address=ip_address,
                 status=AttendanceStatusEnum.present
             )
@@ -32,10 +37,12 @@ class AttendanceService:
             result = await db.execute(select(Attendance).where(Attendance.id == attendance_id))
             attendance = result.scalars().first()
             if attendance:
-                attendance.left_at = datetime.utcnow()
+                left_at = datetime.now(timezone.utc)
+                attendance.left_at = left_at
                 # Calculate duration
                 if attendance.joined_at:
-                    delta = attendance.left_at - attendance.joined_at
+                    joined_at = self._as_utc_aware(attendance.joined_at)
+                    delta = left_at - joined_at
                     attendance.duration_minutes = int(delta.total_seconds() / 60)
                 
                 db.add(attendance)
