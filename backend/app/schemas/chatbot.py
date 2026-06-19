@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Literal
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -38,3 +38,12 @@ class ChatSessionResponse(ChatSessionBase):
 
     class Config:
         from_attributes = True
+
+
+class StudyCompanionRequest(BaseModel):
+    course_title: str
+    lesson_title: str
+    lesson_description: str
+    action: Literal["notes", "flashcards", "chat"]
+    user_query: Optional[str] = None
+    history: Optional[List[dict]] = None

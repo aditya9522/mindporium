@@ -7,7 +7,8 @@ import type { Subject, Resource } from '../../types/enrollment';
 import { CoursePlayerSidebar } from '../../components/student/CoursePlayerSidebar';
 import { CoursePlayerContent } from '../../components/student/CoursePlayerContent';
 import { PageLoader } from '../../components/common/PageLoader';
-import { ArrowLeft, MessageSquare, CheckCircle } from 'lucide-react';
+import { ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
+import { AIStudyBuddy } from '../../components/student/AIStudyBuddy';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 
@@ -23,6 +24,7 @@ export const CoursePlayerPage = () => {
     const [loading, setLoading] = useState(true);
     const [markingComplete, setMarkingComplete] = useState(false);
     const [completedResources, setCompletedResources] = useState<number[]>([]);
+    const [showStudyBuddy, setShowStudyBuddy] = useState(false);
 
     // Fetch course data
     useEffect(() => {
@@ -148,6 +150,17 @@ export const CoursePlayerPage = () => {
                         <MessageSquare className="w-4 h-4 mr-2" />
                         Course Community
                     </a>
+                    <button
+                        onClick={() => setShowStudyBuddy(!showStudyBuddy)}
+                        className={`flex items-center justify-center w-full mt-2 px-4 py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] text-sm font-semibold border ${
+                            showStudyBuddy 
+                                ? 'bg-indigo-650 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' 
+                                : 'bg-gray-800 hover:bg-gray-700 text-indigo-300 border-gray-700 hover:border-indigo-500/30'
+                        }`}
+                    >
+                        <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
+                        AI Study Buddy
+                    </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
@@ -187,6 +200,16 @@ export const CoursePlayerPage = () => {
                     )}
                 </div>
             </div>
+
+            {/* AI Study Buddy Sidebar */}
+            {showStudyBuddy && activeResource && (
+                <AIStudyBuddy
+                    courseTitle={course.title}
+                    lessonTitle={activeResource.title}
+                    lessonDescription={activeResource.description || ''}
+                    onClose={() => setShowStudyBuddy(false)}
+                />
+            )}
         </div>
     );
 };

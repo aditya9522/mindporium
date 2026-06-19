@@ -23,7 +23,7 @@ import { careerToolsService, type JobSearchExperience, type JobSearchResult } fr
 const CAREER_PROFILE_KEY = 'mindporium_career_profile';
 const JOB_APPLICATIONS_KEY = 'mindporium_job_applications';
 
-type CareerTab = 'resume-builder' | 'job-search' | 'interview-simulator' | 'portfolio-builder';
+type CareerTab = 'resume-builder' | 'job-search' | 'interview-simulator' | 'portfolio-builder' | 'job-tracker';
 
 interface CareerProfile {
     targetRole: string;
@@ -57,6 +57,7 @@ const defaultProfile: CareerProfile = {
 const tabs: { id: CareerTab; label: string; description: string; icon: React.ElementType; badge?: string }[] = [
     { id: 'resume-builder', label: 'Resume Studio', description: 'ATS resume and job tailoring', icon: FileText },
     { id: 'job-search', label: 'Job Search', description: 'Find current openings from the web', icon: Search },
+    { id: 'job-tracker', label: 'Application Tracker', description: 'Track your job applications', icon: BriefcaseBusiness },
     { id: 'interview-simulator', label: 'AI Interview', description: 'Voice mock interview and feedback', icon: Bot, badge: 'AI' },
     { id: 'portfolio-builder', label: 'Portfolio Studio', description: 'Public project portfolio', icon: Globe2, badge: 'AI' },
 ];
@@ -173,6 +174,7 @@ export const CareerWorkspacePage = () => {
                 <main className="min-w-0">
                     {activeTab === 'resume-builder' && <EmbeddedFeature path={location.pathname}><ResumeBuilderPage embedded /></EmbeddedFeature>}
                     {activeTab === 'job-search' && <JobSearchTool />}
+                    {activeTab === 'job-tracker' && <JobApplyTracker />}
                     {activeTab === 'interview-simulator' && <AIInterviewSimulatorPage />}
                     {activeTab === 'portfolio-builder' && <PortfolioBuilderPage />}
                 </main>

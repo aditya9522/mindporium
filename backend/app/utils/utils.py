@@ -1,3 +1,4 @@
+import json
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta
 import re
@@ -159,3 +160,27 @@ def safe_divide(numerator: float, denominator: float, default: float = 0.0) -> f
         return numerator / denominator if denominator != 0 else default
     except:
         return default
+
+
+def extract_json_array(text: str) -> list:
+    cleaned = text.strip()
+    fence_match = re.search(r"```(?:json)?\s*(\[.*?\])\s*```", cleaned, flags=re.DOTALL)
+    if fence_match:
+        cleaned = fence_match.group(1)
+    else:
+        start = cleaned.find("[")
+        end = cleaned.rfind("]")
+        if start != -1 and end != -1 and end > start:
+            cleaned = cleaned[start:end + 1]
+    try:
+        parsed = json.loads(cleaned)
+        if isinstance(parsed, list):
+            return parsed
+    except Exception:
+        pass
+    return [
+        {
+            "question": "What is the primary topic of this lesson?",
+            "answer": "This lesson covers the core principles and concepts of the topic."
+        }
+    ]

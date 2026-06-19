@@ -8,8 +8,9 @@ from sqlalchemy.orm import selectinload
 from app.api import deps
 from app.models.chatbot import ChatSession, ChatMessage
 from app.models.user import User
-from app.schemas.chatbot import ChatSessionResponse, ChatMessageCreate, ChatMessageResponse
+from app.schemas.chatbot import ChatSessionResponse, ChatMessageCreate, ChatMessageResponse, StudyCompanionRequest
 from app.services.llm_service import llm_service
+from app.utils.utils import extract_json_array
 
 router = APIRouter()
 
@@ -112,10 +113,6 @@ async def send_message(
     history.append({"role": "user", "parts": [message_in.content]})
 
     # 5. Generate AI Response
-    ai_response_text = await llm_service.generate_response(message_in.content, history=history[:-1]) # history excludes current prompt usually in API calls depending on lib, but `start_chat` handles it. 
-    # Actually `start_chat(history=...)` takes past history. Then `send_message` takes new prompt.
-    # So we pass `history` of PREVIOUS messages.
-    
     llm_history = []
     for msg in session.messages:
         role = "user" if msg.sender == "user" else "model"
@@ -132,8 +129,6 @@ async def send_message(
     db.add(ai_msg)
     
     await db.commit()
-    await db.refresh(ai_msg)
-    
     await db.refresh(ai_msg)
     
     return ai_msg
@@ -186,3 +181,65 @@ async def delete_session(
     await db.delete(session)
     await db.commit()
     return {"message": "Session deleted successfully"}
+
+
+@router.post("/study-companion", response_model=dict)
+async def study_companion(
+    payload: StudyCompanionRequest,
+    current_user: User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Generate study guide notes, flashcards, or chat with a tutor inside a course player.
+    """
+    if payload.action == "notes":
+        prompt = f"""
+        You are an expert educator. Generate detailed, structured study notes and 3 key takeaways for the lesson '{payload.lesson_title}' in the course '{payload.course_title}'.
+        Lesson Description:
+        {payload.lesson_description}
+
+        Return the study guide formatted beautifully in clean, professional Markdown. Focus on summarizing core concepts, providing bullet points for readability, and ending with a dedicated 'Key Takeaways' section.
+        Do not include any introductory remarks or explanations outside of the study guide.
+        """.strip()
+        response_text = await llm_service.generate_response(prompt)
+        return {"notes": response_text}
+        
+    elif payload.action == "flashcards":
+        prompt = f"""
+        You are an academic test maker. Generate exactly 5 interactive study flashcards (Q&A) to help students recall key concepts from the lesson '{payload.lesson_title}' in the course '{payload.course_title}'.
+        Lesson Description:
+        {payload.lesson_description}
+
+        Return a valid JSON array of objects. Do not return markdown, do not write code fences, just return raw JSON using the exact schema:
+        [
+        {{"question": "What is ...?", "answer": "..."}}
+        ]
+        """.strip()
+        response_text = await llm_service.generate_response(prompt)
+        flashcards = extract_json_array(response_text)
+        return {"flashcards": flashcards}
+        
+    elif payload.action == "chat":
+        if not payload.user_query:
+            raise HTTPException(status_code=400, detail="user_query is required for action 'chat'")
+            
+        system_instruction = f"""
+        You are an expert AI Study Tutor. You are helping a student learn and understand the lesson '{payload.lesson_title}' of the course '{payload.course_title}'.
+        Lesson Description:
+        {payload.lesson_description}
+
+        Answer the student's question concisely, clearly, and in a helpful educational manner, keeping the context of this lesson in mind.
+        """.strip()
+
+        llm_history = []
+        if payload.history:
+            for item in payload.history:
+                role = "user" if item.get("sender") == "user" else "model"
+                content = item.get("content") or ""
+                llm_history.append({"role": role, "parts": [content]})
+        
+        full_prompt = f"{system_instruction}\n\nStudent's question: {payload.user_query}"
+        response_text = await llm_service.generate_response(full_prompt, history=llm_history)
+        return {"response": response_text}
+        
+    else:
+        raise HTTPException(status_code=400, detail="Invalid action")

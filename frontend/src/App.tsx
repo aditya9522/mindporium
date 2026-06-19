@@ -20,64 +20,67 @@ import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { VerifyOTPPage } from './pages/auth/VerifyOTPPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
 import { UnauthorizedPage } from './pages/common/UnauthorizedPage';
-import { ProfilePage } from './pages/common/ProfilePage';
-import { DashboardPage } from './pages/dashboard/DashboardPage';
-import { CourseCatalogPage } from './pages/courses/CourseCatalogPage';
-import { CourseDetailPage } from './pages/courses/CourseDetailPage';
-import { CourseReviewsPage } from './pages/courses/CourseReviewsPage';
-import { CourseInstructorsPage } from './pages/courses/CourseInstructorsPage';
-import { CourseContentPage } from './pages/courses/CourseContentPage';
-import { CourseAnnouncementsPage } from './pages/courses/CourseAnnouncementsPage';
-import { CourseQAPage } from './pages/courses/CourseQAPage';
-import { MyLearningPage } from './pages/student/MyLearningPage';
-import { CoursePlayerPage } from './pages/student/CoursePlayerPage';
-import { StudentTestsPage } from './pages/student/StudentTestsPage';
-import { StudentAttendancePage } from './pages/student/StudentAttendancePage';
-import { InstructorDashboardPage } from './pages/instructor/InstructorDashboardPage';
-import { InstructorAttendancePage } from './pages/instructor/InstructorAttendancePage';
-import { MyCoursesPage } from './pages/instructor/MyCoursesPage';
-import { CreateCoursePage } from './pages/instructor/CreateCoursePage';
-import { EditCoursePage } from './pages/instructor/EditCoursePage';
-import { ManageResourcesPage } from './pages/instructor/ManageResourcesPage';
-import { CourseAnalyticsPage } from './pages/instructor/CourseAnalyticsPage';
-import { InstructorStudentsPage } from './pages/instructor/InstructorStudentsPage';
-import { FeedbackPage } from './pages/instructor/FeedbackPage';
-import { ProfilePage as InstructorProfilePage } from './pages/instructor/ProfilePage';
-import { StudentProfilePage } from './pages/instructor/StudentProfilePage';
-import { CommunityPage } from './pages/community/CommunityPage';
-import { CommunityDetailPage } from './pages/community/CommunityDetailPage';
-import { NewsPage } from './pages/common/NewsPage';
-import { ClassroomListPage } from './pages/classroom/ClassroomListPage';
-import { ClassroomDetailPage } from './pages/classroom/ClassroomDetailPage';
-import { TakeTestPage } from './pages/test/TakeTestPage';
-import { TestSubmissionsPage } from './pages/test/TestSubmissionsPage';
-import { TestPreviewPage } from './pages/instructor/TestPreviewPage';
-import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
-import { UserManagementPage } from './pages/admin/UserManagementPage';
-import { AdminCourseManagementPage } from './pages/admin/AdminCourseManagementPage';
-import { SystemSettingsPage } from './pages/admin/SystemSettingsPage';
-import { AdminInstructorsPage } from './pages/admin/AdminInstructorsPage';
-import { AdminInstructorDetailsPage } from './pages/admin/AdminInstructorDetailsPage';
-import { AdminCourseAnalyticsPage } from './pages/admin/AdminCourseAnalyticsPage';
-import { ChatbotPage } from './pages/chatbot/ChatbotPage';
-import { InstructorsPage } from './pages/public/InstructorsPage';
-import { InstructorOverviewPage } from './pages/public/InstructorOverviewPage';
-import { PublicPortfolioPage } from './pages/public/PublicPortfolioPage';
-import { StudentsPage } from './pages/admin/StudentsPage';
-import { FeedbackPage as StudentFeedbackPage } from './pages/common/FeedbackPage';
-import { AdminFeedbackPage } from './pages/admin/AdminFeedbackPage';
-import { AnnouncementManagementPage } from './pages/admin/AnnouncementManagementPage';
-import { InstructorAnalyticsPage } from './pages/admin/InstructorAnalyticsPage';
-import { InstructorAnalyticsPage as InstructorSelfAnalyticsPage } from './pages/instructor/InstructorAnalyticsPage';
-import { InstructorProfileViewPage } from './pages/admin/InstructorProfileViewPage';
-import { CourseMonitoringPage } from './pages/admin/CourseMonitoringPage';
-import { CourseTrackingPage } from './pages/admin/CourseTrackingPage';
-import { AdminCourseDetailViewPage } from './pages/admin/AdminCourseDetailViewPage';
-import { AdminCreateCoursePage } from './pages/admin/AdminCreateCoursePage';
-import { TestsManagementPage } from './pages/instructor/TestsManagementPage';
-import { CreateTestPage } from './pages/instructor/CreateTestPage';
-import { NotificationsPage } from './pages/notifications/NotificationsPage';
-import { CareerWorkspacePage } from './pages/student/career-tools/CareerWorkspacePage';
+import { lazy, Suspense } from 'react';
+import { PageLoader } from './components/common/PageLoader';
+
+const ProfilePage = lazy(() => import('./pages/common/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const CourseCatalogPage = lazy(() => import('./pages/courses/CourseCatalogPage').then(m => ({ default: m.CourseCatalogPage })));
+const CourseDetailPage = lazy(() => import('./pages/courses/CourseDetailPage').then(m => ({ default: m.CourseDetailPage })));
+const CourseReviewsPage = lazy(() => import('./pages/courses/CourseReviewsPage').then(m => ({ default: m.CourseReviewsPage })));
+const CourseInstructorsPage = lazy(() => import('./pages/courses/CourseInstructorsPage').then(m => ({ default: m.CourseInstructorsPage })));
+const CourseContentPage = lazy(() => import('./pages/courses/CourseContentPage').then(m => ({ default: m.CourseContentPage })));
+const CourseAnnouncementsPage = lazy(() => import('./pages/courses/CourseAnnouncementsPage').then(m => ({ default: m.CourseAnnouncementsPage })));
+const CourseQAPage = lazy(() => import('./pages/courses/CourseQAPage').then(m => ({ default: m.CourseQAPage })));
+const MyLearningPage = lazy(() => import('./pages/student/MyLearningPage').then(m => ({ default: m.MyLearningPage })));
+const CoursePlayerPage = lazy(() => import('./pages/student/CoursePlayerPage').then(m => ({ default: m.CoursePlayerPage })));
+const StudentTestsPage = lazy(() => import('./pages/student/StudentTestsPage').then(m => ({ default: m.StudentTestsPage })));
+const StudentAttendancePage = lazy(() => import('./pages/student/StudentAttendancePage').then(m => ({ default: m.StudentAttendancePage })));
+const InstructorDashboardPage = lazy(() => import('./pages/instructor/InstructorDashboardPage').then(m => ({ default: m.InstructorDashboardPage })));
+const InstructorAttendancePage = lazy(() => import('./pages/instructor/InstructorAttendancePage').then(m => ({ default: m.InstructorAttendancePage })));
+const MyCoursesPage = lazy(() => import('./pages/instructor/MyCoursesPage').then(m => ({ default: m.MyCoursesPage })));
+const CreateCoursePage = lazy(() => import('./pages/instructor/CreateCoursePage').then(m => ({ default: m.CreateCoursePage })));
+const EditCoursePage = lazy(() => import('./pages/instructor/EditCoursePage').then(m => ({ default: m.EditCoursePage })));
+const ManageResourcesPage = lazy(() => import('./pages/instructor/ManageResourcesPage').then(m => ({ default: m.ManageResourcesPage })));
+const CourseAnalyticsPage = lazy(() => import('./pages/instructor/CourseAnalyticsPage').then(m => ({ default: m.CourseAnalyticsPage })));
+const InstructorStudentsPage = lazy(() => import('./pages/instructor/InstructorStudentsPage').then(m => ({ default: m.InstructorStudentsPage })));
+const FeedbackPage = lazy(() => import('./pages/instructor/FeedbackPage').then(m => ({ default: m.FeedbackPage })));
+const InstructorProfilePage = lazy(() => import('./pages/instructor/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const StudentProfilePage = lazy(() => import('./pages/instructor/StudentProfilePage').then(m => ({ default: m.StudentProfilePage })));
+const CommunityPage = lazy(() => import('./pages/community/CommunityPage').then(m => ({ default: m.CommunityPage })));
+const CommunityDetailPage = lazy(() => import('./pages/community/CommunityDetailPage').then(m => ({ default: m.CommunityDetailPage })));
+const NewsPage = lazy(() => import('./pages/common/NewsPage').then(m => ({ default: m.NewsPage })));
+const ClassroomListPage = lazy(() => import('./pages/classroom/ClassroomListPage').then(m => ({ default: m.ClassroomListPage })));
+const ClassroomDetailPage = lazy(() => import('./pages/classroom/ClassroomDetailPage').then(m => ({ default: m.ClassroomDetailPage })));
+const TakeTestPage = lazy(() => import('./pages/test/TakeTestPage').then(m => ({ default: m.TakeTestPage })));
+const TestSubmissionsPage = lazy(() => import('./pages/test/TestSubmissionsPage').then(m => ({ default: m.TestSubmissionsPage })));
+const TestPreviewPage = lazy(() => import('./pages/instructor/TestPreviewPage').then(m => ({ default: m.TestPreviewPage })));
+const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage').then(m => ({ default: m.AdminDashboardPage })));
+const UserManagementPage = lazy(() => import('./pages/admin/UserManagementPage').then(m => ({ default: m.UserManagementPage })));
+const AdminCourseManagementPage = lazy(() => import('./pages/admin/AdminCourseManagementPage').then(m => ({ default: m.AdminCourseManagementPage })));
+const SystemSettingsPage = lazy(() => import('./pages/admin/SystemSettingsPage').then(m => ({ default: m.SystemSettingsPage })));
+const AdminInstructorsPage = lazy(() => import('./pages/admin/AdminInstructorsPage').then(m => ({ default: m.AdminInstructorsPage })));
+const AdminInstructorDetailsPage = lazy(() => import('./pages/admin/AdminInstructorDetailsPage').then(m => ({ default: m.AdminInstructorDetailsPage })));
+const AdminCourseAnalyticsPage = lazy(() => import('./pages/admin/AdminCourseAnalyticsPage').then(m => ({ default: m.AdminCourseAnalyticsPage })));
+const ChatbotPage = lazy(() => import('./pages/chatbot/ChatbotPage').then(m => ({ default: m.ChatbotPage })));
+const InstructorsPage = lazy(() => import('./pages/public/InstructorsPage').then(m => ({ default: m.InstructorsPage })));
+const InstructorOverviewPage = lazy(() => import('./pages/public/InstructorOverviewPage').then(m => ({ default: m.InstructorOverviewPage })));
+const PublicPortfolioPage = lazy(() => import('./pages/public/PublicPortfolioPage').then(m => ({ default: m.PublicPortfolioPage })));
+const StudentsPage = lazy(() => import('./pages/admin/StudentsPage').then(m => ({ default: m.StudentsPage })));
+const StudentFeedbackPage = lazy(() => import('./pages/common/FeedbackPage').then(m => ({ default: m.FeedbackPage })));
+const AdminFeedbackPage = lazy(() => import('./pages/admin/AdminFeedbackPage').then(m => ({ default: m.AdminFeedbackPage })));
+const AnnouncementManagementPage = lazy(() => import('./pages/admin/AnnouncementManagementPage').then(m => ({ default: m.AnnouncementManagementPage })));
+const InstructorAnalyticsPage = lazy(() => import('./pages/admin/InstructorAnalyticsPage').then(m => ({ default: m.InstructorAnalyticsPage })));
+const InstructorSelfAnalyticsPage = lazy(() => import('./pages/instructor/InstructorAnalyticsPage').then(m => ({ default: m.InstructorAnalyticsPage })));
+const InstructorProfileViewPage = lazy(() => import('./pages/admin/InstructorProfileViewPage').then(m => ({ default: m.InstructorProfileViewPage })));
+const CourseMonitoringPage = lazy(() => import('./pages/admin/CourseMonitoringPage').then(m => ({ default: m.CourseMonitoringPage })));
+const CourseTrackingPage = lazy(() => import('./pages/admin/CourseTrackingPage').then(m => ({ default: m.CourseTrackingPage })));
+const AdminCourseDetailViewPage = lazy(() => import('./pages/admin/AdminCourseDetailViewPage').then(m => ({ default: m.AdminCourseDetailViewPage })));
+const AdminCreateCoursePage = lazy(() => import('./pages/admin/AdminCreateCoursePage').then(m => ({ default: m.AdminCreateCoursePage })));
+const TestsManagementPage = lazy(() => import('./pages/instructor/TestsManagementPage').then(m => ({ default: m.TestsManagementPage })));
+const CreateTestPage = lazy(() => import('./pages/instructor/CreateTestPage').then(m => ({ default: m.CreateTestPage })));
+const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
+const CareerWorkspacePage = lazy(() => import('./pages/student/career-tools/CareerWorkspacePage').then(m => ({ default: m.CareerWorkspacePage })));
 
 function App() {
   return (
@@ -108,7 +111,8 @@ function App() {
       />
       <ErrorBoundary>
         <ThemeInitializer />
-        <Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
           {/* Public Routes */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<LandingPage />} />
@@ -218,6 +222,7 @@ function App() {
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route path="*" element={<div className="flex items-center justify-center min-h-screen"><h1 className="text-2xl font-bold">404 - Page Not Found</h1></div>} />
         </Routes>
+        </Suspense>
       </ErrorBoundary>
     </Router>
   );
