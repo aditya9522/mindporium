@@ -4,10 +4,10 @@ import toast from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
 import {
     Plus, Search, StickyNote, Trash2, Save, Tag, Clock, FileText,
-    Image as ImageIcon, File, Download, X, Eye, Edit3, Upload,
+    File, Download, X, Eye, Edit3, Upload,
     Bold, Italic, Code, Heading1, Heading2, List, ListOrdered,
     Quote, Minus, Link as LinkIcon, CheckSquare, Loader2,
-    ChevronDown, AlertCircle, Archive, CheckCircle, Filter, Hash
+    ChevronDown, AlertCircle, Archive, CheckCircle, Hash
 } from 'lucide-react';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -33,9 +33,9 @@ interface Note {
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG = {
-    active:   { label: 'Active',   color: 'text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-950/60', icon: CheckCircle },
-    draft:    { label: 'Draft',    color: 'text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-950/60',         icon: Edit3 },
-    archived: { label: 'Archived', color: 'text-gray-500 bg-gray-100 dark:text-gray-400 dark:bg-gray-800',               icon: Archive },
+    active: { label: 'Active', color: 'text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-950/60', icon: CheckCircle },
+    draft: { label: 'Draft', color: 'text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-950/60', icon: Edit3 },
+    archived: { label: 'Archived', color: 'text-gray-500 bg-gray-100 dark:text-gray-400 dark:bg-gray-800', icon: Archive },
 };
 
 const stripMarkdown = (md: string) =>
@@ -50,7 +50,7 @@ const relativeTime = (dateStr: string) => {
 };
 
 const isImage = (type: string) => type.startsWith('image/');
-const isPDF   = (type: string) => type === 'application/pdf';
+const isPDF = (type: string) => type === 'application/pdf';
 const isVideo = (type: string) => type.startsWith('video/');
 const isAudio = (type: string) => type.startsWith('audio/');
 
@@ -65,7 +65,7 @@ const insertMarkdown = (
     const { selectionStart: s, selectionEnd: e, value } = textarea;
     const selected = value.slice(s, e) || placeholder;
     const before = value.slice(0, s);
-    const after  = value.slice(e);
+    const after = value.slice(e);
     const inserted = `${prefix}${selected}${suffix}`;
     textarea.value = before + inserted + after;
     // trigger React synthetic event
@@ -94,20 +94,20 @@ const Toolbar = ({ textareaRef }: { textareaRef: React.RefObject<HTMLTextAreaEle
     const ta = () => textareaRef.current!;
 
     const tools = [
-        btn(<Bold className="w-3.5 h-3.5" />,         'Bold',           () => insertMarkdown(ta(), '**', '**', 'bold text')),
-        btn(<Italic className="w-3.5 h-3.5" />,       'Italic',         () => insertMarkdown(ta(), '_', '_', 'italic text')),
-        btn(<Code className="w-3.5 h-3.5" />,         'Inline Code',    () => insertMarkdown(ta(), '`', '`', 'code')),
+        btn(<Bold className="w-3.5 h-3.5" />, 'Bold', () => insertMarkdown(ta(), '**', '**', 'bold text')),
+        btn(<Italic className="w-3.5 h-3.5" />, 'Italic', () => insertMarkdown(ta(), '_', '_', 'italic text')),
+        btn(<Code className="w-3.5 h-3.5" />, 'Inline Code', () => insertMarkdown(ta(), '`', '`', 'code')),
         <div key="sep1" className="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-0.5" />,
-        btn(<Heading1 className="w-3.5 h-3.5" />,     'Heading 1',      () => insertMarkdown(ta(), '\n# ', '', 'Heading 1')),
-        btn(<Heading2 className="w-3.5 h-3.5" />,     'Heading 2',      () => insertMarkdown(ta(), '\n## ', '', 'Heading 2')),
+        btn(<Heading1 className="w-3.5 h-3.5" />, 'Heading 1', () => insertMarkdown(ta(), '\n# ', '', 'Heading 1')),
+        btn(<Heading2 className="w-3.5 h-3.5" />, 'Heading 2', () => insertMarkdown(ta(), '\n## ', '', 'Heading 2')),
         <div key="sep2" className="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-0.5" />,
-        btn(<List className="w-3.5 h-3.5" />,         'Bullet List',    () => insertMarkdown(ta(), '\n- ', '', 'list item')),
-        btn(<ListOrdered className="w-3.5 h-3.5" />, 'Numbered List',  () => insertMarkdown(ta(), '\n1. ', '', 'list item')),
-        btn(<CheckSquare className="w-3.5 h-3.5" />,  'Task List',      () => insertMarkdown(ta(), '\n- [ ] ', '', 'task')),
+        btn(<List className="w-3.5 h-3.5" />, 'Bullet List', () => insertMarkdown(ta(), '\n- ', '', 'list item')),
+        btn(<ListOrdered className="w-3.5 h-3.5" />, 'Numbered List', () => insertMarkdown(ta(), '\n1. ', '', 'list item')),
+        btn(<CheckSquare className="w-3.5 h-3.5" />, 'Task List', () => insertMarkdown(ta(), '\n- [ ] ', '', 'task')),
         <div key="sep3" className="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-0.5" />,
-        btn(<Quote className="w-3.5 h-3.5" />,        'Blockquote',     () => insertMarkdown(ta(), '\n> ', '', 'quote')),
-        btn(<Minus className="w-3.5 h-3.5" />,        'Divider',        () => insertMarkdown(ta(), '\n---\n', '', '')),
-        btn(<LinkIcon className="w-3.5 h-3.5" />,     'Link',           () => insertMarkdown(ta(), '[', '](url)', 'link text')),
+        btn(<Quote className="w-3.5 h-3.5" />, 'Blockquote', () => insertMarkdown(ta(), '\n> ', '', 'quote')),
+        btn(<Minus className="w-3.5 h-3.5" />, 'Divider', () => insertMarkdown(ta(), '\n---\n', '', '')),
+        btn(<LinkIcon className="w-3.5 h-3.5" />, 'Link', () => insertMarkdown(ta(), '[', '](url)', 'link text')),
     ];
 
     return (
@@ -201,27 +201,27 @@ const FilePreview = ({ file, onRemove }: { file: NoteFile; onRemove?: () => void
 // ─── Main Notes Page ──────────────────────────────────────────────────────────
 
 export const NotesPage = () => {
-    const [notes, setNotes]               = useState<Note[]>([]);
-    const [loading, setLoading]           = useState(true);
+    const [notes, setNotes] = useState<Note[]>([]);
+    const [loading, setLoading] = useState(true);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-    const [mode, setMode]                 = useState<'view' | 'edit'>('view');
-    const [search, setSearch]             = useState('');
+    const [mode, setMode] = useState<'view' | 'edit'>('view');
+    const [search, setSearch] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
 
     // Editor state
-    const [title,   setTitle]   = useState('');
+    const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [tags,    setTags]    = useState<string[]>([]);
+    const [tags, setTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState('');
-    const [status,  setStatus]  = useState<'active' | 'draft' | 'archived'>('active');
-    const [files,   setFiles]   = useState<NoteFile[]>([]);
+    const [status, setStatus] = useState<'active' | 'draft' | 'archived'>('active');
+    const [files, setFiles] = useState<NoteFile[]>([]);
     const [uploading, setUploading] = useState(false);
-    const [saving,    setSaving]    = useState(false);
-    const [deleting,  setDeleting]  = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
-    const textareaRef   = useRef<HTMLTextAreaElement>(null);
-    const fileInputRef  = useRef<HTMLInputElement>(null);
-    const dropzoneRef   = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const dropzoneRef = useRef<HTMLDivElement>(null);
 
     // ── Load Notes ────────────────────────────────────────────────────────────
     const loadNotes = useCallback(async () => {
@@ -424,11 +424,10 @@ export const NotesPage = () => {
                                 <div
                                     key={note.id}
                                     onClick={() => selectNote(note)}
-                                    className={`group p-3 rounded-xl cursor-pointer transition-all duration-150 border ${
-                                        isActive
+                                    className={`group p-3 rounded-xl cursor-pointer transition-all duration-150 border ${isActive
                                             ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800'
                                             : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:border-gray-200 dark:hover:border-gray-700'
-                                    }`}
+                                        }`}
                                 >
                                     {/* Title row */}
                                     <div className="flex items-start justify-between gap-2 mb-1.5">
