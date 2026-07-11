@@ -59,6 +59,7 @@ export const DashboardLayout = () => {
                 { icon: GraduationCap, label: 'Instructors',   path: '/admin/instructors' },
                 { icon: BookOpen,      label: 'Courses',       path: '/admin/courses' },
                 { icon: Megaphone,     label: 'Announcements', path: '/admin/announcements' },
+                { icon: StickyNote,    label: 'Notes',         path: '/notes' },
                 { icon: Shield,        label: 'System',        path: '/admin/system' },
                 { icon: MessageSquare, label: 'Feedback',      path: '/admin/feedback' },
                 { icon: Users,         label: 'Community',     path: '/community' },
@@ -69,18 +70,19 @@ export const DashboardLayout = () => {
 
         if (user.role === 'instructor') {
             return [
-                { icon: Home,          label: 'Dashboard',   path: '/instructor/dashboard' },
-                { icon: BookOpen,      label: 'My Courses',  path: '/instructor/courses' },
-                { icon: Users,         label: 'Students',    path: '/instructor/students' },
-                { icon: FileText,      label: 'Tests',       path: '/instructor/tests' },
-                { icon: Video,         label: 'Classrooms',  path: '/classrooms' },
-                { icon: Calendar,      label: 'Attendance',  path: '/instructor/attendance' },
-                { icon: Users,         label: 'Community',   path: '/community' },
-                { icon: BarChart3,     label: 'Analytics',   path: '/instructor/analytics' },
-                { icon: MessageSquare, label: 'Feedback',    path: '/instructor/feedback' },
-                { icon: User,          label: 'My Profile',  path: '/instructor/profile' },
+                { icon: Home,          label: 'Dashboard',    path: '/instructor/dashboard' },
+                { icon: BookOpen,      label: 'My Courses',   path: '/instructor/courses' },
+                { icon: Users,         label: 'Students',     path: '/instructor/students' },
+                { icon: FileText,      label: 'Tests',        path: '/instructor/tests' },
+                { icon: Video,         label: 'Classrooms',   path: '/classrooms' },
+                { icon: Calendar,      label: 'Attendance',   path: '/instructor/attendance' },
+                { icon: StickyNote,    label: 'My Notes',     path: '/notes' },
+                { icon: Users,         label: 'Community',    path: '/community' },
+                { icon: BarChart3,     label: 'Analytics',    path: '/instructor/analytics' },
+                { icon: MessageSquare, label: 'Feedback',     path: '/instructor/feedback' },
+                { icon: User,          label: 'My Profile',   path: '/instructor/profile' },
                 { icon: Bot,           label: 'AI Assistant', path: '/chatbot' },
-                { icon: Settings,      label: 'Settings',    path: '/settings' },
+                { icon: Settings,      label: 'Settings',     path: '/settings' },
             ];
         }
 

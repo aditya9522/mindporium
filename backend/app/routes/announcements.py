@@ -17,6 +17,11 @@ from app.services.notification_service import notification_service
 router = APIRouter()
 
 
+# ── Helper: eager-load creator so async serialisation never lazy-loads ─────────
+def _with_creator():
+    return selectinload(Announcement.creator)
+
+
 @router.post("/", response_model=AnnouncementResponse)
 async def create_announcement(
     *,
@@ -29,7 +34,11 @@ async def create_announcement(
     """
     # Verify course ownership if linked to course
     if announcement_in.course_id:
-        result = await db.execute(select(Course).options(selectinload(Course.instructors)).where(Course.id == announcement_in.course_id))
+        result = await db.execute(
+            select(Course)
+            .options(selectinload(Course.instructors))
+            .where(Course.id == announcement_in.course_id)
+        )
         course = result.scalars().first()
         if not course:
             raise HTTPException(status_code=404, detail="Course not found")
@@ -39,12 +48,19 @@ async def create_announcement(
 
     announcement = Announcement(
         **announcement_in.model_dump(),
-        created_by=current_user.id
+        created_by=current_user.id,
     )
     db.add(announcement)
     await db.commit()
-    await db.refresh(announcement)
-    
+
+    # Re-fetch with creator eagerly loaded (db.refresh does NOT load relationships)
+    result = await db.execute(
+        select(Announcement)
+        .options(_with_creator())
+        .where(Announcement.id == announcement.id)
+    )
+    announcement = result.scalars().first()
+
     # Notify enrolled students if linked to a course
     if announcement.course_id:
         enrollments_result = await db.execute(
@@ -54,9 +70,9 @@ async def create_announcement(
         if enrollments:
             await notification_service.notify_new_announcement(
                 user_ids=[e.user_id for e in enrollments],
-                announcement_title=announcement.title
+                announcement_title=announcement.title,
             )
-    
+
     return announcement
 
 
@@ -70,7 +86,35 @@ async def read_all_announcements(
     """
     Get all announcements. Admin only.
     """
-    query = select(Announcement).order_by(desc(Announcement.created_at)).offset(skip).limit(limit)
+    query = (
+        select(Announcement)
+        .options(_with_creator())
+        .order_by(desc(Announcement.created_at))
+        .offset(skip)
+        .limit(limit)
+    )
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
+@router.get("/my-announcements", response_model=List[AnnouncementResponse])
+async def read_my_announcements(
+    db: AsyncSession = Depends(deps.get_db),
+    skip: int = 0,
+    limit: int = 100,
+    current_user: User = Depends(deps.get_current_instructor),
+) -> Any:
+    """
+    Get announcements created by the current instructor.
+    """
+    query = (
+        select(Announcement)
+        .options(_with_creator())
+        .where(Announcement.created_by == current_user.id)
+        .order_by(desc(Announcement.created_at))
+        .offset(skip)
+        .limit(limit)
+    )
     result = await db.execute(query)
     return result.scalars().all()
 
@@ -85,12 +129,17 @@ async def read_course_announcements(
     """
     Get announcements for a course.
     """
-    query = select(Announcement).options(selectinload(Announcement.creator)).where(
-        Announcement.course_id == course_id,
-        Announcement.is_active == True
-    ).order_by(desc(Announcement.is_pinned), desc(Announcement.created_at))
-    
-    query = query.offset(skip).limit(limit)
+    query = (
+        select(Announcement)
+        .options(_with_creator())
+        .where(
+            Announcement.course_id == course_id,
+            Announcement.is_active == True,
+        )
+        .order_by(desc(Announcement.is_pinned), desc(Announcement.created_at))
+        .offset(skip)
+        .limit(limit)
+    )
     result = await db.execute(query)
     return result.scalars().all()
 
@@ -106,11 +155,15 @@ async def update_announcement(
     """
     Update an announcement.
     """
-    result = await db.execute(select(Announcement).where(Announcement.id == announcement_id))
+    result = await db.execute(
+        select(Announcement)
+        .options(_with_creator())
+        .where(Announcement.id == announcement_id)
+    )
     announcement = result.scalars().first()
     if not announcement:
         raise HTTPException(status_code=404, detail="Announcement not found")
-        
+
     if current_user.role != RoleEnum.admin and announcement.created_by != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
@@ -120,8 +173,14 @@ async def update_announcement(
 
     db.add(announcement)
     await db.commit()
-    await db.refresh(announcement)
-    return announcement
+
+    # Re-fetch with creator to keep the response schema fully populated
+    result = await db.execute(
+        select(Announcement)
+        .options(_with_creator())
+        .where(Announcement.id == announcement_id)
+    )
+    return result.scalars().first()
 
 
 @router.delete("/{announcement_id}")
@@ -134,29 +193,16 @@ async def delete_announcement(
     """
     Delete an announcement.
     """
-    result = await db.execute(select(Announcement).where(Announcement.id == announcement_id))
+    result = await db.execute(
+        select(Announcement).where(Announcement.id == announcement_id)
+    )
     announcement = result.scalars().first()
     if not announcement:
         raise HTTPException(status_code=404, detail="Announcement not found")
-        
+
     if current_user.role != RoleEnum.admin and announcement.created_by != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     await db.delete(announcement)
     await db.commit()
     return {"message": "Announcement deleted"}
-
-
-@router.get("/my-announcements", response_model=List[AnnouncementResponse])
-async def read_my_announcements(
-    db: AsyncSession = Depends(deps.get_db),
-    skip: int = 0,
-    limit: int = 100,
-    current_user: User = Depends(deps.get_current_instructor),
-) -> Any:
-    """
-    Get announcements created by the current instructor.
-    """
-    query = select(Announcement).where(Announcement.created_by == current_user.id).order_by(desc(Announcement.created_at)).offset(skip).limit(limit)
-    result = await db.execute(query)
-    return result.scalars().all()
