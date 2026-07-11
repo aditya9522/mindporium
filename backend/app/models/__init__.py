@@ -24,3 +24,4 @@ from .resource import Resource
 from .submission import Submission
 from .test import Test, TestQuestion
 from .career import PublishedPortfolio
+from .note import Note

@@ -6,6 +6,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from pydantic import ValidationError
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
 
 from app.api import deps
 from app.core import security
@@ -15,6 +17,7 @@ from app.schemas.token import Token, TokenPayload
 from app.schemas.user import (
     UserCreate, 
     UserResponse, 
+    GoogleLoginRequest,
     PasswordSetup,
     ForgotPasswordRequest,
     VerifyOTPRequest,
@@ -47,6 +50,86 @@ async def login_access_token(
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
 
+
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    return {
+        "access_token": security.create_access_token(
+            user.id, expires_delta=access_token_expires
+        ),
+        "refresh_token": security.create_refresh_token(user.id),
+        "token_type": "bearer",
+    }
+
+
+@router.post("/google", response_model=Token)
+async def login_google(
+    *,
+    db: AsyncSession = Depends(deps.get_db),
+    request_data: GoogleLoginRequest,
+) -> Any:
+    """
+    Verify Google ID Token and login/register the user
+    """
+    if not settings.GOOGLE_CLIENT_ID:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Google OAuth is not configured on the server."
+        )
+
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            request_data.id_token,
+            google_requests.Request(),
+            settings.GOOGLE_CLIENT_ID
+        )
+
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Wrong issuer.')
+
+        google_id = idinfo['sub']
+        email = idinfo['email']
+        full_name = idinfo.get('name', '')
+        photo = idinfo.get('picture', None)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid Google token: {str(e)}"
+        )
+
+    # 1. Search for user by google_id
+    result = await db.execute(select(User).where(User.google_id == google_id))
+    user = result.scalars().first()
+
+    if not user:
+        # 2. Search for user by email
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalars().first()
+
+        if user:
+            # Link Google account
+            user.google_id = google_id
+            if photo and not user.photo:
+                user.photo = photo
+            db.add(user)
+            await db.commit()
+            await db.refresh(user)
+        else:
+            # 3. Create new student user
+            user = User(
+                email=email,
+                full_name=full_name,
+                google_id=google_id,
+                photo=photo,
+                is_active=True,
+                is_verified=True,  # pre-verified by Google
+                role="student"
+            )
+            db.add(user)
+            await db.commit()
+            await db.refresh(user)
+
+    if not user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {

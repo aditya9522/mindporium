@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
     ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:5174"
+    GOOGLE_CLIENT_ID: Optional[str] = Field(None, env="GOOGLE_CLIENT_ID")
     
     UPLOADS_DIR: str = Field(default="uploads")
     MAX_UPLOAD_SIZE_BYTES: int = 25 * 1024 * 1024  # 25MB default

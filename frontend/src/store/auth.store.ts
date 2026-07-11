@@ -11,6 +11,7 @@ interface AuthState {
     error: string | null;
 
     login: (credentials: LoginCredentials) => Promise<User>;
+    loginWithGoogle: (idToken: string) => Promise<User>;
     register: (data: RegisterData) => Promise<void>;
     logout: () => void;
     checkAuth: () => Promise<void>;
@@ -49,6 +50,38 @@ export const useAuthStore = create<AuthState>()(
                     return user; // Return user for role-based redirect
                 } catch (error: any) {
                     const errorMessage = error.response?.data?.detail || 'Login failed';
+                    set({
+                        error: errorMessage,
+                        isLoading: false,
+                        isAuthenticated: false,
+                        user: null,
+                        token: null
+                    });
+                    throw error;
+                }
+            },
+
+            loginWithGoogle: async (idToken: string) => {
+                set({ isLoading: true, error: null });
+                try {
+                    const response = await authService.loginWithGoogle(idToken);
+                    sessionStorage.setItem('token', response.access_token);
+                    sessionStorage.setItem('refresh_token', response.refresh_token);
+
+                    // Fetch user details immediately after login
+                    const user = await authService.getCurrentUser();
+
+                    set({
+                        token: response.access_token,
+                        user,
+                        isAuthenticated: true,
+                        isLoading: false,
+                        error: null
+                    });
+
+                    return user; // Return user for role-based redirect
+                } catch (error: any) {
+                    const errorMessage = error.response?.data?.detail || 'Google sign in failed';
                     set({
                         error: errorMessage,
                         isLoading: false,

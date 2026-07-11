@@ -15,7 +15,8 @@ class User(TimestampMixin, Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     phone_number = Column(String(25), nullable=True)
 
-    password = Column(String(512), nullable=False)
+    password = Column(String(512), nullable=True)
+    google_id = Column(String(255), unique=True, index=True, nullable=True)
     role = Column(String(50), nullable=False, default=RoleEnum.student.value)
 
     photo = Column(String, nullable=True)
@@ -65,3 +66,4 @@ class User(TimestampMixin, Base):
     qa_answers = relationship("QAAnswer", back_populates="user")
     class_messages = relationship("ClassMessage", back_populates="user")
     resource_completions = relationship("ResourceCompletion", back_populates="user")
+    notes = relationship("Note", back_populates="user", cascade="all, delete-orphan")

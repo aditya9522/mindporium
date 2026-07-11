@@ -129,7 +129,21 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                             onClick={() => setShowUserMenu(!showUserMenu)}
                                             className="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full p-1 pl-1.5 transition-all duration-200 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900"
                                         >
-                                            <div className="w-8 h-8 bg-primary-50 dark:bg-primary-900/50 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold border border-primary-100 dark:border-primary-800 shadow-sm">
+                                            {user?.photo ? (
+                                                <img
+                                                    src={user.photo.startsWith('http') ? user.photo : getImageUrl(user.photo)}
+                                                    alt={user.full_name}
+                                                    className="w-8 h-8 rounded-full object-cover shadow-sm border border-primary-100 dark:border-primary-800 shrink-0"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                                        const fallback = e.currentTarget.nextElementSibling;
+                                                        if (fallback) {
+                                                            fallback.classList.remove('hidden');
+                                                        }
+                                                    }}
+                                                />
+                                            ) : null}
+                                            <div className={`w-8 h-8 bg-primary-50 dark:bg-primary-900/50 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold border border-primary-100 dark:border-primary-800 shadow-sm shrink-0 ${user?.photo ? 'hidden' : ''}`}>
                                                 {user?.full_name ? user.full_name.charAt(0).toUpperCase() : 'U'}
                                             </div>
                                             <div className="hidden md:block text-left pr-2">

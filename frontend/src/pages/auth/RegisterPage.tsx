@@ -4,10 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { BookOpen, Loader2 } from 'lucide-react';
+import { BookOpen, Eye, EyeOff, Loader2, Sparkles, Brain, Rocket } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
-import { BackgroundAnimation } from '../../components/common/BackgroundAnimation';
+import { useState } from 'react';
+import loginSideImage from '../../assets/login_side_image.png';
 
 const registerSchema = z.object({
     fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -26,6 +27,8 @@ export const RegisterPage = () => {
     const navigate = useNavigate();
     const registerUser = useAuthStore((state) => state.register);
     const login = useAuthStore((state) => state.login);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -54,80 +57,148 @@ export const RegisterPage = () => {
     };
 
     return (
-        <div className="relative min-h-[90vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <BackgroundAnimation />
-            <div className="w-full max-w-md p-8 space-y-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-white/50 dark:border-gray-800 relative z-10 animate-in fade-in zoom-in duration-500">
-                <div className="text-center">
-                    <div className="inline-flex items-center justify-center mb-6">
-                        <BookOpen className="h-12 w-12 text-primary-600" />
+        <div className="min-h-screen flex bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+            {/* Left Side: Side Image panel (visible on md and up) */}
+            <div className="hidden md:flex md:w-1/2 relative bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${loginSideImage})` }}>
+                <div className="absolute inset-0 bg-gradient-to-tr from-gray-950/90 via-gray-950/70 to-indigo-950/50 backdrop-blur-[2px]" />
+                
+                <div className="absolute inset-0 flex flex-col justify-between p-16 z-20 text-white animate-in fade-in duration-700">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-primary-600/20 p-2.5 rounded-2xl backdrop-blur-xl border border-white/10">
+                            <BookOpen className="h-8 w-8 text-primary-400" />
+                        </div>
+                        <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-primary-300 bg-clip-text text-transparent">Mindporium</span>
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Create an account</h2>
-                    <p className="mt-2 text-gray-500 dark:text-gray-400 font-medium">Join Mindporium to start learning</p>
+
+                    <div className="space-y-8">
+                        <div className="space-y-4">
+                            <span className="text-xs font-semibold tracking-wider text-primary-300 uppercase bg-primary-950/60 px-3 py-1.5 rounded-full border border-primary-800/40 inline-block">Join 10,000+ Learners</span>
+                            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight">Start Your Learning Journey Today.</h1>
+                            <p className="text-lg text-gray-300 font-medium">Create your free account and get instant access to courses, AI mentoring, interactive classrooms, and a global learning community.</p>
+                        </div>
+
+                        <div className="grid gap-4 mt-8">
+                            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5 backdrop-blur-md">
+                                <Sparkles className="h-6 w-6 text-primary-400 shrink-0" />
+                                <div>
+                                    <h4 className="font-semibold text-sm">Free to Get Started</h4>
+                                    <p className="text-xs text-gray-400">No credit card required</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5 backdrop-blur-md">
+                                <Brain className="h-6 w-6 text-primary-400 shrink-0" />
+                                <div>
+                                    <h4 className="font-semibold text-sm">AI-Powered Learning</h4>
+                                    <p className="text-xs text-gray-400">Personalized to your pace and goals</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5 backdrop-blur-md">
+                                <Rocket className="h-6 w-6 text-primary-400 shrink-0" />
+                                <div>
+                                    <h4 className="font-semibold text-sm">Career Ready Skills</h4>
+                                    <p className="text-xs text-gray-400">Resume builder, job search, and career tools</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-xs text-gray-400 font-medium">
+                        © {new Date().getFullYear()} Mindporium Inc. All rights reserved.
+                    </div>
                 </div>
+            </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
-                        <Input
-                            {...register('fullName')}
-                            placeholder="John Doe"
-                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.fullName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-                        />
-                        {errors.fullName && <p className="text-sm text-red-500">{errors.fullName.message}</p>}
+            {/* Right Side: Register Form */}
+            <div className="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 overflow-y-auto">
+                <div className="w-full max-w-md space-y-6 animate-in slide-in-from-right duration-500 py-8">
+                    <div className="text-center md:text-left">
+                        <div className="inline-flex md:hidden items-center gap-2 mb-6">
+                            <BookOpen className="h-10 w-10 text-primary-600" />
+                            <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Mindporium</span>
+                        </div>
+                        <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Create account</h2>
+                        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 font-medium">Join Mindporium and start your learning journey</p>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                        <Input
-                            {...register('email')}
-                            type="email"
-                            placeholder="you@example.com"
-                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-                        />
-                        {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Full Name</label>
+                            <Input
+                                {...register('fullName')}
+                                placeholder="John Doe"
+                                className={`h-11 rounded-xl bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 transition-all ${errors.fullName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            />
+                            {errors.fullName && <p className="text-xs text-red-500 font-medium">{errors.fullName.message}</p>}
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Email</label>
+                            <Input
+                                {...register('email')}
+                                type="email"
+                                placeholder="you@example.com"
+                                className={`h-11 rounded-xl bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 transition-all ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            />
+                            {errors.email && <p className="text-xs text-red-500 font-medium">{errors.email.message}</p>}
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Password</label>
+                            <div className="relative">
+                                <Input
+                                    {...register('password')}
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    className={`h-11 rounded-xl bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 transition-all pr-10 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
+                            </div>
+                            {errors.password && <p className="text-xs text-red-500 font-medium">{errors.password.message}</p>}
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Confirm Password</label>
+                            <div className="relative">
+                                <Input
+                                    {...register('confirmPassword')}
+                                    type={showConfirm ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    className={`h-11 rounded-xl bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 transition-all pr-10 ${errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                />
+                                <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                                    {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
+                            </div>
+                            {errors.confirmPassword && <p className="text-xs text-red-500 font-medium">{errors.confirmPassword.message}</p>}
+                        </div>
+
+                        <Button type="submit" className="w-full flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-bold shadow-md shadow-primary-200/50 dark:shadow-none hover:shadow-primary-300 bg-primary-600 hover:bg-primary-700 text-white transition-all transform hover:-translate-y-0.5 mt-2" disabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span>Creating account...</span>
+                                </>
+                            ) : (
+                                "Create account"
+                            )}
+                        </Button>
+                    </form>
+
+                    <p className="text-xs text-center text-gray-400 dark:text-gray-500">
+                        By creating an account, you agree to our{' '}
+                        <Link to="#" className="text-primary-600 dark:text-primary-400 hover:underline">Terms of Service</Link>
+                        {' '}and{' '}
+                        <Link to="#" className="text-primary-600 dark:text-primary-400 hover:underline">Privacy Policy</Link>.
+                    </p>
+
+                    <div className="text-center text-sm font-medium">
+                        <span className="text-gray-500 dark:text-gray-400">Already have an account? </span>
+                        <Link to="/login" className="font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500 transition-colors">
+                            Sign in
+                        </Link>
                     </div>
-
-
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                        <Input
-                            {...register('password')}
-                            type="password"
-                            placeholder="••••••••"
-                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-                        />
-                        {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
-                        <Input
-                            {...register('confirmPassword')}
-                            type="password"
-                            placeholder="••••••••"
-                            className={`h-11 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 transition-all ${errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-                        />
-                        {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
-                    </div>
-
-                    <Button type="submit" className="w-full flex items-center justify-center gap-2 h-12 rounded-xl text-base font-semibold shadow-lg shadow-primary-200 dark:shadow-none hover:shadow-primary-300 dark:hover:shadow-none transition-all transform hover:-translate-y-0.5" disabled={isSubmitting}>
-                        {isSubmitting ? (
-                            <>
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                                <span>Creating account...</span>
-                            </>
-                        ) : (
-                            "Create account"
-                        )}
-                    </Button>
-                </form>
-
-                <div className="text-center text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Already have an account? </span>
-                    <Link to="/login" className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500">
-                        Sign in
-                    </Link>
                 </div>
             </div>
         </div>

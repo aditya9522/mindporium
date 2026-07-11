@@ -81,6 +81,7 @@ const TestsManagementPage = lazy(() => import('./pages/instructor/TestsManagemen
 const CreateTestPage = lazy(() => import('./pages/instructor/CreateTestPage').then(m => ({ default: m.CreateTestPage })));
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
 const CareerWorkspacePage = lazy(() => import('./pages/student/career-tools/CareerWorkspacePage').then(m => ({ default: m.CareerWorkspacePage })));
+const NotesPage = lazy(() => import('./pages/student/NotesPage').then(m => ({ default: m.NotesPage })));
 
 function App() {
   return (
@@ -166,6 +167,7 @@ function App() {
               <Route path="/career" element={<Navigate to="/career/job-search" replace />} />
               <Route path="/career/:tab" element={<CareerWorkspacePage />} />
               <Route path="/resume-builder" element={<Navigate to="/career/resume-builder" replace />} />
+              <Route path="/notes" element={<NotesPage />} />
             </Route>
 
             {/* Instructor Protected Routes */}

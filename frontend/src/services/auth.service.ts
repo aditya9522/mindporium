@@ -20,6 +20,11 @@ export const authService = {
         return response.data;
     },
 
+    loginWithGoogle: async (idToken: string): Promise<AuthResponse> => {
+        const response = await api.post<AuthResponse>('/auth/google', { id_token: idToken });
+        return response.data;
+    },
+
     getCurrentUser: async (): Promise<User> => {
         const response = await api.get<User>('/users/me');
         return response.data;

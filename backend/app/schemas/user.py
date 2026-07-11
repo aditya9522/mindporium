@@ -66,6 +66,11 @@ class UserResponse(UserBase):
         from_attributes = True
 
 
+# Google Login Schema
+class GoogleLoginRequest(BaseModel):
+    id_token: str
+
+
 # Password Reset Schemas
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
