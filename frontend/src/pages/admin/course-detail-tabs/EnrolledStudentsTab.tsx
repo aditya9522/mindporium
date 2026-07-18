@@ -51,7 +51,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl shadow-xl p-6 text-white">
+            <div className="bg-linear-to-r from-blue-500 to-cyan-600 rounded-2xl shadow-xl p-6 text-white">
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-bold mb-2">Enrolled Students</h2>
@@ -171,7 +171,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                     <tr key={enrollment.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                                <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
                                                     {enrollment.user?.full_name?.charAt(0).toUpperCase() || 'U'}
                                                 </div>
                                                 <div>
@@ -191,7 +191,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                             <div className="flex items-center gap-3">
                                                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 max-w-xs">
                                                     <div
-                                                        className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all"
+                                                        className="bg-linear-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all"
                                                         style={{ width: `${Math.min(enrollment.progress_percent || 0, 100)}%` }}
                                                     />
                                                 </div>

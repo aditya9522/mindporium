@@ -58,7 +58,7 @@ export const InstructorProfileViewPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
             {/* Banner Section */}
-            <div className="relative h-80 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
+            <div className="relative h-80 bg-linear-to-br from-indigo-600 via-purple-600 to-pink-500">
                 {instructor.banner_image ? (
                     <img
                         src={getImageUrl(instructor.banner_image)}
@@ -66,7 +66,7 @@ export const InstructorProfileViewPage = () => {
                         className="w-full h-full object-cover"
                     />
                 ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 opacity-90"></div>
+                    <div className="absolute inset-0 bg-linear-to-br from-indigo-600 via-purple-600 to-pink-500 opacity-90"></div>
                 )}
                 <button
                     onClick={() => navigate('/admin/instructors')}
@@ -91,7 +91,7 @@ export const InstructorProfileViewPage = () => {
                                         className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-900 shadow-lg object-cover"
                                     />
                                 ) : (
-                                    <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-900 shadow-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-5xl font-bold">
+                                    <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-900 shadow-lg bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-5xl font-bold">
                                         {instructor.full_name?.charAt(0).toUpperCase()}
                                     </div>
                                 )}

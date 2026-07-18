@@ -23,7 +23,7 @@ export const CoursePlayerContent = ({ resource }: CoursePlayerContentProps) => {
                         </video>
                     </div>
                 ) : resource.resource_type === 'pdf' ? (
-                    <div className="p-16 flex flex-col items-center justify-center text-center bg-gradient-to-b from-gray-800 to-gray-900">
+                    <div className="p-16 flex flex-col items-center justify-center text-center bg-linear-to-b from-gray-800 to-gray-900">
                         <div className="w-20 h-20 bg-gray-700/50 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-gray-600">
                             <FileText className="w-10 h-10 text-indigo-400" />
                         </div>
@@ -42,7 +42,7 @@ export const CoursePlayerContent = ({ resource }: CoursePlayerContentProps) => {
                         )}
                     </div>
                 ) : (
-                    <div className="p-16 flex flex-col items-center justify-center text-center bg-gradient-to-b from-gray-800 to-gray-900">
+                    <div className="p-16 flex flex-col items-center justify-center text-center bg-linear-to-b from-gray-800 to-gray-900">
                         <div className="w-20 h-20 bg-gray-700/50 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-gray-600">
                             <ExternalLink className="w-10 h-10 text-emerald-400" />
                         </div>

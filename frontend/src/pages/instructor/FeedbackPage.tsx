@@ -81,7 +81,7 @@ export const FeedbackPage = () => {
         <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all hover:shadow-md hover:border-gray-200 dark:hover:border-gray-700 group flex flex-col h-full">
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-2.5 rounded-xl border border-indigo-100 dark:border-indigo-800">
+                    <div className="bg-linear-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-2.5 rounded-xl border border-indigo-100 dark:border-indigo-800">
                         <UserIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
                     <div>

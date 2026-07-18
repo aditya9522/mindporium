@@ -88,7 +88,7 @@ export const InstructorAnalyticsPage = () => {
                 </div>
 
                 {/* Performance Score Card */}
-                <div className="bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-2xl shadow-xl p-8 mb-8 text-white">
+                <div className="bg-linear-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-2xl shadow-xl p-8 mb-8 text-white">
                     <div className="flex items-center justify-between">
                         <div>
                             <h2 className="text-2xl font-bold mb-2">Overall Performance Score</h2>
@@ -185,7 +185,7 @@ export const InstructorAnalyticsPage = () => {
 
                 {/* AI Insights */}
                 {performanceData.ai_insights?.sentiment_analysis && (
-                    <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-sm border border-indigo-100 dark:border-indigo-900/30 p-8 mb-8">
+                    <div className="bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-sm border border-indigo-100 dark:border-indigo-900/30 p-8 mb-8">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
                                 <Brain className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />

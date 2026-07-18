@@ -132,7 +132,7 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
             {/* Header */}
             <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/90 sticky top-0 z-10">
                 <div className="flex items-center gap-2">
-                    <div className="bg-gradient-to-tr from-indigo-500 to-purple-500 p-2 rounded-xl shadow-lg shadow-indigo-500/20">
+                    <div className="bg-linear-to-tr from-indigo-500 to-purple-500 p-2 rounded-xl shadow-lg shadow-indigo-500/20">
                         <Sparkles className="w-4 h-4 text-white" />
                     </div>
                     <div>
@@ -210,14 +210,14 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-sm text-white">Generate Study Notes</h4>
-                                    <p className="text-xs text-gray-400 mt-1 max-w-[240px]">
+                                    <p className="text-xs text-gray-400 mt-1 max-w-60">
                                         Analyze the lesson and generate structured notes with takeaways.
                                     </p>
                                 </div>
                                 <button
                                     onClick={generateNotes}
                                     disabled={loadingNotes}
-                                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-500/20 flex items-center transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                                    className="px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-500/20 flex items-center transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                                 >
                                     {loadingNotes ? (
                                         <>
@@ -270,7 +270,7 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
 
                                             {/* Back Side */}
                                             <div
-                                                className="absolute inset-0 bg-gradient-to-b from-indigo-950 to-indigo-900 border border-indigo-500/30 rounded-2xl p-6 flex flex-col justify-between shadow-xl backface-hidden"
+                                                className="absolute inset-0 bg-linear-to-b from-indigo-950 to-indigo-900 border border-indigo-500/30 rounded-2xl p-6 flex flex-col justify-between shadow-xl backface-hidden"
                                                 style={{
                                                     backfaceVisibility: 'hidden',
                                                     transform: 'rotateY(180deg)'
@@ -329,14 +329,14 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-sm text-white">Generate Flashcards</h4>
-                                    <p className="text-xs text-gray-400 mt-1 max-w-[240px]">
+                                    <p className="text-xs text-gray-400 mt-1 max-w-60">
                                         Test your retention on this lesson using generated interactive study cards.
                                     </p>
                                 </div>
                                 <button
                                     onClick={generateFlashcards}
                                     disabled={loadingFlashcards}
-                                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-500/20 flex items-center transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                                    className="px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-500/20 flex items-center transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                                 >
                                     {loadingFlashcards ? (
                                         <>

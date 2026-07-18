@@ -50,6 +50,8 @@ const StudentProfilePage = lazy(() => import('./pages/instructor/StudentProfileP
 const CommunityPage = lazy(() => import('./pages/community/CommunityPage').then(m => ({ default: m.CommunityPage })));
 const CommunityDetailPage = lazy(() => import('./pages/community/CommunityDetailPage').then(m => ({ default: m.CommunityDetailPage })));
 const NewsPage = lazy(() => import('./pages/common/NewsPage').then(m => ({ default: m.NewsPage })));
+const MediaLibraryPage = lazy(() => import('./pages/common/MediaLibraryPage').then(m => ({ default: m.MediaLibraryPage })));
+const TextComparePage = lazy(() => import('./pages/common/TextComparePage').then(m => ({ default: m.TextComparePage })));
 const ClassroomListPage = lazy(() => import('./pages/classroom/ClassroomListPage').then(m => ({ default: m.ClassroomListPage })));
 const ClassroomDetailPage = lazy(() => import('./pages/classroom/ClassroomDetailPage').then(m => ({ default: m.ClassroomDetailPage })));
 const TakeTestPage = lazy(() => import('./pages/test/TakeTestPage').then(m => ({ default: m.TakeTestPage })));
@@ -152,6 +154,8 @@ function App() {
               <Route path="/community" element={<CommunityPage />} />
               <Route path="/community/:id" element={<CommunityDetailPage />} />
               <Route path="/news" element={<NewsPage />} />
+              <Route path="/media-library" element={<MediaLibraryPage />} />
+              <Route path="/text-compare" element={<TextComparePage />} />
               <Route path="/classrooms" element={<ClassroomListPage />} />
               <Route path="/classroom/:id" element={<ClassroomDetailPage />} />
               <Route path="/chatbot" element={<ChatbotPage />} />

@@ -35,7 +35,7 @@ export const InstructorAnalyticsPage = () => {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-primary-600 dark:from-gray-100 dark:to-primary-400 tracking-tight mb-2">Performance Analytics</h1>
+                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-gray-900 to-primary-600 dark:from-gray-100 dark:to-primary-400 tracking-tight mb-2">Performance Analytics</h1>
                     <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">Deep insights into your teaching impact and student engagement</p>
                 </div>
 
@@ -127,7 +127,7 @@ export const InstructorAnalyticsPage = () => {
                     </div>
 
                     {/* AI Insights */}
-                    <div className="bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 rounded-2xl shadow-xl p-8 text-white relative overflow-hidden group">
+                    <div className="bg-linear-to-br from-indigo-900 via-purple-900 to-slate-900 rounded-2xl shadow-xl p-8 text-white relative overflow-hidden group">
                         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 opacity-20 group-hover:opacity-30 transition-opacity duration-700">
                             <MessageSquare className="w-64 h-64 text-white blur-3xl" />
                         </div>

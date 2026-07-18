@@ -196,7 +196,7 @@ export const ClassroomsTab = ({ courseData }: ClassroomsTabProps) => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl shadow-xl p-6 text-white">
+            <div className="bg-linear-to-r from-blue-500 to-cyan-600 rounded-2xl shadow-xl p-6 text-white">
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-bold mb-2">Course Classrooms</h2>

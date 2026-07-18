@@ -122,7 +122,7 @@ export const AdminInstructorsPage = () => {
                     {filteredInstructors.map((instructor) => (
                         <div key={instructor.id} className="group bg-white dark:bg-gray-900 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 hover:shadow-lg hover:border-indigo-100 dark:hover:border-indigo-900 transition-all duration-300 overflow-hidden flex flex-col pt-0">
                             {/* Banner Section */}
-                            <div className="h-24 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 relative">
+                            <div className="h-24 bg-linear-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 relative">
                                 {instructor.banner_image && (
                                     <img
                                         src={instructor.banner_image}
@@ -146,7 +146,7 @@ export const AdminInstructorsPage = () => {
                                 <div className="-mt-10 mb-3 flex justify-between items-end">
                                     <div className="relative">
                                         <div className="w-20 h-20 rounded-full bg-white dark:bg-gray-900 p-1 shadow-md ring-1 ring-gray-100 dark:ring-gray-800">
-                                            <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-2xl overflow-hidden relative">
+                                            <div className="w-full h-full rounded-full bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-2xl overflow-hidden relative">
                                                 {instructor.photo ? (
                                                     <img
                                                         src={instructor.photo}
@@ -187,7 +187,7 @@ export const AdminInstructorsPage = () => {
                                 {/* Bio & Stats */}
                                 <div className="space-y-3">
                                     {instructor.bio && (
-                                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 leading-relaxed h-[2.5rem]">
+                                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 leading-relaxed h-10">
                                             {instructor.bio}
                                         </p>
                                     )}

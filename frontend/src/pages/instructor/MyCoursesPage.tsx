@@ -128,7 +128,7 @@ export const MyCoursesPage = () => {
                 {/* Header & Actions */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
                     <div className="text-center md:text-left">
-                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-primary-600 dark:from-gray-100 dark:to-primary-400 tracking-tight mb-2">My Courses</h1>
+                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-gray-900 to-primary-600 dark:from-gray-100 dark:to-primary-400 tracking-tight mb-2">My Courses</h1>
                         <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">Manage your course content, student progress, and analytics</p>
                     </div>
                     <div className="flex items-center justify-center md:justify-end gap-3">
@@ -238,7 +238,7 @@ export const MyCoursesPage = () => {
                         {!searchQuery && filterStatus === 'all' && (
                             <Link
                                 to="/instructor/courses/create"
-                                className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-bold rounded-xl shadow-lg text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 transition-all hover:scale-105 hover:shadow-primary-500/25 dark:hover:shadow-primary-800/50"
+                                className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-bold rounded-xl shadow-lg text-white bg-linear-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 transition-all hover:scale-105 hover:shadow-primary-500/25 dark:hover:shadow-primary-800/50"
                             >
                                 <Plus className="w-6 h-6 mr-2" />
                                 Create Your First Course

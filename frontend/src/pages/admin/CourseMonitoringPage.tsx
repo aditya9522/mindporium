@@ -57,7 +57,7 @@ export const CourseMonitoringPage = () => {
                 </button>
 
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400 bg-clip-text text-transparent">
                         Course Monitoring
                     </h1>
                     <p className="mt-2 text-gray-600 dark:text-gray-400">Real-time classroom and session monitoring</p>

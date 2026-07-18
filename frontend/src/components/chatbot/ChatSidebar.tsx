@@ -81,7 +81,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         <div className="w-full bg-white dark:bg-gray-900 h-full flex flex-col border-r border-gray-100 dark:border-gray-800 transition-colors">
             {/* Header */}
             <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">
+                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-600 to-primary-400">
                     History
                 </h2>
                 <div className="flex items-center gap-1">

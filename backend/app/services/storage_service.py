@@ -1,4 +1,5 @@
 import os
+from urllib.parse import unquote, urlparse
 from supabase import create_client, Client
 from fastapi import UploadFile, HTTPException
 from typing import Optional
@@ -105,5 +106,29 @@ class StorageService:
 
         except Exception as e:
             print(f"Failed to cleanup storage for {folder_path}: {e}")
+
+    def path_from_public_url(self, url: str) -> Optional[str]:
+        if not url:
+            return None
+
+        parsed = urlparse(url)
+        marker = f"/storage/v1/object/public/{settings.SUPABASE_BUCKET}/"
+        if marker not in parsed.path:
+            return None
+
+        return unquote(parsed.path.split(marker, 1)[1])
+
+    async def delete_file_by_url(self, url: str) -> None:
+        if not self.client:
+            return
+
+        path = self.path_from_public_url(url)
+        if not path:
+            return
+
+        try:
+            self.client.storage.from_(settings.SUPABASE_BUCKET).remove([path])
+        except Exception as e:
+            print(f"Failed to delete storage file {path}: {e}")
 
 storage_service = StorageService()

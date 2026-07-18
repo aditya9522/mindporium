@@ -120,10 +120,10 @@ export const StudentProfilePage = () => {
                     {/* Left Column: Profile Card */}
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden transition-colors">
-                            <div className="h-24 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+                            <div className="h-24 bg-linear-to-r from-indigo-500 to-purple-600"></div>
                             <div className="px-6 pb-6 -mt-12 text-center">
                                 <div className="inline-flex p-1 bg-white dark:bg-gray-900 rounded-full shadow-lg relative z-10 transition-colors">
-                                    <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-extrabold border-4 border-white dark:border-gray-900 transition-colors">
+                                    <div className="w-24 h-24 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-extrabold border-4 border-white dark:border-gray-900 transition-colors">
                                         {student.full_name?.charAt(0).toUpperCase()}
                                     </div>
                                 </div>
@@ -283,8 +283,8 @@ export const StudentProfilePage = () => {
                                                 <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 shadow-inner overflow-hidden">
                                                     <div
                                                         className={`h-full rounded-full transition-all duration-1000 ${course.progress_percent >= 100
-                                                            ? 'bg-gradient-to-r from-green-500 to-emerald-600'
-                                                            : 'bg-gradient-to-r from-indigo-500 to-purple-600'
+                                                            ? 'bg-linear-to-r from-green-500 to-emerald-600'
+                                                            : 'bg-linear-to-r from-indigo-500 to-purple-600'
                                                             }`}
                                                         style={{ width: `${course.progress_percent}%` }}
                                                     />

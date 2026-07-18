@@ -67,3 +67,4 @@ class User(TimestampMixin, Base):
     class_messages = relationship("ClassMessage", back_populates="user")
     resource_completions = relationship("ResourceCompletion", back_populates="user")
     notes = relationship("Note", back_populates="user", cascade="all, delete-orphan")
+    media_assets = relationship("MediaAsset", back_populates="owner", cascade="all, delete-orphan")

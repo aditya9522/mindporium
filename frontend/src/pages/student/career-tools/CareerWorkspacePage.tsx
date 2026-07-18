@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
     Bot,
@@ -15,10 +15,11 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '../../../components/ui/Button';
-import { ResumeBuilderPage } from '../resume-builder/ResumeBuilderPage';
-import { AIInterviewSimulatorPage } from './AIInterviewSimulatorPage';
-import { PortfolioBuilderPage } from './PortfolioBuilderPage';
 import { careerToolsService, type JobSearchExperience, type JobSearchResult } from '../../../services/career-tools.service';
+
+const ResumeBuilderPage = lazy(() => import('../resume-builder/ResumeBuilderPage').then(module => ({ default: module.ResumeBuilderPage })));
+const AIInterviewSimulatorPage = lazy(() => import('./AIInterviewSimulatorPage').then(module => ({ default: module.AIInterviewSimulatorPage })));
+const PortfolioBuilderPage = lazy(() => import('./PortfolioBuilderPage').then(module => ({ default: module.PortfolioBuilderPage })));
 
 const CAREER_PROFILE_KEY = 'mindporium_career_profile';
 const JOB_APPLICATIONS_KEY = 'mindporium_job_applications';
@@ -172,16 +173,24 @@ export const CareerWorkspacePage = () => {
                 </aside>
 
                 <main className="min-w-0">
+                    <Suspense fallback={<CareerFeatureLoader />}>
                     {activeTab === 'resume-builder' && <EmbeddedFeature path={location.pathname}><ResumeBuilderPage embedded /></EmbeddedFeature>}
                     {activeTab === 'job-search' && <JobSearchTool />}
                     {activeTab === 'job-tracker' && <JobApplyTracker />}
                     {activeTab === 'interview-simulator' && <AIInterviewSimulatorPage />}
                     {activeTab === 'portfolio-builder' && <PortfolioBuilderPage />}
+                    </Suspense>
                 </main>
             </div>
         </div>
     );
 };
+
+const CareerFeatureLoader = () => (
+    <div className="flex h-80 items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400">
+        Loading workspace...
+    </div>
+);
 
 const JobSearchTool = () => {
     const profile = loadJson<CareerProfile>(CAREER_PROFILE_KEY, defaultProfile);

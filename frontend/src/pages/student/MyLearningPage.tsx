@@ -37,7 +37,7 @@ export const MyLearningPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="relative bg-gradient-to-r from-indigo-700 to-purple-800 rounded-3xl p-10 text-white shadow-2xl shadow-indigo-200 dark:shadow-none lg:mb-12 mb-8 overflow-hidden transition-all">
+                <div className="relative bg-linear-to-r from-indigo-700 to-purple-800 rounded-3xl p-10 text-white shadow-2xl shadow-indigo-200 dark:shadow-none lg:mb-12 mb-8 overflow-hidden transition-all">
                     <div className="absolute top-0 right-0 p-12 opacity-10 transform translate-x-12 -translate-y-12 pointer-events-none">
                         <BookOpen className="w-64 h-64 text-white" />
                     </div>
@@ -94,7 +94,7 @@ export const MyLearningPage = () => {
                         {filter === 'all' && (
                             <a
                                 href="/courses"
-                                className="inline-flex items-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl shadow-lg shadow-indigo-200 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 transition-all transform hover:-translate-y-0.5"
+                                className="inline-flex items-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl shadow-lg shadow-indigo-200 text-white bg-linear-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 transition-all transform hover:-translate-y-0.5"
                             >
                                 Browse Courses
                             </a>

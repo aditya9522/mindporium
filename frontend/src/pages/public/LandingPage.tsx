@@ -42,7 +42,7 @@ export const LandingPage = () => {
                         </span>
                         <h1 className="text-5xl md:text-8xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8 leading-[1.1]">
                             Master Your Future with <br />
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400">
+                            <span className="bg-clip-text text-transparent bg-linear-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400">
                                 Mindporium
                             </span>
                         </h1>
@@ -174,7 +174,7 @@ export const LandingPage = () => {
                             </div>
                         </div>
                         <div className="relative">
-                            <div className="absolute -inset-4 bg-gradient-to-r from-primary-500 to-indigo-600 rounded-[3rem] blur-3xl opacity-20 animate-pulse"></div>
+                            <div className="absolute -inset-4 bg-linear-to-r from-primary-500 to-indigo-600 rounded-[3rem] blur-3xl opacity-20 animate-pulse"></div>
                             <div className="relative bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-200 dark:border-gray-800 p-8 shadow-2xl overflow-hidden aspect-square flex items-center justify-center">
                                 <div className="text-center space-y-4">
                                     <div className="w-32 h-32 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">

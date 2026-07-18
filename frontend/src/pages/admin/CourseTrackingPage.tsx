@@ -53,7 +53,7 @@ export const CourseTrackingPage = () => {
     }));
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/30 py-8">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/30 to-emerald-50/30 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <button
@@ -65,7 +65,7 @@ export const CourseTrackingPage = () => {
                 </button>
 
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-bold bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                         Course Progress Tracking
                     </h1>
                     <p className="mt-2 text-gray-600">{trackingData.course_title}</p>
@@ -177,7 +177,7 @@ export const CourseTrackingPage = () => {
                 </div>
 
                 {/* Engagement Insights */}
-                <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
+                <div className="bg-linear-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
                     <h2 className="text-2xl font-bold mb-6">Engagement Insights</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">

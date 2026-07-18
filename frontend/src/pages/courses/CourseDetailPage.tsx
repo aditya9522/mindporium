@@ -393,7 +393,7 @@ export const CourseDetailPage = () => {
                                         </div>
                                     </div>
                                     <Link to={`/my-learning/${course.id}`} className="block">
-                                        <Button className="w-full h-14 text-lg font-bold shadow-xl shadow-indigo-200 dark:shadow-none rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 transition-all transform hover:-translate-y-0.5" size="lg">
+                                        <Button className="w-full h-14 text-lg font-bold shadow-xl shadow-indigo-200 dark:shadow-none rounded-xl bg-linear-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 transition-all transform hover:-translate-y-0.5" size="lg">
                                             <PlayCircle className="h-6 w-6 mr-2.5 fill-current" />
                                             Continue Learning
                                         </Button>
@@ -407,7 +407,7 @@ export const CourseDetailPage = () => {
                                         </div>
                                     ) : (
                                         <Button
-                                            className="w-full h-14 text-lg font-bold shadow-xl shadow-indigo-200 dark:shadow-none rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:-translate-y-0.5 relative overflow-hidden group"
+                                            className="w-full h-14 text-lg font-bold shadow-xl shadow-indigo-200 dark:shadow-none rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:-translate-y-0.5 relative overflow-hidden group"
                                             size="lg"
                                             onClick={handleEnroll}
                                             isLoading={enrolling}

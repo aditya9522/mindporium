@@ -36,7 +36,7 @@ export const StudentAttendancePage = () => {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 dark:from-white to-primary-600 dark:to-primary-400 tracking-tight mb-2">My Attendance</h1>
+                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-gray-900 dark:from-white to-primary-600 dark:to-primary-400 tracking-tight mb-2">My Attendance</h1>
                     <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">Track your presence and classroom engagement</p>
                 </div>
 

@@ -74,7 +74,7 @@ export const ProfilePage = () => {
                             <div className="relative -mt-20 md:-mt-0">
                                 {instructor.photo ? (
                                     <div className="relative">
-                                        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-40"></div>
+                                        <div className="absolute -inset-1 bg-linear-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-40"></div>
                                         <img
                                             src={getImageUrl(instructor.photo)}
                                             alt={instructor.full_name}
@@ -83,8 +83,8 @@ export const ProfilePage = () => {
                                     </div>
                                 ) : (
                                     <div className="relative">
-                                        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-40"></div>
-                                        <div className="relative w-40 h-40 rounded-full border-[6px] border-white dark:border-gray-800 shadow-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white text-6xl font-extrabold tracking-tighter transition-colors duration-300">
+                                        <div className="absolute -inset-1 bg-linear-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-40"></div>
+                                        <div className="relative w-40 h-40 rounded-full border-[6px] border-white dark:border-gray-800 shadow-2xl bg-linear-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white text-6xl font-extrabold tracking-tighter transition-colors duration-300">
                                             {instructor.full_name?.charAt(0).toUpperCase()}
                                         </div>
                                     </div>

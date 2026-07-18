@@ -82,7 +82,7 @@ export const SettingsTab = ({ courseData, refreshData }: SettingsTabProps) => {
     return (
         <div className="space-y-8 max-w-4xl">
             {/* Header */}
-            <div className="bg-gradient-to-r from-gray-700 to-gray-900 rounded-2xl shadow-xl p-6 text-white">
+            <div className="bg-linear-to-r from-gray-700 to-gray-900 rounded-2xl shadow-xl p-6 text-white">
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-bold mb-2">Course Settings</h2>

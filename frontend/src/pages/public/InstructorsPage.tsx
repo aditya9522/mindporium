@@ -62,7 +62,7 @@ export const InstructorsPage = () => {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-gray-950 relative selection:bg-primary-100 dark:selection:bg-primary-900 selection:text-primary-900 dark:selection:text-primary-100">
             {/* Background Decorations */}
-            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary-50/50 dark:from-primary-950/20 to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-[500px] bg-linear-to-b from-primary-50/50 dark:from-primary-950/20 to-transparent pointer-events-none" />
 
             {/* Hero Section */}
             <div className="relative pt-20 pb-20 px-4 sm:px-6 lg:px-8">
@@ -73,7 +73,7 @@ export const InstructorsPage = () => {
                     </div>
 
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-                        Learn from the <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-violet-600 dark:from-primary-400 dark:to-violet-400">Absolute Best</span>
+                        Learn from the <span className="text-transparent bg-clip-text bg-linear-to-r from-primary-600 to-violet-600 dark:from-primary-400 dark:to-violet-400">Absolute Best</span>
                     </h1>
 
                     <p className="text-lg md:text-xl text-slate-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
@@ -102,7 +102,7 @@ export const InstructorsPage = () => {
                                 style={{ animationDelay: `${index * 100}ms` }}
                             >
                                 {/* Card Header / Banner */}
-                                <div className="h-32 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden">
+                                <div className="h-32 bg-linear-to-r from-slate-900 to-slate-800 relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
                                     <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                         <ArrowRight className="w-5 h-5 text-white transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" />

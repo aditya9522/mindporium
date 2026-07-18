@@ -98,7 +98,7 @@ export const CourseContentPage = () => {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 py-8 px-4 sm:px-6">
-            <div className="bg-gradient-to-r from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 rounded-3xl p-10 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-700/50 dark:border-gray-800/50 relative overflow-hidden">
+            <div className="bg-linear-to-r from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 rounded-3xl p-10 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-700/50 dark:border-gray-800/50 relative overflow-hidden">
                 <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight mb-2">Course Content</h1>
@@ -116,7 +116,7 @@ export const CourseContentPage = () => {
                         </div>
                         <div className="h-2.5 bg-gray-700/50 dark:bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm">
                             <div
-                                className="h-full bg-gradient-to-r from-primary-500 to-purple-500 dark:from-primary-400 dark:to-purple-400 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)] transition-all duration-1000 ease-out"
+                                className="h-full bg-linear-to-r from-primary-500 to-purple-500 dark:from-primary-400 dark:to-purple-400 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)] transition-all duration-1000 ease-out"
                                 style={{ width: `${progressPercentage}%` }}
                             />
                         </div>

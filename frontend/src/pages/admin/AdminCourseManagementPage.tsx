@@ -61,12 +61,12 @@ export const AdminCourseManagementPage = () => {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-purple-900/20 py-8 transition-colors duration-300">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-purple-900/20 py-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                        <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                             Course Management
                         </h1>
                         <p className="mt-2 text-gray-600 dark:text-gray-400">Oversee and manage all platform courses with advanced analytics.</p>
@@ -112,7 +112,7 @@ export const AdminCourseManagementPage = () => {
                                             className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
                                         />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600">
+                                        <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-indigo-500 to-violet-600">
                                             <BookOpen className="w-12 h-12 text-white/50" />
                                         </div>
                                     )}
@@ -124,7 +124,7 @@ export const AdminCourseManagementPage = () => {
                                             {course.is_published ? 'Published' : 'Draft'}
                                         </span>
                                     </div>
-                                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent">
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-slate-900 via-slate-900/80 to-transparent">
                                         <h3 className="text-lg font-bold text-white line-clamp-1 group-hover:text-indigo-200 transition-colors">
                                             {course.title}
                                         </h3>

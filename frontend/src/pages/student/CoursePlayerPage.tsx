@@ -136,7 +136,7 @@ export const CoursePlayerPage = () => {
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-2.5 shadow-inner">
                             <div
-                                className="bg-gradient-to-r from-green-400 to-emerald-600 h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                                className="bg-linear-to-r from-green-400 to-emerald-600 h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(16,185,129,0.3)]"
                                 style={{ width: `${progressPercentage}%` }}
                             />
                         </div>
@@ -185,7 +185,7 @@ export const CoursePlayerPage = () => {
                                     disabled={isCompleted || false}
                                     className={`flex items-center px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${isCompleted
                                         ? 'bg-emerald-500/20 text-emerald-400 cursor-default border border-emerald-500/30'
-                                        : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-indigo-500/20 hover:shadow-indigo-500/30 ring-1 ring-white/10'
+                                        : 'bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-indigo-500/20 hover:shadow-indigo-500/30 ring-1 ring-white/10'
                                         }`}
                                 >
                                     <CheckCircle className="w-6 h-6 mr-3" />

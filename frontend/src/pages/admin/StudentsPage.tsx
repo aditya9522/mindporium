@@ -190,7 +190,7 @@ export const StudentsPage = () => {
                                 key={student.id}
                                 className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all group"
                             >
-                                <div className="h-24 bg-gradient-to-r from-indigo-500 to-purple-600 relative">
+                                <div className="h-24 bg-linear-to-r from-indigo-500 to-purple-600 relative">
                                     <div className="absolute -bottom-10 left-6">
                                         <div className="w-20 h-20 rounded-full bg-white p-1 shadow-lg">
                                             {student.photo ? (

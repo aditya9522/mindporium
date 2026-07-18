@@ -22,7 +22,7 @@ export const MainLayout = () => {
                             {/* Brand Column */}
                             <div className="lg:col-span-1 space-y-5">
                                 <Link to="/" className="flex items-center gap-3 group w-fit">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-105 transition-transform">
+                                    <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-105 transition-transform">
                                         <span className="text-white font-black text-xl">M</span>
                                     </div>
                                     <span className="text-xl font-black tracking-tighter text-gray-900 dark:text-white">

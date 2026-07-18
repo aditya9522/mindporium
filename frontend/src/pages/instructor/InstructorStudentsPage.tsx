@@ -66,7 +66,7 @@ export const InstructorStudentsPage = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-primary-600 dark:from-gray-100 dark:to-primary-400 tracking-tight mb-2">My Students</h1>
+                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-gray-900 to-primary-600 dark:from-gray-100 dark:to-primary-400 tracking-tight mb-2">My Students</h1>
                     <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">Track progress and performance across your enrolled students</p>
                 </div>
 
@@ -154,7 +154,7 @@ export const InstructorStudentsPage = () => {
                                         <tr key={student.user_id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
                                             <td className="px-8 py-5">
                                                 <div className="flex items-center">
-                                                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0 border-2 border-white">
+                                                    <div className="w-12 h-12 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0 border-2 border-white">
                                                         {student.full_name?.charAt(0)?.toUpperCase() || 'S'}
                                                     </div>
                                                     <div className="ml-4">
@@ -185,7 +185,7 @@ export const InstructorStudentsPage = () => {
                                                 <div className="flex items-center gap-3">
                                                     <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-2 max-w-[120px] shadow-inner overflow-hidden">
                                                         <div
-                                                            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-full rounded-full"
+                                                            className="bg-linear-to-r from-indigo-500 to-purple-600 h-full rounded-full"
                                                             style={{ width: `${student.total_progress}%` }}
                                                         />
                                                     </div>

@@ -24,7 +24,7 @@ export const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out opacity-90 group-hover:opacity-100"
                         />
                     ) : (
-                        <div className="flex items-center justify-center h-full bg-gradient-to-br from-indigo-500 to-purple-600">
+                        <div className="flex items-center justify-center h-full bg-linear-to-br from-indigo-500 to-purple-600">
                             <BookOpen className="h-12 w-12 text-white/50" />
                         </div>
                     )}
@@ -62,8 +62,8 @@ export const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
                         <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden mb-5">
                             <div
                                 className={`h-full rounded-full transition-all duration-1000 ease-out shadow-sm ${progress === 100
-                                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                                    : 'bg-gradient-to-r from-indigo-500 to-purple-500'
+                                    ? 'bg-linear-to-r from-emerald-500 to-teal-500'
+                                    : 'bg-linear-to-r from-indigo-500 to-purple-500'
                                     }`}
                                 style={{ width: `${progress}%` }}
                             />

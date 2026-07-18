@@ -5,17 +5,23 @@ import { useSidebarStore } from '../../store/sidebar.store';
 import { PageLoader } from '../common/PageLoader';
 import { Navbar } from '../layout/Navbar';
 import { getImageUrl } from '../../lib/utils';
-import { useThemeStore } from '../../store/theme.store';
 import {
     Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap,
     Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar,
-    X, BriefcaseBusiness, StickyNote,
+    X, BriefcaseBusiness, StickyNote, FolderOpen, FileDiff, type LucideIcon,
 } from 'lucide-react';
+
+interface MenuItem {
+    icon: LucideIcon;
+    label: string;
+    path: string;
+    new?: boolean;
+    beta?: boolean;
+}
 
 export const DashboardLayout = () => {
     const { isAuthenticated, checkAuth, isLoading, user } = useAuthStore();
     const { isOpen: isSidebarOpen, toggleSidebar, customSidebarContent } = useSidebarStore();
-    const { } = useThemeStore();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -43,7 +49,7 @@ export const DashboardLayout = () => {
     }
 
     // ── Role-based menu items ─────────────────────────────────────────────────
-    const getMenuItems = () => {
+    const getMenuItems = (): MenuItem[] => {
         if (!user) {
             return [
                 { icon: Home,          label: 'Dashboard',   path: '/' },
@@ -60,6 +66,8 @@ export const DashboardLayout = () => {
                 { icon: BookOpen,      label: 'Courses',       path: '/admin/courses' },
                 { icon: Megaphone,     label: 'Announcements', path: '/admin/announcements' },
                 { icon: StickyNote,    label: 'Notes',         path: '/notes' },
+                { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
+                { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
                 { icon: Shield,        label: 'System',        path: '/admin/system' },
                 { icon: MessageSquare, label: 'Feedback',      path: '/admin/feedback' },
                 { icon: Users,         label: 'Community',     path: '/community' },
@@ -77,6 +85,8 @@ export const DashboardLayout = () => {
                 { icon: Video,         label: 'Classrooms',   path: '/classrooms' },
                 { icon: Calendar,      label: 'Attendance',   path: '/instructor/attendance' },
                 { icon: StickyNote,    label: 'My Notes',     path: '/notes' },
+                { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
+                { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
                 { icon: Users,         label: 'Community',    path: '/community' },
                 { icon: BarChart3,     label: 'Analytics',    path: '/instructor/analytics' },
                 { icon: MessageSquare, label: 'Feedback',     path: '/instructor/feedback' },
@@ -92,6 +102,8 @@ export const DashboardLayout = () => {
             { icon: BookOpen,          label: 'Courses',          path: '/courses' },
             { icon: BookOpen,          label: 'My Learning',      path: '/my-learning' },
             { icon: StickyNote,        label: 'My Notes',         path: '/notes',               new: true },
+            { icon: FolderOpen,        label: 'Media Library',    path: '/media-library' },
+            { icon: FileDiff,          label: 'Text Compare',     path: '/text-compare' },
             { icon: FileText,          label: 'Tests',            path: '/tests' },
             { icon: Video,             label: 'Classrooms',       path: '/classrooms' },
             { icon: Calendar,          label: 'Attendance',       path: '/student/attendance' },
@@ -108,7 +120,7 @@ export const DashboardLayout = () => {
     const menuItems = getMenuItems();
 
     // ── Sidebar Component ─────────────────────────────────────────────────────
-    const SidebarContent = () => (
+    const renderSidebarContent = () => (
         <div className="h-full flex flex-col pt-2 bg-white dark:bg-gray-900 transition-colors duration-300">
             {customSidebarContent ? (
                 <div className="animate-in fade-in slide-in-from-left-4 duration-300 flex-1 overflow-y-auto">
@@ -141,12 +153,12 @@ export const DashboardLayout = () => {
                                     }`}
                                 />
                                 <span className="min-w-0 flex-1 truncate text-sm">{item.label}</span>
-                                {Boolean((item as any).new) && (
+                                {item.new && (
                                     <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300 shrink-0">
                                         New
                                     </span>
                                 )}
-                                {Boolean((item as any).beta) && (
+                                {item.beta && (
                                     <span className="rounded-full bg-amber-100 dark:bg-amber-950/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300 shrink-0">
                                         Beta
                                     </span>
@@ -164,17 +176,17 @@ export const DashboardLayout = () => {
             <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-800 px-2 pb-3">
                 {user ? (
                     <div
-                        className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:shadow-md transition-all duration-200 cursor-pointer"
+                        className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:border-primary-200 dark:hover:border-primary-800 hover:shadow-md transition-all duration-200 cursor-pointer"
                         onClick={() => navigate('/settings')}
                     >
                         {user.photo ? (
                             <img
                                 src={getImageUrl(user.photo)}
                                 alt={user.full_name}
-                                className="w-9 h-9 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-100 transition-all shrink-0"
+                                className="w-9 h-9 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-200 dark:group-hover:ring-primary-500 transition-all shrink-0"
                             />
                         ) : (
-                            <div className="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-100 transition-all shrink-0">
+                            <div className="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-200 dark:group-hover:ring-primary-500 transition-all shrink-0">
                                 <span className="text-primary-600 dark:text-primary-400 font-bold text-sm">
                                     {user.full_name?.charAt(0).toUpperCase()}
                                 </span>
@@ -231,7 +243,7 @@ export const DashboardLayout = () => {
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <SidebarContent />
+                            {renderSidebarContent()}
                         </aside>
                     </div>
                 )}
@@ -239,7 +251,7 @@ export const DashboardLayout = () => {
                 {/* Desktop Sidebar (Sticky) */}
                 {isSidebarOpen && (
                     <aside className="hidden lg:block w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 sticky top-16 h-[calc(100vh-4rem)] overflow-hidden transition-colors duration-300 shrink-0">
-                        <SidebarContent />
+                        {renderSidebarContent()}
                     </aside>
                 )}
 

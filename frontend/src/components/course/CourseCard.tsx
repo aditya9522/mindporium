@@ -12,7 +12,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
         <Link to={`/courses/${course.id}`}>
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-lg dark:hover:shadow-indigo-900/10 transition-all duration-300 group">
                 {/* Thumbnail */}
-                <div className="relative h-48 bg-gradient-to-br from-indigo-500 to-teal-500 overflow-hidden">
+                <div className="relative h-48 bg-linear-to-br from-indigo-500 to-teal-500 overflow-hidden">
                     {course.thumbnail ? (
                         <img
                             src={getImageUrl(course.thumbnail)}

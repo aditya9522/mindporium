@@ -114,7 +114,7 @@ export const SubjectsTab = ({ courseData }: SubjectsTabProps) => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-6 text-white">
+            <div className="bg-linear-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-6 text-white">
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-bold mb-2">Course Subjects</h2>
@@ -201,7 +201,7 @@ export const SubjectsTab = ({ courseData }: SubjectsTabProps) => {
                             >
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-start gap-4 flex-1">
-                                        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-lg">
+                                        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 text-white font-bold text-lg">
                                             {index + 1}
                                         </div>
                                         <div className="flex-1">

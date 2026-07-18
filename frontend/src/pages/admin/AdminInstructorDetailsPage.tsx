@@ -69,7 +69,7 @@ export const AdminInstructorDetailsPage = () => {
                 </button>
 
                 {/* Instructor Profile Card */}
-                <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-8 mb-8 text-white">
+                <div className="bg-linear-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-8 mb-8 text-white">
                     <div className="flex items-start justify-between">
                         <div className="flex items-center gap-6">
                             <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-4xl font-bold border-4 border-white/30">

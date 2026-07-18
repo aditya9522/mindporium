@@ -64,7 +64,7 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
         <div className="space-y-6">
             {/* Header */}
             {/* Header */}
-            <div className="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl shadow-xl p-6 text-white">
+            <div className="bg-linear-to-r from-amber-500 to-orange-600 rounded-2xl shadow-xl p-6 text-white">
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-bold mb-2 text-white">Course Feedbacks & Reviews</h2>
@@ -199,7 +199,7 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
                             <div key={feedback.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold">
+                                        <div className="w-10 h-10 bg-linear-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold">
                                             {feedback.user?.full_name?.charAt(0).toUpperCase() || 'U'}
                                         </div>
                                         <div>

@@ -143,7 +143,7 @@ export const AdminCourseDetailViewPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
             {/* Header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
+            <div className="bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <button
                         onClick={() => navigate(`${basePath}/courses`)}
@@ -185,7 +185,7 @@ export const AdminCourseDetailViewPage = () => {
                     {/* Sidebar */}
                     <div className="w-64 flex-shrink-0">
                         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden sticky top-8 transition-colors duration-300">
-                            <div className="p-4 bg-gradient-to-r from-primary-50 to-purple-50 dark:from-primary-900/20 dark:to-purple-900/20 border-b border-gray-200 dark:border-gray-700">
+                            <div className="p-4 bg-linear-to-r from-primary-50 to-purple-50 dark:from-primary-900/20 dark:to-purple-900/20 border-b border-gray-200 dark:border-gray-700">
                                 <h2 className="font-bold text-gray-900 dark:text-gray-100">Course Navigation</h2>
                             </div>
                             <nav className="p-2">
