@@ -121,13 +121,13 @@ export const DashboardLayout = () => {
 
     // ── Sidebar Component ─────────────────────────────────────────────────────
     const renderSidebarContent = () => (
-        <div className="h-full flex flex-col pt-2 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="h-full min-h-0 flex flex-col pt-2 bg-white dark:bg-gray-900 transition-colors duration-300">
             {customSidebarContent ? (
-                <div className="animate-in fade-in slide-in-from-left-4 duration-300 flex-1 overflow-y-auto">
+                <div className="animate-in fade-in slide-in-from-left-4 duration-300 flex-1 min-h-0 overflow-y-auto">
                     {customSidebarContent}
                 </div>
             ) : (
-                <nav className="space-y-1 px-3 flex-1 overflow-y-auto pb-4">
+                <nav className="space-y-0.5 lg:space-y-1 px-2.5 lg:px-3 flex-1 min-h-0 overflow-y-auto pb-3 lg:pb-4">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive =
@@ -139,7 +139,7 @@ export const DashboardLayout = () => {
                                 key={item.path + item.label}
                                 to={item.path}
                                 onClick={() => window.innerWidth < 1024 && toggleSidebar()}
-                                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+                                className={`group flex items-center gap-3 px-3 py-2 lg:py-2.5 rounded-xl transition-all duration-200 ${
                                     isActive
                                         ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 shadow-sm font-semibold'
                                         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
@@ -173,30 +173,30 @@ export const DashboardLayout = () => {
             )}
 
             {/* Profile Card (Bottom) */}
-            <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-800 px-2 pb-3">
+            <div className="mt-auto shrink-0 pt-2.5 lg:pt-3 border-t border-gray-100 dark:border-gray-800 px-2 pb-2.5 lg:pb-3 bg-white dark:bg-gray-900">
                 {user ? (
                     <div
-                        className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:border-primary-200 dark:hover:border-primary-800 hover:shadow-md transition-all duration-200 cursor-pointer"
+                        className="flex items-center gap-2.5 lg:gap-3 p-2.5 lg:p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:border-primary-200 dark:hover:border-primary-800 hover:shadow-md transition-all duration-200 cursor-pointer"
                         onClick={() => navigate('/settings')}
                     >
                         {user.photo ? (
                             <img
                                 src={getImageUrl(user.photo)}
                                 alt={user.full_name}
-                                className="w-9 h-9 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-200 dark:group-hover:ring-primary-500 transition-all shrink-0"
+                                className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-200 dark:group-hover:ring-primary-500 transition-all shrink-0"
                             />
                         ) : (
-                            <div className="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-200 dark:group-hover:ring-primary-500 transition-all shrink-0">
+                            <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 group-hover:ring-primary-200 dark:group-hover:ring-primary-500 transition-all shrink-0">
                                 <span className="text-primary-600 dark:text-primary-400 font-bold text-sm">
                                     {user.full_name?.charAt(0).toUpperCase()}
                                 </span>
                             </div>
                         )}
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors">
+                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors leading-tight">
                                 {user.full_name}
                             </p>
-                            <p className="text-[11px] text-gray-500 dark:text-gray-400 capitalize font-medium">{user.role}</p>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 capitalize font-medium leading-tight">{user.role}</p>
                         </div>
                         <Settings className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-500 transition-all shrink-0" />
                     </div>
@@ -232,10 +232,10 @@ export const DashboardLayout = () => {
                         onClick={toggleSidebar}
                     >
                         <aside
-                            className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-2xl z-50"
+                            className="fixed inset-y-0 left-0 flex w-[min(18rem,calc(100vw-1rem))] flex-col bg-white dark:bg-gray-900 shadow-2xl z-50 border-r border-gray-200 dark:border-gray-800"
                             onClick={e => e.stopPropagation()}
                         >
-                            <div className="flex justify-end p-2">
+                            <div className="flex justify-end p-2 shrink-0">
                                 <button
                                     onClick={toggleSidebar}
                                     className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -243,7 +243,9 @@ export const DashboardLayout = () => {
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            {renderSidebarContent()}
+                            <div className="min-h-0 flex-1">
+                                {renderSidebarContent()}
+                            </div>
                         </aside>
                     </div>
                 )}

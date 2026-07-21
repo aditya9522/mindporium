@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { BookOpen, Eye, EyeOff, Loader2, Compass, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { BookOpen, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
-import loginSideImage from '../../assets/login_side_image.png';
+import authLoginIllustration from '../../assets/auth-login-illustration.svg';
 
 declare global {
     interface Window {
@@ -100,55 +100,31 @@ export const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+        <div className="min-h-screen flex bg-linear-to-br from-primary-50 via-white to-blue-100 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950 transition-colors duration-300">
             {/* Left Side: Side Image panel (visible on md and up) */}
-            <div className="hidden md:flex md:w-1/2 relative bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${loginSideImage})` }}>
-                {/* Visual overlays to give premium contrast */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-gray-950/90 via-gray-950/70 to-indigo-950/50 backdrop-blur-[2px]" />
+            <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(250,204,21,0.18),transparent_26%)]" />
                 
                 {/* Content Panel */}
-                <div className="absolute inset-0 flex flex-col justify-between p-16 z-20 text-white animate-in fade-in duration-700">
+                <div className="absolute inset-0 flex flex-col p-16 z-20 text-gray-950 dark:text-white animate-in fade-in duration-700">
                     <div className="flex items-center gap-3">
-                        <div className="bg-primary-600/20 p-2.5 rounded-2xl backdrop-blur-xl border border-white/10">
-                            <BookOpen className="h-8 w-8 text-primary-400" />
+                        <div className="bg-white/80 dark:bg-gray-900/80 p-2.5 rounded-2xl backdrop-blur-xl border border-primary-100 dark:border-primary-900/60 shadow-sm">
+                            <BookOpen className="h-8 w-8 text-primary-600 dark:text-primary-400" />
                         </div>
-                        <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-primary-300 bg-clip-text text-transparent">Mindporium</span>
+                        <span className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Mindporium</span>
                     </div>
 
-                    <div className="space-y-8">
+                    <div className="flex flex-1 flex-col justify-center space-y-6">
+                        <img
+                            src={authLoginIllustration}
+                            alt="Online learning illustration"
+                            className="mx-auto w-full max-w-[420px] xl:max-w-[460px] drop-shadow-[0_24px_40px_rgba(37,99,235,0.20)]"
+                        />
                         <div className="space-y-4">
-                            <span className="text-xs font-semibold tracking-wider text-primary-300 uppercase bg-primary-950/60 px-3 py-1.5 rounded-full border border-primary-800/40 inline-block">Elevate Your Learning</span>
+                            <span className="text-xs font-semibold tracking-wider text-primary-700 dark:text-primary-300 uppercase bg-white/80 dark:bg-primary-950/60 px-3 py-1.5 rounded-full border border-primary-100 dark:border-primary-800/40 inline-block">Elevate Your Learning</span>
                             <h1 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight">Unlock Your Cognitive Potential.</h1>
-                            <p className="text-lg text-gray-300 font-medium">A state-of-the-art learning platform crafted for students, educators, and creators who demand visual excellence and high performance.</p>
+                            <p className="text-lg text-gray-600 dark:text-gray-300 font-medium">A state-of-the-art learning platform crafted for students, educators, and creators who demand visual excellence and high performance.</p>
                         </div>
-
-                        <div className="grid gap-4 mt-8">
-                            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5 backdrop-blur-md">
-                                <Compass className="h-6 w-6 text-primary-400 shrink-0" />
-                                <div>
-                                    <h4 className="font-semibold text-sm">Interactive Classrooms</h4>
-                                    <p className="text-xs text-gray-400">Engage in collaborative workspace learning</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5 backdrop-blur-md">
-                                <CheckCircle2 className="h-6 w-6 text-primary-400 shrink-0" />
-                                <div>
-                                    <h4 className="font-semibold text-sm">Custom AI Mentoring</h4>
-                                    <p className="text-xs text-gray-400">Personalized feedback tailored to your goals</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5 backdrop-blur-md">
-                                <ShieldCheck className="h-6 w-6 text-primary-400 shrink-0" />
-                                <div>
-                                    <h4 className="font-semibold text-sm">Enterprise Security</h4>
-                                    <p className="text-xs text-gray-400">Safe payments, verifiable credentials & SSO</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="text-xs text-gray-400 font-medium">
-                        © {new Date().getFullYear()} Mindporium Inc. All rights reserved.
                     </div>
                 </div>
             </div>

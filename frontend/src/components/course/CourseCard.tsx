@@ -10,9 +10,9 @@ interface CourseCardProps {
 export const CourseCard = ({ course }: CourseCardProps) => {
     return (
         <Link to={`/courses/${course.id}`}>
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-lg dark:hover:shadow-indigo-900/10 transition-all duration-300 group">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-lg dark:hover:shadow-primary-900/10 transition-all duration-300 group">
                 {/* Thumbnail */}
-                <div className="relative h-48 bg-linear-to-br from-indigo-500 to-teal-500 overflow-hidden">
+                <div className="relative h-48 bg-linear-to-br from-primary-500 to-primary-700 overflow-hidden">
                     {course.thumbnail ? (
                         <img
                             src={getImageUrl(course.thumbnail)}
@@ -40,13 +40,13 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                 <div className="p-6">
                     {/* Level Badge */}
                     <div className="mb-3">
-                        <span className="inline-block px-2 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded">
+                        <span className="inline-block px-2 py-1 text-xs font-bold text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 rounded">
                             {course.level.toUpperCase()}
                         </span>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                         {course.title}
                     </h3>
 
@@ -93,7 +93,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                         </div>
 
                         {course.category === 'paid' && course.price !== undefined && (
-                            <div className="flex items-center gap-1 text-lg font-bold text-indigo-600 dark:text-indigo-400">
+                            <div className="flex items-center gap-1 text-lg font-bold text-primary-600 dark:text-primary-400">
                                 <DollarSign className="h-5 w-5" />
                                 <span>{course.price}</span>
                             </div>

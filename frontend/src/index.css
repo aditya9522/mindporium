@@ -124,10 +124,10 @@
 
   /* Glassmorphism Utilities */
   .glass {
-    @apply bg-white/80 backdrop-blur-md border border-white/20;
+    @apply bg-primary-50/75 backdrop-blur-md border border-primary-100/70;
   }
 
   .glass-dark {
-    @apply bg-gray-900/80 backdrop-blur-md border border-gray-700/50;
+    @apply bg-primary-950/35 backdrop-blur-md border border-primary-900/50;
   }
 }

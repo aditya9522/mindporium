@@ -14,9 +14,9 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete, ca
     const [showMenu, setShowMenu] = useState(false);
 
     return (
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all duration-300 group">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all duration-300 group overflow-hidden">
             {/* Thumbnail */}
-            <div className="relative h-40 bg-linear-to-br from-indigo-500 to-teal-500 overflow-hidden rounded-t-xl">
+            <div className="relative h-40 bg-linear-to-br from-primary-500 to-primary-700 overflow-hidden">
                 {course.thumbnail ? (
                     <img
                         src={course.thumbnail}
@@ -42,8 +42,8 @@ export const CourseManagementCard = ({ course, enrollmentCount = 0, onDelete, ca
                 {/* Category Badge */}
                 <div className="absolute top-3 left-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${course.category === 'free'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-purple-500 text-white'
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-amber-500 text-white'
                         }`}>
                         {course.category === 'free' ? 'FREE' : 'PAID'}
                     </span>

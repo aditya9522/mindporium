@@ -98,11 +98,8 @@ export const MainLayout = () => {
                                 </div>
                                 <nav className="space-y-3">
                                     {[
-                                        { label: 'Help Center', href: '#' },
-                                        { label: 'Contact Us', href: '#' },
-                                        { label: 'Privacy Policy', href: '#' },
-                                        { label: 'Terms of Service', href: '#' },
-                                        { label: 'Cookie Policy', href: '#' },
+                                        { label: 'Privacy Policy', href: '/privacy' },
+                                        { label: 'Terms of Service', href: '/terms' },
                                     ].map(link => (
                                         <Link key={link.label} to={link.href} className="flex text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
                                             {link.label}

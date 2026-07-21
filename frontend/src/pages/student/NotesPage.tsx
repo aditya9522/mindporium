@@ -55,12 +55,23 @@ export const NotesPage = () => {
                 note.title.toLowerCase().includes(searchTerm) ||
                 text.includes(searchTerm) ||
                 note.tags.some(tag => tag.toLowerCase().includes(searchTerm));
-            const matchStatus = filterStatus === 'all' || note.status === filterStatus;
+            const matchStatus =
+                filterStatus === 'all' ||
+                (filterStatus === 'pinned' ? note.is_pinned : note.status === filterStatus);
             const matchTag = !filterTag || note.tags.includes(filterTag);
 
             return matchSearch && matchStatus && matchTag;
         });
     }, [notes, search, filterStatus, filterTag]);
+
+    const sortedFiltered = useMemo(
+        () =>
+            [...filtered].sort((a, b) => {
+                if (a.is_pinned !== b.is_pinned) return a.is_pinned ? -1 : 1;
+                return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+            }),
+        [filtered],
+    );
 
     const statusCounts: NoteStatusCounts = useMemo(
         () => ({
@@ -182,7 +193,7 @@ export const NotesPage = () => {
 
                     <div className="flex-1 p-4 sm:p-5 overflow-y-auto">
                         {filtered.length === 0 ? (
-                            <EmptyNotesState hasFilters={Boolean(search || filterTag)} onNewNote={handleNewNote} />
+                            <EmptyNotesState hasFilters={Boolean(search || filterTag || filterStatus !== 'all')} onNewNote={handleNewNote} />
                         ) : (
                             <div
                                 className={
@@ -191,7 +202,7 @@ export const NotesPage = () => {
                                         : 'flex flex-col gap-4'
                                 }
                             >
-                                {filtered.map(note => (
+                                {sortedFiltered.map(note => (
                                     <NoteCard
                                         key={note.id}
                                         note={note}

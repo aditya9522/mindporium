@@ -48,7 +48,7 @@ export const NotesToolbar = ({
         </div>
 
         <div className="lg:hidden flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 shrink-0">
-            {(['all', 'active', 'draft'] as const).map(val => (
+            {(['all', 'active', 'draft', 'pinned'] as const).map(val => (
                 <button
                     key={val}
                     onClick={() => onFilterStatus(val)}
@@ -58,7 +58,7 @@ export const NotesToolbar = ({
                             : 'text-gray-500 dark:text-gray-400'
                     }`}
                 >
-                    {val === 'all' ? 'All' : val}
+                    {val === 'all' ? 'All' : val === 'pinned' ? 'Pinned' : val}
                 </button>
             ))}
         </div>

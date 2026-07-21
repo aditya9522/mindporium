@@ -11,6 +11,7 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Pages
 import { LandingPage } from './pages/public/LandingPage';
+import { PrivacyPolicyPage, TermsPage } from './pages/public/LegalPages';
 import { LoginPage } from './pages/auth/LoginPage';
 import { ThemeInitializer } from './components/common/ThemeInitializer';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -124,6 +125,8 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/verify-otp" element={<VerifyOTPPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="/portfolio/:slug" element={<PublicPortfolioPage />} />
           </Route>
 

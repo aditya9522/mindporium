@@ -57,21 +57,21 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
 
     return (
         <>
-            <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl sticky top-0 z-50 shadow-sm transition-all duration-300">
+            <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl sticky top-0 z-50 shadow-sm transition-all duration-300 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
                         <div className="flex items-center gap-4">
                             {(isAuthenticated || showSidebarToggle) && (
                                 <button
                                     onClick={toggleSidebar}
-                                    className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                    className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
                                     title="Toggle Sidebar"
                                 >
                                     <Menu className="w-5 h-5" />
                                 </button>
                             )}
                             <Link to="/" className="flex items-center gap-3 group">
-                                <div className="flex items-center justify-center">
+                                <div className="flex items-center justify-center transition-all duration-300">
                                     {appIcon && !imgError ? (
                                         <img
                                             src={appIcon.startsWith('/') ? appIcon : getImageUrl(appIcon)}
@@ -88,12 +88,12 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                 </span>
                             </Link>
                             <div className="hidden md:flex ml-10 space-x-1">
-                                <Link to="/courses" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Courses</Link>
-                                <Link to="/instructors" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Instructors</Link>
+                                <Link to="/courses" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 bg-transparent hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all font-medium text-sm">Courses</Link>
+                                <Link to="/instructors" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 bg-transparent hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all font-medium text-sm">Instructors</Link>
                                 {isAuthenticated && (
                                     <>
-                                        <Link to="/community" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">Community</Link>
-                                        <Link to="/news" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium text-sm">News</Link>
+                                        <Link to="/community" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 bg-transparent hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all font-medium text-sm">Community</Link>
+                                        <Link to="/news" className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 bg-transparent hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all font-medium text-sm">News</Link>
                                     </>
                                 )}
                             </div>
@@ -104,7 +104,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                 <>
                                     <button
                                         onClick={toggleDarkMode}
-                                        className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-300"
+                                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full transition-all duration-300"
                                         title={mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                                     >
                                         {mode === 'dark' ? (
@@ -116,7 +116,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
 
                                     <button
                                         onClick={() => setShowFeedback(true)}
-                                        className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full transition-colors"
                                         title="Send Feedback"
                                     >
                                         <MessageSquare className="w-5 h-5" />
@@ -127,7 +127,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                     <div className="relative" ref={menuRef}>
                                         <button
                                             onClick={() => setShowUserMenu(!showUserMenu)}
-                                            className="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full p-1 pl-1.5 transition-all duration-200 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900"
+                                            className="flex items-center gap-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full p-1 pl-1.5 transition-all duration-200 border border-transparent hover:border-primary-100 dark:hover:border-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900"
                                         >
                                             {user?.photo ? (
                                                 <img
@@ -224,7 +224,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                 <>
                                     <button
                                         onClick={toggleDarkMode}
-                                        className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-300"
+                                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full transition-all duration-300"
                                         title={mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                                     >
                                         {mode === 'dark' ? (

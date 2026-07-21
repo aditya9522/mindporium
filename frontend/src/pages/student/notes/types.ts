@@ -28,7 +28,7 @@ export interface DeleteConfirmationState {
 }
 
 export type NoteView = 'grid' | 'list';
-export type NoteStatusFilter = 'all' | Note['status'];
+export type NoteStatusFilter = 'all' | 'pinned' | Note['status'];
 
 export interface NoteStatusCounts {
     active: number;

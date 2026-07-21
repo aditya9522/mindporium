@@ -197,10 +197,11 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
                                 </div>
                                 <button
                                     onClick={generateNotes}
-                                    className="flex items-center justify-center w-full px-4 py-2.5 bg-gray-850 hover:bg-gray-800 border border-gray-700/50 rounded-xl text-xs font-bold transition-all text-gray-300"
+                                    className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-700 bg-gray-850 text-gray-200 transition-colors hover:border-primary-700 hover:bg-primary-900/30 hover:text-primary-200"
+                                    aria-label="Regenerate study notes"
+                                    title="Regenerate study notes"
                                 >
-                                    <RefreshCw className="w-3.5 h-3.5 mr-2" />
-                                    Regenerate Study Notes
+                                    <RefreshCw className="w-4 h-4" />
                                 </button>
                             </div>
                         ) : (
@@ -315,10 +316,11 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
 
                                     <button
                                         onClick={generateFlashcards}
-                                        className="flex items-center justify-center w-full px-4 py-2.5 bg-gray-850 hover:bg-gray-800 border border-gray-700/50 rounded-xl text-xs font-bold transition-all text-gray-300"
+                                        className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-700 bg-gray-850 text-gray-200 transition-colors hover:border-primary-700 hover:bg-primary-900/30 hover:text-primary-200"
+                                        aria-label="Regenerate flashcards"
+                                        title="Regenerate flashcards"
                                     >
-                                        <RefreshCw className="w-3.5 h-3.5 mr-2" />
-                                        Regenerate Flashcards
+                                        <RefreshCw className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>

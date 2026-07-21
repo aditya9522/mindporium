@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth.store';
 import { studentService } from '../../services/student.service';
-import { Activity, Award, BookOpen, Calendar, CheckCircle2, Clock, Flame, Target, TrendingUp } from 'lucide-react';
+import { Activity, Award, BookOpen, Calendar, CheckCircle2, Clock, Flame, RefreshCw, Target, TrendingUp } from 'lucide-react';
 import {
     Area,
     AreaChart,
@@ -32,21 +32,26 @@ const CARD_GRADIENTS = [
 export const DashboardPage = () => {
     const { user } = useAuthStore();
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [dashboardData, setDashboardData] = useState<any>(null);
 
-    useEffect(() => {
-        const fetchDashboard = async () => {
-            try {
-                const data = await studentService.getDashboard();
-                setDashboardData(data);
-            } catch (error) {
-                console.error('Failed to fetch dashboard:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDashboard();
+    const fetchDashboard = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data = await studentService.getDashboard();
+            setDashboardData(data);
+        } catch (error) {
+            console.error('Failed to fetch dashboard:', error);
+            setError('Failed to load your dashboard.');
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchDashboard();
+    }, [fetchDashboard]);
 
     const overview = dashboardData?.overview ?? {};
     const activityData = dashboardData?.charts?.activity ?? [];
@@ -79,15 +84,31 @@ export const DashboardPage = () => {
     }, [activityData]);
 
     return (
-        <div className="space-y-8 px-4 py-6 transition-colors sm:px-6 lg:px-8">
-            <section className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:border-gray-800 dark:bg-gray-900">
+        <div className="space-y-6 sm:space-y-8 px-4 py-5 sm:py-6 transition-colors sm:px-6 lg:px-8">
+            {error && !loading && (
+                <section className="rounded-2xl border border-dashed border-gray-200 bg-white p-6 text-center dark:border-gray-800 dark:bg-gray-900">
+                    <Activity className="mx-auto mb-3 h-10 w-10 text-gray-300 dark:text-gray-700" />
+                    <h2 className="text-lg font-black text-gray-900 dark:text-gray-100">{error}</h2>
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Please retry to refresh your learning progress.</p>
+                    <button
+                        onClick={fetchDashboard}
+                        className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white shadow-sm transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                        aria-label="Refresh dashboard"
+                        title="Refresh dashboard"
+                    >
+                        <RefreshCw className="h-5 w-5" />
+                    </button>
+                </section>
+            )}
+
+            <section className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-100 bg-white shadow-[0_2px_15px_rgb(0,0,0,0.04)] dark:border-gray-800 dark:bg-gray-900">
                 <div className="grid gap-0 lg:grid-cols-[1fr_360px]">
-                    <div className="p-8">
+                    <div className="p-5 sm:p-8">
                         <div className="flex flex-wrap items-center gap-2">
                             <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-black uppercase tracking-wide text-primary-700 dark:bg-primary-950 dark:text-primary-300">Student Dashboard</span>
                             <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">Interactive</span>
                         </div>
-                        <h1 className="mt-4 text-4xl font-black tracking-tight text-gray-950 dark:text-white">
+                        <h1 className="mt-4 text-3xl sm:text-4xl font-black tracking-tight text-gray-950 dark:text-white">
                             Welcome back, {user?.full_name?.split(' ')[0] || 'Student'}
                         </h1>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">
@@ -96,13 +117,22 @@ export const DashboardPage = () => {
                         <div className="mt-6 flex flex-wrap gap-3">
                             <Link to="/my-learning" className="rounded-xl bg-primary-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-700">Continue Learning</Link>
                             <Link to="/career/job-search" className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Career Workspace</Link>
+                            <button
+                                onClick={fetchDashboard}
+                                disabled={loading}
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white shadow-sm transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                                aria-label="Refresh dashboard"
+                                title="Refresh dashboard"
+                            >
+                                <RefreshCw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+                            </button>
                         </div>
                     </div>
-                    <div className="border-t border-gray-100 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-950/50 lg:border-l lg:border-t-0">
+                    <div className="border-t border-gray-100 bg-gray-50 p-5 sm:p-8 dark:border-gray-800 dark:bg-gray-950/50 lg:border-l lg:border-t-0">
                         <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Learning Focus Score</p>
                         <div className="relative mt-4 h-44">
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadialBarChart innerRadius="72%" outerRadius="100%" data={[{ name: 'Focus', value: focusScore, fill: '#6366f1' }]} startAngle={90} endAngle={-270}>
+                                <RadialBarChart innerRadius="72%" outerRadius="100%" data={[{ name: 'Focus', value: focusScore, fill: 'var(--primary-600)' }]} startAngle={90} endAngle={-270}>
                                     <RadialBar dataKey="value" cornerRadius={12} background />
                                 </RadialBarChart>
                             </ResponsiveContainer>
@@ -156,15 +186,15 @@ export const DashboardPage = () => {
                                 <AreaChart data={activityData}>
                                     <defs>
                                         <linearGradient id="activityGradient" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#6366f1" stopOpacity={0.35} />
-                                            <stop offset="95%" stopColor="#6366f1" stopOpacity={0.02} />
+                                            <stop offset="5%" stopColor="var(--primary-600)" stopOpacity={0.35} />
+                                            <stop offset="95%" stopColor="var(--primary-600)" stopOpacity={0.02} />
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                                     <XAxis dataKey="date" tickFormatter={(val) => new Date(val).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} style={{ fontSize: '12px' }} />
                                     <YAxis style={{ fontSize: '12px' }} />
                                     <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgb(0 0 0 / 0.12)' }} labelFormatter={(val) => new Date(val).toLocaleDateString()} />
-                                    <Area type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={3} fill="url(#activityGradient)" dot={{ r: 3, fill: '#6366f1' }} activeDot={{ r: 6 }} />
+                                    <Area type="monotone" dataKey="count" stroke="var(--primary-600)" strokeWidth={3} fill="url(#activityGradient)" dot={{ r: 3, fill: 'var(--primary-600)' }} activeDot={{ r: 6 }} />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>

@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { courseService } from '../../services/course.service';
 import type { Course, CourseFilters } from '../../types/course';
 import { CourseCard } from '../../components/course/CourseCard';
-import { Search, Filter, Grid, List } from 'lucide-react';
+import { Search, Filter, Grid, List, RefreshCw } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { VoiceInput } from '../../components/ui/VoiceInput';
 
 export const CourseCatalogPage = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [filters, setFilters] = useState<CourseFilters>({
@@ -33,10 +34,12 @@ export const CourseCatalogPage = () => {
     const loadCourses = async () => {
         try {
             setLoading(true);
+            setError(null);
             const data = await courseService.getCourses(filters);
             setCourses(data);
         } catch (error) {
             console.error('Failed to load courses:', error);
+            setError('Failed to load courses.');
         } finally {
             setLoading(false);
         }
@@ -53,26 +56,35 @@ export const CourseCatalogPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 transition-colors">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-5 sm:py-8 transition-colors">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
                 {/* Header */}
-                <div className="relative bg-linear-to-r from-gray-900 to-gray-800 rounded-3xl p-10 text-white overflow-hidden shadow-2xl">
-                    <div className="absolute top-0 right-0 p-12 opacity-10 transform translate-x-12 -translate-y-12">
-                        <Grid className="w-64 h-64 text-white" />
+                <div className="relative bg-linear-to-r from-gray-900 to-gray-800 rounded-2xl sm:rounded-3xl p-5 sm:p-10 text-white overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 p-8 sm:p-12 opacity-10 transform translate-x-12 -translate-y-12">
+                        <Grid className="w-44 h-44 sm:w-64 sm:h-64 text-white" />
                     </div>
+                    <button
+                        onClick={loadCourses}
+                        disabled={loading}
+                        className="absolute right-5 top-5 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-900 shadow-md transition-colors hover:bg-primary-50 hover:text-primary-700 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-white/70 sm:right-8 sm:top-8"
+                        aria-label="Refresh courses"
+                        title="Refresh courses"
+                    >
+                        <RefreshCw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+                    </button>
                     <div className="relative z-10 max-w-2xl">
-                        <h1 className="text-4xl font-extrabold mb-4 tracking-tight">Explore Courses</h1>
-                        <p className="text-gray-300 text-lg font-medium leading-relaxed">
+                        <h1 className="text-3xl sm:text-4xl font-extrabold mb-3 sm:mb-4 tracking-tight">Explore Courses</h1>
+                        <p className="text-gray-300 text-sm sm:text-lg font-medium leading-relaxed">
                             Discover your next learning adventure from our curated collection of premium courses.
                         </p>
                     </div>
                 </div>
 
                 {/* Search and Filters */}
-                <div className="bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 transition-colors duration-300 sticky top-20 z-20">
+                <div className="bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-[0_2px_15px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-800 transition-colors duration-300 sticky top-16 sm:top-20 z-20">
                     <div className="flex flex-col md:flex-row gap-4 mb-4">
                         {/* Search Bar */}
-                        <div className="flex-1 flex gap-2">
+                        <div className="flex-1 flex flex-col sm:flex-row gap-2">
                             <div className="relative flex-1 group">
                                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-500 dark:group-focus-within:text-primary-400 transition-colors" />
                                 <input
@@ -92,7 +104,7 @@ export const CourseCatalogPage = () => {
                                     />
                                 </div>
                             </div>
-                            <Button onClick={handleSearch} className="h-full px-8 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg shadow-primary-200 dark:shadow-primary-900/50 transition-all hover:-translate-y-0.5">Search</Button>
+                            <Button onClick={handleSearch} className="h-12 sm:h-auto px-8 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg shadow-primary-200 dark:shadow-primary-900/50 transition-all hover:-translate-y-0.5">Search</Button>
                         </div>
 
                         {/* View Toggle */}
@@ -117,7 +129,7 @@ export const CourseCatalogPage = () => {
                     </div>
 
                     {/* Filter Tags */}
-                    <div className="flex flex-wrap gap-2 mt-4">
+                    <div className="flex flex-nowrap sm:flex-wrap gap-2 mt-4 overflow-x-auto pb-1">
                         <Button
                             variant={!filters.level && !filters.category ? 'default' : 'outline'}
                             size="sm"
@@ -127,7 +139,7 @@ export const CourseCatalogPage = () => {
                             All
                         </Button>
 
-                        <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-2"></div>
+                        <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-2 shrink-0"></div>
 
                         <Button
                             variant={filters.category === 'free' ? 'default' : 'outline'}
@@ -144,7 +156,7 @@ export const CourseCatalogPage = () => {
                             Paid
                         </Button>
 
-                        <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-2"></div>
+                        <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-2 shrink-0"></div>
 
                         {(['beginner', 'intermediate', 'advanced'] as const).map((level) => (
                             <Button
@@ -174,6 +186,20 @@ export const CourseCatalogPage = () => {
                             {[...Array(6)].map((_, i) => (
                                 <div key={i} className="bg-white dark:bg-gray-900 rounded-xl h-96 animate-pulse border border-gray-100 dark:border-gray-800" />
                             ))}
+                        </div>
+                    ) : error ? (
+                        <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-dashed border-gray-200 dark:border-gray-800 px-5">
+                            <Search className="h-12 w-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{error}</h3>
+                            <p className="text-gray-500 dark:text-gray-400 mb-5">Please retry or adjust your search filters.</p>
+                            <button
+                                onClick={loadCourses}
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white shadow-sm transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                                aria-label="Refresh courses"
+                                title="Refresh courses"
+                            >
+                                <RefreshCw className="h-5 w-5" />
+                            </button>
                         </div>
                     ) : courses.length === 0 ? (
                         <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
