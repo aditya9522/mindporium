@@ -1,5 +1,6 @@
 from typing import Any
 
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, distinct, case
@@ -15,11 +16,37 @@ router = APIRouter()
 
 @router.get("/me", response_model=UserResponse)
 async def read_user_me(
+    db: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Get current user.
     """
+    now = datetime.utcnow()
+    today = now.date()
+
+    if not current_user.last_active_at:
+        current_user.streak_count = 1
+        current_user.last_active_at = now
+        db.add(current_user)
+        await db.commit()
+        await db.refresh(current_user)
+    else:
+        last_active_date = current_user.last_active_at.date()
+        delta_days = (today - last_active_date).days
+        if delta_days == 1:
+            current_user.streak_count += 1
+            current_user.last_active_at = now
+            db.add(current_user)
+            await db.commit()
+            await db.refresh(current_user)
+        elif delta_days > 1:
+            current_user.streak_count = 1
+            current_user.last_active_at = now
+            db.add(current_user)
+            await db.commit()
+            await db.refresh(current_user)
+
     return current_user
 
 

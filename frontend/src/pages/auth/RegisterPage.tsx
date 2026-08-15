@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,7 +7,7 @@ import { Input } from '../../components/ui/Input';
 import { BookOpen, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import authSignupIllustration from '../../assets/auth-signup-illustration.svg';
 
 const registerSchema = z.object({
@@ -25,10 +25,63 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export const RegisterPage = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const refCode = searchParams.get('ref');
     const registerUser = useAuthStore((state) => state.register);
     const login = useAuthStore((state) => state.login);
+    const signupWithGoogle = useAuthStore((state) => state.signupWithGoogle);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+
+    useEffect(() => {
+        const initializeGoogle = () => {
+            if (window.google?.accounts?.id) {
+                window.google.accounts.id.initialize({
+                    client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
+                    callback: async (response: any) => {
+                        try {
+                            const user = await signupWithGoogle(response.credential, refCode || undefined);
+                            toast.success('Welcome to Mindporium!');
+                            if (user.role === 'admin') {
+                                navigate('/admin/dashboard');
+                            } else if (user.role === 'instructor') {
+                                navigate('/instructor/dashboard');
+                            } else {
+                                navigate('/dashboard');
+                            }
+                        } catch (err: any) {
+                            toast.error(err.response?.data?.detail || 'Google sign up failed');
+                        }
+                    },
+                    cancel_on_tap_outside: false
+                });
+
+                window.google.accounts.id.renderButton(
+                    document.getElementById("googleSignUpButton"),
+                    { 
+                        theme: "outline", 
+                        size: "large", 
+                        width: 382,
+                        text: "signup_with",
+                        shape: "rectangular"
+                    }
+                );
+            }
+        };
+
+        initializeGoogle();
+
+        const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+        if (script) {
+            script.addEventListener('load', initializeGoogle);
+        }
+
+        return () => {
+            if (script) {
+                script.removeEventListener('load', initializeGoogle);
+            }
+        };
+    }, [navigate, signupWithGoogle]);
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -44,6 +97,7 @@ export const RegisterPage = () => {
                 full_name: data.fullName,
                 password: data.password,
                 role: data.role,
+                ...(refCode && { referral_code: refCode })
             });
 
             // Auto login after register
@@ -96,6 +150,17 @@ export const RegisterPage = () => {
                         </div>
                         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Create account</h2>
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 font-medium">Join Mindporium and start your learning journey</p>
+                    </div>
+
+                    {/* Google Signup Container */}
+                    <div className="w-full">
+                        <div id="googleSignUpButton" className="w-full flex justify-center py-0.5" />
+                    </div>
+
+                    <div className="relative flex items-center my-6">
+                        <div className="flex-grow border-t border-gray-200 dark:border-gray-800"></div>
+                        <span className="flex-shrink mx-4 text-xs font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-widest bg-white dark:bg-gray-950 px-2">or sign up with email</span>
+                        <div className="flex-grow border-t border-gray-200 dark:border-gray-800"></div>
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

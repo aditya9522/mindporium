@@ -49,7 +49,13 @@ export const LoginPage = () => {
                                 navigate('/dashboard');
                             }
                         } catch (err: any) {
-                            toast.error(err.response?.data?.detail || 'Google sign in failed');
+                            const detail = err.response?.data?.detail || '';
+                            if (err.response?.status === 404 || detail.includes("sign up") || detail.includes("not found")) {
+                                toast.error('No account exists for this Google user. Redirecting to sign up...');
+                                navigate('/register');
+                            } else {
+                                toast.error(detail || 'Google sign in failed');
+                            }
                         }
                     },
                     cancel_on_tap_outside: false

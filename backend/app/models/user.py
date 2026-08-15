@@ -39,6 +39,10 @@ class User(TimestampMixin, Base):
     timezone = Column(String(50), default="UTC", nullable=False)
     language = Column(String(10), default="en", nullable=False)
 
+    # Gamification
+    streak_count = Column(Integer, default=0, nullable=False)
+    last_active_at = Column(DateTime, nullable=True)
+
     # Relationships
     created_courses = relationship("Course", back_populates="created_by_user")
     created_communities = relationship("Community", back_populates="created_by_user")

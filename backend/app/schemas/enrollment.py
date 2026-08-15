@@ -10,7 +10,7 @@ class EnrollmentBase(BaseModel):
 
 
 class EnrollmentCreate(EnrollmentBase):
-    pass
+    coupon_code: Optional[str] = None
 
 
 class EnrollmentResponse(BaseModel):

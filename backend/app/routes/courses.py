@@ -1,9 +1,11 @@
 from typing import Any, List, Optional
+import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, or_, func, distinct
 from sqlalchemy.orm import selectinload
+from pydantic import BaseModel
 
 from app.api import deps
 from app.models.course import Course
@@ -11,11 +13,23 @@ from app.models.enrollment import Enrollment
 from app.models.subject import Subject
 from app.models.feedback import CourseFeedback
 from app.models.user import User
+from app.models.coupon import Coupon
 from app.schemas.course import CourseCreate, CourseResponse, CourseUpdate, CourseDetailResponse
 from app.models.enums import RoleEnum
 from app.services.notification_service import notification_service
 from app.core.redis import redis_manager
 import json
+
+# ---------- Inline schemas for coupon endpoints ----------
+class CouponValidateRequest(BaseModel):
+    code: str
+
+class CouponCreateRequest(BaseModel):
+    code: str
+    discount_percent: float = 10.0
+    valid_until: Optional[str] = None
+    max_uses: int = 1
+# ---------------------------------------------------------
 
 router = APIRouter()
 
@@ -275,3 +289,69 @@ async def read_all_courses_admin(
         courses_with_stats.append(course)
         
     return courses_with_stats
+
+
+@router.post("/coupons/validate")
+async def validate_coupon(
+    request: CouponValidateRequest,
+    db: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user)
+) -> Any:
+    """
+    Validate a discount coupon code before enrollment checkout.
+    """
+    result = await db.execute(select(Coupon).where(Coupon.code == request.code))
+    coupon = result.scalars().first()
+    
+    if not coupon:
+        raise HTTPException(status_code=404, detail="Invalid coupon code")
+        
+    if not coupon.is_active:
+        raise HTTPException(status_code=400, detail="Coupon is no longer active")
+        
+    if coupon.valid_until and coupon.valid_until < datetime.datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Coupon has expired")
+        
+    if coupon.uses_count >= coupon.max_uses:
+        raise HTTPException(status_code=400, detail="Coupon usage limit reached")
+        
+    return {
+        "valid": True,
+        "discount_percent": coupon.discount_percent,
+        "code": coupon.code
+    }
+
+
+@router.post("/coupons/create")
+async def create_coupon(
+    request: CouponCreateRequest,
+    db: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_superuser)
+) -> Any:
+    """
+    Generate a new coupon code (Admin only).
+    """
+    # Check existing
+    result = await db.execute(select(Coupon).where(Coupon.code == request.code))
+    existing = result.scalars().first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Coupon code already exists")
+    
+    valid_until_dt = None
+    if request.valid_until:
+        try:
+            valid_until_dt = datetime.datetime.fromisoformat(request.valid_until)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format for valid_until. Use ISO 8601 (e.g. 2026-12-31T00:00:00)")
+            
+    coupon = Coupon(
+        code=request.code,
+        discount_percent=request.discount_percent,
+        valid_until=valid_until_dt,
+        max_uses=request.max_uses
+    )
+    db.add(coupon)
+    await db.commit()
+    await db.refresh(coupon)
+    
+    return {"message": "Coupon created successfully", "coupon": {"code": coupon.code, "discount": coupon.discount_percent}}

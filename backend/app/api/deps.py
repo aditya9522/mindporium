@@ -1,5 +1,5 @@
 from typing import AsyncGenerator, Optional
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from pydantic import ValidationError
@@ -24,6 +24,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def get_current_user(
+    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
     token: str = Depends(reusable_oauth2)
 ) -> User:
@@ -44,6 +45,10 @@ async def get_current_user(
     
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+        
+    from app.utils.activity_tracker import update_user_activity
+    background_tasks.add_task(update_user_activity, user.id, user.last_active_at, user.streak_count)
+        
     return user
 
 

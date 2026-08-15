@@ -19,6 +19,11 @@ interface MenuItem {
     beta?: boolean;
 }
 
+interface MenuSection {
+    title: string;
+    items: MenuItem[];
+}
+
 export const DashboardLayout = () => {
     const { isAuthenticated, checkAuth, isLoading, user } = useAuthStore();
     const { isOpen: isSidebarOpen, toggleSidebar, customSidebarContent } = useSidebarStore();
@@ -48,127 +53,196 @@ export const DashboardLayout = () => {
         return null;
     }
 
-    // ── Role-based menu items ─────────────────────────────────────────────────
-    const getMenuItems = (): MenuItem[] => {
+    // ── Role-based menu sections ──────────────────────────────────────────────
+    const getMenuSections = (): MenuSection[] => {
         if (!user) {
             return [
-                { icon: Home,          label: 'Dashboard',   path: '/' },
-                { icon: BookOpen,      label: 'Courses',     path: '/courses' },
-                { icon: GraduationCap, label: 'Instructors', path: '/instructors' },
+                {
+                    title: 'Explore',
+                    items: [
+                        { icon: Home,          label: 'Dashboard',   path: '/' },
+                        { icon: BookOpen,      label: 'Courses',     path: '/courses' },
+                        { icon: GraduationCap, label: 'Instructors', path: '/instructors' },
+                    ]
+                }
             ];
         }
 
         if (user.role === 'admin') {
             return [
-                { icon: Home,          label: 'Dashboard',     path: '/admin/dashboard' },
-                { icon: Users,         label: 'Users',         path: '/admin/users' },
-                { icon: GraduationCap, label: 'Instructors',   path: '/admin/instructors' },
-                { icon: BookOpen,      label: 'Courses',       path: '/admin/courses' },
-                { icon: Megaphone,     label: 'Announcements', path: '/admin/announcements' },
-                { icon: StickyNote,    label: 'Notes',         path: '/notes' },
-                { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
-                { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
-                { icon: Shield,        label: 'System',        path: '/admin/system' },
-                { icon: MessageSquare, label: 'Feedback',      path: '/admin/feedback' },
-                { icon: Users,         label: 'Community',     path: '/community' },
-                { icon: Bot,           label: 'AI Assistant',  path: '/chatbot' },
-                { icon: Settings,      label: 'Settings',      path: '/settings' },
+                {
+                    title: 'Workspace',
+                    items: [
+                        { icon: Home,          label: 'Dashboard',     path: '/admin/dashboard' },
+                        { icon: Users,         label: 'Users',         path: '/admin/users' },
+                        { icon: GraduationCap, label: 'Instructors',   path: '/admin/instructors' },
+                        { icon: BookOpen,      label: 'Courses',       path: '/admin/courses' },
+                    ]
+                },
+                {
+                    title: 'Content & Media',
+                    items: [
+                        { icon: Megaphone,     label: 'Announcements', path: '/admin/announcements' },
+                        { icon: StickyNote,    label: 'Notes',         path: '/notes' },
+                        { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
+                        { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
+                    ]
+                },
+                {
+                    title: 'System & Support',
+                    items: [
+                        { icon: Shield,        label: 'System',        path: '/admin/system' },
+                        { icon: MessageSquare, label: 'Feedback',      path: '/admin/feedback' },
+                        { icon: Users,         label: 'Community',     path: '/community' },
+                        { icon: Bot,           label: 'AI Assistant',  path: '/chatbot' },
+                        { icon: Settings,      label: 'Settings',      path: '/settings' },
+                    ]
+                }
             ];
         }
 
         if (user.role === 'instructor') {
             return [
-                { icon: Home,          label: 'Dashboard',    path: '/instructor/dashboard' },
-                { icon: BookOpen,      label: 'My Courses',   path: '/instructor/courses' },
-                { icon: Users,         label: 'Students',     path: '/instructor/students' },
-                { icon: FileText,      label: 'Tests',        path: '/instructor/tests' },
-                { icon: Video,         label: 'Classrooms',   path: '/classrooms' },
-                { icon: Calendar,      label: 'Attendance',   path: '/instructor/attendance' },
-                { icon: StickyNote,    label: 'My Notes',     path: '/notes' },
-                { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
-                { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
-                { icon: Users,         label: 'Community',    path: '/community' },
-                { icon: BarChart3,     label: 'Analytics',    path: '/instructor/analytics' },
-                { icon: MessageSquare, label: 'Feedback',     path: '/instructor/feedback' },
-                { icon: User,          label: 'My Profile',   path: '/instructor/profile' },
-                { icon: Bot,           label: 'AI Assistant', path: '/chatbot' },
-                { icon: Settings,      label: 'Settings',     path: '/settings' },
+                {
+                    title: 'Workspace',
+                    items: [
+                        { icon: Home,          label: 'Dashboard',    path: '/instructor/dashboard' },
+                        { icon: BookOpen,      label: 'My Courses',   path: '/instructor/courses' },
+                        { icon: Users,         label: 'Students',     path: '/instructor/students' },
+                    ]
+                },
+                {
+                    title: 'Academic',
+                    items: [
+                        { icon: FileText,      label: 'Tests',        path: '/instructor/tests' },
+                        { icon: Video,         label: 'Classrooms',   path: '/classrooms' },
+                        { icon: Calendar,      label: 'Attendance',   path: '/instructor/attendance' },
+                    ]
+                },
+                {
+                    title: 'Content & Growth',
+                    items: [
+                        { icon: StickyNote,    label: 'My Notes',     path: '/notes' },
+                        { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
+                        { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
+                        { icon: BarChart3,     label: 'Analytics',    path: '/instructor/analytics' },
+                    ]
+                },
+                {
+                    title: 'Connect',
+                    items: [
+                        { icon: Users,         label: 'Community',    path: '/community' },
+                        { icon: MessageSquare, label: 'Feedback',     path: '/instructor/feedback' },
+                        { icon: User,          label: 'My Profile',   path: '/instructor/profile' },
+                        { icon: Bot,           label: 'AI Assistant', path: '/chatbot' },
+                        { icon: Settings,      label: 'Settings',     path: '/settings' },
+                    ]
+                }
             ];
         }
 
-        // Student menu
+        // Student menu sections
         return [
-            { icon: Home,              label: 'Dashboard',        path: '/dashboard' },
-            { icon: BookOpen,          label: 'Courses',          path: '/courses' },
-            { icon: BookOpen,          label: 'My Learning',      path: '/my-learning' },
-            { icon: StickyNote,        label: 'My Notes',         path: '/notes',               new: true },
-            { icon: FolderOpen,        label: 'Media Library',    path: '/media-library' },
-            { icon: FileDiff,          label: 'Text Compare',     path: '/text-compare' },
-            { icon: FileText,          label: 'Tests',            path: '/tests' },
-            { icon: Video,             label: 'Classrooms',       path: '/classrooms' },
-            { icon: Calendar,          label: 'Attendance',       path: '/student/attendance' },
-            { icon: Users,             label: 'Community',        path: '/community' },
-            { icon: GraduationCap,     label: 'Instructors',      path: '/instructors' },
-            { icon: BriefcaseBusiness, label: 'Career Workspace', path: '/career/job-search' },
-            { icon: MessageSquare,     label: 'Feedback',         path: '/feedback' },
-            { icon: Bell,              label: 'Notifications',    path: '/notifications' },
-            { icon: Bot,               label: 'AI Assistant',     path: '/chatbot' },
-            { icon: Settings,          label: 'Settings',         path: '/settings' },
+            {
+                title: 'Workspace',
+                items: [
+                    { icon: Home,              label: 'Dashboard',        path: '/dashboard' },
+                    { icon: BookOpen,          label: 'Courses',          path: '/courses' },
+                    { icon: BookOpen,          label: 'My Learning',      path: '/my-learning' },
+                    { icon: StickyNote,        label: 'My Notes',         path: '/notes',               new: true },
+                    { icon: FolderOpen,        label: 'Media Library',    path: '/media-library' },
+                ]
+            },
+            {
+                title: 'Academic & Live',
+                items: [
+                    { icon: Video,             label: 'Classrooms',       path: '/classrooms' },
+                    { icon: FileText,          label: 'Tests',            path: '/tests' },
+                    { icon: Calendar,          label: 'Attendance',       path: '/student/attendance' },
+                ]
+            },
+            {
+                title: 'Growth & AI Tools',
+                items: [
+                    { icon: BriefcaseBusiness, label: 'Career Workspace', path: '/career/job-search' },
+                    { icon: Bot,               label: 'AI Assistant',     path: '/chatbot' },
+                    { icon: FileDiff,          label: 'Text Compare',     path: '/text-compare' },
+                ]
+            },
+            {
+                title: 'Connect & Support',
+                items: [
+                    { icon: Users,             label: 'Community',        path: '/community' },
+                    { icon: GraduationCap,     label: 'Instructors',      path: '/instructors' },
+                    { icon: Bell,              label: 'Notifications',    path: '/notifications' },
+                    { icon: MessageSquare,     label: 'Feedback',         path: '/feedback' },
+                    { icon: Settings,          label: 'Settings',         path: '/settings' },
+                ]
+            }
         ];
     };
 
-    const menuItems = getMenuItems();
+    const menuSections = getMenuSections();
 
     // ── Sidebar Component ─────────────────────────────────────────────────────
     const renderSidebarContent = () => (
-        <div className="h-full min-h-0 flex flex-col pt-2 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="h-full min-h-0 flex flex-col pt-4 bg-white dark:bg-gray-900 transition-colors duration-300">
             {customSidebarContent ? (
                 <div className="animate-in fade-in slide-in-from-left-4 duration-300 flex-1 min-h-0 overflow-y-auto">
                     {customSidebarContent}
                 </div>
             ) : (
-                <nav className="space-y-0.5 lg:space-y-1 px-2.5 lg:px-3 flex-1 min-h-0 overflow-y-auto pb-3 lg:pb-4">
-                    {menuItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive =
-                            location.pathname === item.path ||
-                            (item.path !== '/' && item.path !== '/courses' && location.pathname.startsWith(item.path));
+                <nav className="px-2.5 lg:px-3 flex-1 min-h-0 overflow-y-auto pb-3 lg:pb-4 space-y-4">
+                    {menuSections.map((section) => (
+                        <div key={section.title} className="space-y-1">
+                            <h3 className="px-3 text-[10px] font-bold tracking-wider text-gray-400 dark:text-gray-500 uppercase select-none">
+                                {section.title}
+                            </h3>
+                            <div className="space-y-0.5 lg:space-y-1">
+                                {section.items.map((item) => {
+                                    const Icon = item.icon;
+                                    const isActive =
+                                        location.pathname === item.path ||
+                                        (item.path !== '/' && item.path !== '/courses' && location.pathname.startsWith(item.path));
 
-                        return (
-                            <Link
-                                key={item.path + item.label}
-                                to={item.path}
-                                onClick={() => window.innerWidth < 1024 && toggleSidebar()}
-                                className={`group flex items-center gap-3 px-3 py-2 lg:py-2.5 rounded-xl transition-all duration-200 ${
-                                    isActive
-                                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 shadow-sm font-semibold'
-                                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
-                                }`}
-                            >
-                                <Icon
-                                    className={`h-5 w-5 shrink-0 transition-colors ${
-                                        isActive
-                                            ? 'text-primary-600 dark:text-primary-400'
-                                            : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'
-                                    }`}
-                                />
-                                <span className="min-w-0 flex-1 truncate text-sm">{item.label}</span>
-                                {item.new && (
-                                    <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300 shrink-0">
-                                        New
-                                    </span>
-                                )}
-                                {item.beta && (
-                                    <span className="rounded-full bg-amber-100 dark:bg-amber-950/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300 shrink-0">
-                                        Beta
-                                    </span>
-                                )}
-                                {isActive && (
-                                    <div className="h-1.5 w-1.5 rounded-full bg-primary-600 shrink-0" />
-                                )}
-                            </Link>
-                        );
-                    })}
+                                    return (
+                                        <Link
+                                            key={item.path + item.label}
+                                            to={item.path}
+                                            onClick={() => window.innerWidth < 1024 && toggleSidebar()}
+                                            className={`group flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 ${
+                                                isActive
+                                                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 shadow-sm font-semibold'
+                                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
+                                            }`}
+                                        >
+                                            <Icon
+                                                className={`h-4.5 w-4.5 shrink-0 transition-colors ${
+                                                    isActive
+                                                        ? 'text-primary-600 dark:text-primary-400'
+                                                        : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'
+                                                }`}
+                                            />
+                                            <span className="min-w-0 flex-1 truncate text-sm">{item.label}</span>
+                                            {item.new && (
+                                                <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300 shrink-0">
+                                                    New
+                                                </span>
+                                            )}
+                                            {item.beta && (
+                                                <span className="rounded-full bg-amber-100 dark:bg-amber-950/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300 shrink-0">
+                                                    Beta
+                                                </span>
+                                            )}
+                                            {isActive && (
+                                                <div className="h-1.5 w-1.5 rounded-full bg-primary-600 shrink-0" />
+                                            )}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
                 </nav>
             )}
 

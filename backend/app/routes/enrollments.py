@@ -52,7 +52,20 @@ async def enroll_course(
     if existing_enrollment:
         raise HTTPException(status_code=400, detail="Already enrolled in this course")
     
-    # 3. Create enrollment
+    # 3. Handle Coupon if provided
+    if enrollment_in.coupon_code:
+        from app.models.coupon import Coupon
+        coupon_result = await db.execute(select(Coupon).where(Coupon.code == enrollment_in.coupon_code))
+        coupon = coupon_result.scalars().first()
+        if coupon and coupon.is_active and coupon.uses_count < coupon.max_uses:
+            if not coupon.valid_until or coupon.valid_until > datetime.utcnow():
+                coupon.uses_count += 1
+                db.add(coupon)
+            else:
+                # Expired coupon, silently ignore or throw error. The validation endpoint already checked it.
+                pass
+
+    # 4. Create enrollment
     enrollment = Enrollment(
         user_id=current_user.id,
         course_id=enrollment_in.course_id,

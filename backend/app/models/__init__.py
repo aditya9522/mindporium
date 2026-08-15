@@ -26,3 +26,5 @@ from .test import Test, TestQuestion
 from .career import PublishedPortfolio
 from .note import Note
 from .media_asset import MediaAsset
+from .coupon import Coupon
+from .referral import Referral

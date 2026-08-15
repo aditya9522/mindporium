@@ -20,6 +20,8 @@ export interface User {
     social_links?: Record<string, string>;
     banner_image?: string;
     timezone?: string;
+    streak_count?: number;
+    last_active_at?: string;
     created_at?: string;
 }
 

@@ -25,6 +25,14 @@ export const authService = {
         return response.data;
     },
 
+    signupWithGoogle: async (idToken: string, referralCode?: string): Promise<AuthResponse> => {
+        const response = await api.post<AuthResponse>('/auth/google/signup', {
+            id_token: idToken,
+            ...(referralCode && { referral_code: referralCode })
+        });
+        return response.data;
+    },
+
     getCurrentUser: async (): Promise<User> => {
         const response = await api.get<User>('/users/me');
         return response.data;

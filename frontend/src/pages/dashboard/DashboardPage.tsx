@@ -3,7 +3,9 @@ import type React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth.store';
 import { studentService } from '../../services/student.service';
-import { Activity, Award, BookOpen, Calendar, CheckCircle2, Clock, Flame, RefreshCw, Target, TrendingUp } from 'lucide-react';
+import { Activity, Award, BookOpen, Calendar, CheckCircle2, Clock, Flame, RefreshCw, Target, TrendingUp, Gift, Copy } from 'lucide-react';
+import api from '../../lib/axios';
+import toast from 'react-hot-toast';
 import {
     Area,
     AreaChart,
@@ -35,6 +37,10 @@ export const DashboardPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [dashboardData, setDashboardData] = useState<any>(null);
 
+    const [referralInfo, setReferralInfo] = useState<any>(null);
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [inviting, setInviting] = useState(false);
+
     const fetchDashboard = useCallback(async () => {
         setLoading(true);
         setError(null);
@@ -49,9 +55,42 @@ export const DashboardPage = () => {
         }
     }, []);
 
+    const fetchReferrals = useCallback(async () => {
+        try {
+            const { data } = await api.get('/auth/referrals/info');
+            setReferralInfo(data);
+        } catch (error) {
+            console.error('Failed to fetch referrals:', error);
+        }
+    }, []);
+
     useEffect(() => {
         fetchDashboard();
-    }, [fetchDashboard]);
+        fetchReferrals();
+    }, [fetchDashboard, fetchReferrals]);
+
+    const handleInvite = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!inviteEmail) return;
+        setInviting(true);
+        try {
+            await api.post('/auth/referrals/invite', { email: inviteEmail });
+            toast.success(`Invitation sent to ${inviteEmail}`);
+            setInviteEmail('');
+            fetchReferrals();
+        } catch (error: any) {
+            toast.error(error.response?.data?.detail || 'Failed to send invite');
+        } finally {
+            setInviting(false);
+        }
+    };
+
+    const handleCopyLink = () => {
+        if (referralInfo?.referral_link) {
+            navigator.clipboard.writeText(referralInfo.referral_link);
+            toast.success('Referral link copied to clipboard!');
+        }
+    };
 
     const overview = dashboardData?.overview ?? {};
     const activityData = dashboardData?.charts?.activity ?? [];
@@ -60,6 +99,13 @@ export const DashboardPage = () => {
     const completedTests = Number(overview.total_tests_completed || 0);
     const enrolledCourses = Number(overview.total_courses || 0);
     const focusScore = Math.min(100, Math.round((averageScore * 0.5) + (completedTests * 8) + (attended * 2)));
+
+    const focusBadge = useMemo(() => {
+        if (focusScore <= 30) return { title: 'Cognitive Novice', color: 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-950/30 dark:text-blue-300 dark:border-blue-900/30' };
+        if (focusScore <= 60) return { title: 'Mind Explorer', color: 'bg-indigo-50 text-indigo-700 border-indigo-100 dark:bg-indigo-950/30 dark:text-indigo-300 dark:border-indigo-900/30' };
+        if (focusScore <= 85) return { title: 'Knowledge Architect', color: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-900/30' };
+        return { title: 'Cognitive Master', color: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-900/30' };
+    }, [focusScore]);
 
     const stats = [
         { icon: BookOpen, label: 'Enrolled Courses', value: enrolledCourses, note: 'Active learning paths' },
@@ -106,7 +152,7 @@ export const DashboardPage = () => {
                     <div className="p-5 sm:p-8">
                         <div className="flex flex-wrap items-center gap-2">
                             <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-black uppercase tracking-wide text-primary-700 dark:bg-primary-950 dark:text-primary-300">Student Dashboard</span>
-                            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">Interactive</span>
+                            <span className={`rounded-full border px-3 py-1 text-xs font-bold ${focusBadge.color}`}>{focusBadge.title} Rank</span>
                         </div>
                         <h1 className="mt-4 text-3xl sm:text-4xl font-black tracking-tight text-gray-950 dark:text-white">
                             Welcome back, {user?.full_name?.split(' ')[0] || 'Student'}
@@ -309,6 +355,75 @@ export const DashboardPage = () => {
                                     <Link to="/courses" className="font-bold text-primary-600 dark:text-primary-400">Browse Courses</Link>
                                 </div>
                             )}
+                        </div>
+                    </DashboardPanel>
+                </section>
+            )}
+
+            {!loading && (
+                <section className="mt-6">
+                    <DashboardPanel title="Invite Friends, Earn Rewards" icon={<Gift className="h-5 w-5" />}>
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950/50">
+                                <h3 className="mb-2 font-bold text-gray-900 dark:text-gray-100">Share your invite link</h3>
+                                <p className="mb-4 text-sm text-gray-500">When friends sign up and enroll using your link, you both get a discount coupon!</p>
+                                <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900">
+                                    <input
+                                        type="text"
+                                        readOnly
+                                        value={referralInfo?.referral_link || 'Loading...'}
+                                        className="flex-1 bg-transparent px-2 text-sm text-gray-600 outline-none dark:text-gray-300"
+                                    />
+                                    <button
+                                        onClick={handleCopyLink}
+                                        className="rounded-lg bg-primary-50 p-2 text-primary-600 transition hover:bg-primary-100 dark:bg-primary-950 dark:text-primary-400 dark:hover:bg-primary-900"
+                                        title="Copy Link"
+                                    >
+                                        <Copy className="h-4 w-4" />
+                                    </button>
+                                </div>
+                                <form onSubmit={handleInvite} className="mt-4 flex items-center gap-2">
+                                    <input
+                                        type="email"
+                                        placeholder="Friend's email address"
+                                        value={inviteEmail}
+                                        onChange={(e) => setInviteEmail(e.target.value)}
+                                        className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={inviting}
+                                        className="rounded-xl bg-primary-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+                                    >
+                                        {inviting ? 'Sending...' : 'Invite'}
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950/50">
+                                <h3 className="mb-4 font-bold text-gray-900 dark:text-gray-100">Your Referrals</h3>
+                                <div className="space-y-3">
+                                    {referralInfo?.referrals?.length > 0 ? (
+                                        referralInfo.referrals.map((ref: any, idx: number) => (
+                                            <div key={idx} className="flex items-center justify-between rounded-xl bg-white p-3 shadow-sm dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+                                                <div>
+                                                    <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{ref.email}</p>
+                                                    <p className="text-xs text-gray-500">{new Date(ref.date).toLocaleDateString()}</p>
+                                                </div>
+                                                <span className={`rounded-full px-2 py-1 text-xs font-bold uppercase ${ref.status === 'registered' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400'
+                                                        : ref.status === 'completed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400'
+                                                            : 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400'
+                                                    }`}>
+                                                    {ref.status}
+                                                </span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-sm text-gray-500 text-center py-4">No referrals yet. Start inviting friends!</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </DashboardPanel>
                 </section>

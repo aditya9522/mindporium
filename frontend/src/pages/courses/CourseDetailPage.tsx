@@ -4,6 +4,7 @@ import { courseService } from '../../services/course.service';
 import { subjectService } from '../../services/subject.service';
 import { enrollmentService } from '../../services/enrollment.service';
 import { feedbackService } from '../../services/feedback.service';
+import api from '../../lib/axios';
 import type { Course } from '../../types/course';
 import type { Subject } from '../../types/enrollment';
 import { useAuthStore } from '../../store/auth.store';
@@ -33,6 +34,31 @@ export const CourseDetailPage = () => {
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [courseReviews, setCourseReviews] = useState<any[]>([]);
     const [loadingReviews, setLoadingReviews] = useState(false);
+
+    // Coupon state
+    const [couponCode, setCouponCode] = useState('');
+    const [validatingCoupon, setValidatingCoupon] = useState(false);
+    const [couponDiscount, setCouponDiscount] = useState(0);
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode) return;
+        setValidatingCoupon(true);
+        try {
+            const { data } = await api.post('/courses/coupons/validate', { code: couponCode });
+            if (data.valid) {
+                setCouponDiscount(data.discount_percent);
+                toast.success(`Coupon applied! ${data.discount_percent}% off`);
+            } else {
+                toast.error('Invalid coupon code');
+                setCouponDiscount(0);
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.detail || 'Invalid coupon code');
+            setCouponDiscount(0);
+        } finally {
+            setValidatingCoupon(false);
+        }
+    };
 
     useEffect(() => {
         if (id) {
@@ -83,7 +109,10 @@ export const CourseDetailPage = () => {
 
         try {
             setEnrolling(true);
-            await enrollmentService.enroll({ course_id: Number(id) });
+            await enrollmentService.enroll({ 
+                course_id: Number(id),
+                ...(couponCode && couponDiscount > 0 ? { coupon_code: couponCode } : {})
+            });
             setIsEnrolled(true);
             toast.success('Successfully enrolled in course!');
         } catch (error: any) {
@@ -163,6 +192,26 @@ export const CourseDetailPage = () => {
                                 <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
                                 <span>{course.rating ? course.rating.toFixed(1) : 'New'} rating</span>
                             </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="bg-white/10 hover:bg-white/20 text-white border-white/20 ml-auto"
+                                onClick={() => {
+                                    if (navigator.share) {
+                                        navigator.share({
+                                            title: course.title,
+                                            text: `Check out this course: ${course.title} on Mindporium!`,
+                                            url: window.location.href,
+                                        }).catch(console.error);
+                                    } else {
+                                        navigator.clipboard.writeText(window.location.href);
+                                        toast.success("Link copied to clipboard!");
+                                    }
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                Share Course
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -373,9 +422,19 @@ export const CourseDetailPage = () => {
                                     {course.category === 'free' ? (
                                         <span className="text-4xl font-extrabold text-emerald-600 tracking-tight">Free</span>
                                     ) : (
-                                        <div className="flex items-baseline gap-1 text-gray-900 dark:text-gray-100">
-                                            <span className="text-4xl font-extrabold tracking-tight">${course.price}</span>
-                                            <span className="text-lg text-gray-400 font-medium tracking-tight">USD</span>
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex items-baseline gap-1 text-gray-900 dark:text-gray-100">
+                                                {couponDiscount > 0 && (
+                                                    <span className="text-xl text-gray-400 line-through mr-2 font-bold">${course.price}</span>
+                                                )}
+                                                <span className="text-4xl font-extrabold tracking-tight">
+                                                    ${couponDiscount > 0 ? ((course.price || 0) * (1 - couponDiscount / 100)).toFixed(2) : course.price}
+                                                </span>
+                                                <span className="text-lg text-gray-400 font-medium tracking-tight">USD</span>
+                                            </div>
+                                            {couponDiscount > 0 && (
+                                                <span className="text-sm font-bold text-emerald-500">Coupon applied: {couponDiscount}% off!</span>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -406,19 +465,40 @@ export const CourseDetailPage = () => {
                                             Instructor Account (Preview Mode)
                                         </div>
                                     ) : (
-                                        <Button
-                                            className="w-full h-14 text-lg font-bold shadow-xl shadow-indigo-200 dark:shadow-none rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:-translate-y-0.5 relative overflow-hidden group"
-                                            size="lg"
-                                            onClick={handleEnroll}
-                                            isLoading={enrolling}
-                                            disabled={enrolling}
-                                        >
-                                            <span className="relative z-10 flex items-center justify-center gap-2">
-                                                {enrolling ? 'Enrolling...' : 'Enroll Now'}
-                                                {!enrolling && <ChevronRight className="w-5 h-5 opacity-80" />}
-                                            </span>
-                                            <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                                        </Button>
+                                        <>
+                                            {course.category !== 'free' && (
+                                                <div className="flex gap-2">
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Coupon code" 
+                                                        value={couponCode}
+                                                        onChange={(e) => setCouponCode(e.target.value)}
+                                                        className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:text-white"
+                                                    />
+                                                    <Button 
+                                                        variant="outline" 
+                                                        onClick={handleApplyCoupon}
+                                                        disabled={validatingCoupon || !couponCode}
+                                                        className="rounded-xl border-gray-200 dark:border-gray-700"
+                                                    >
+                                                        {validatingCoupon ? 'Validating...' : 'Apply'}
+                                                    </Button>
+                                                </div>
+                                            )}
+                                            <Button
+                                                className="w-full h-14 text-lg font-bold shadow-xl shadow-indigo-200 dark:shadow-none rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:-translate-y-0.5 relative overflow-hidden group"
+                                                size="lg"
+                                                onClick={handleEnroll}
+                                                isLoading={enrolling}
+                                                disabled={enrolling}
+                                            >
+                                                <span className="relative z-10 flex items-center justify-center gap-2">
+                                                    {enrolling ? 'Enrolling...' : 'Enroll Now'}
+                                                    {!enrolling && <ChevronRight className="w-5 h-5 opacity-80" />}
+                                                </span>
+                                                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                                            </Button>
+                                        </>
                                     )}
                                     <div className="flex items-center justify-center gap-2 text-xs text-gray-400 font-medium">
                                         <div className="w-2 h-2 rounded-full bg-emerald-500"></div>

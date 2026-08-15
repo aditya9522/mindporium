@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
-import { BookOpen, MessageSquare, Menu, ChevronDown, LayoutDashboard, LogOut, Settings, Video, Moon, Sun } from 'lucide-react';
+import { BookOpen, MessageSquare, Menu, ChevronDown, LayoutDashboard, LogOut, Settings, Video, Moon, Sun, Flame } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import { useSidebarStore } from '../../store/sidebar.store';
 import { NotificationDropdown } from '../notifications/NotificationDropdown';
@@ -102,6 +102,16 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                         <div className="flex items-center gap-4">
                             {isAuthenticated && user ? (
                                 <>
+                                    {user.streak_count !== undefined && user.streak_count > 0 && (
+                                        <div 
+                                            className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 dark:bg-amber-950/40 rounded-full border border-amber-100 dark:border-amber-900/40 text-amber-600 dark:text-amber-400 font-bold text-xs select-none"
+                                            title={`${user.streak_count} day learning streak!`}
+                                        >
+                                            <Flame className="w-4 h-4 fill-amber-500 text-amber-500 animate-pulse" />
+                                            <span>{user.streak_count}</span>
+                                        </div>
+                                    )}
+
                                     <button
                                         onClick={toggleDarkMode}
                                         className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full transition-all duration-300"

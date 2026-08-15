@@ -139,6 +139,9 @@ export const StudentTestsPage = () => {
                                                 <th className="px-8 py-5 text-left text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                                                     Submitted
                                                 </th>
+                                                <th className="px-8 py-5 text-right text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                                                    Actions
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-50 dark:divide-gray-800">
@@ -191,7 +194,31 @@ export const StudentTestsPage = () => {
                                                                 </span>
                                                             </div>
                                                         </td>
+                                                        <td className="px-8 py-5 whitespace-nowrap text-right">
+                                                            {isPassed && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        const text = `I just passed Test #${submission.test_id} on Mindporium with a score of ${percentage}%! 🚀`;
+                                                                        if (navigator.share) {
+                                                                            navigator.share({
+                                                                                title: 'My Test Result',
+                                                                                text: text,
+                                                                                url: window.location.origin
+                                                                            }).catch(console.error);
+                                                                        } else {
+                                                                            navigator.clipboard.writeText(text);
+                                                                            toast.success("Result copied to clipboard!");
+                                                                        }
+                                                                    }}
+                                                                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+                                                                    title="Share Result"
+                                                                >
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                                                </button>
+                                                            )}
+                                                        </td>
                                                     </tr>
+
                                                 );
                                             })}
                                         </tbody>

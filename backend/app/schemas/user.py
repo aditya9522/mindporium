@@ -13,6 +13,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     role: RoleEnum = RoleEnum.student
+    referral_code: Optional[str] = None
 
 
 class UserCreateInstructor(UserBase):
@@ -59,6 +60,8 @@ class UserResponse(UserBase):
     social_links: Optional[dict] = None
     timezone: str = "UTC"
     language: str = "en"
+    streak_count: int = 0
+    last_active_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -69,6 +72,7 @@ class UserResponse(UserBase):
 # Google Login Schema
 class GoogleLoginRequest(BaseModel):
     id_token: str
+    referral_code: Optional[str] = None
 
 
 # Password Reset Schemas

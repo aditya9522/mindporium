@@ -11,6 +11,7 @@ export interface Enrollment {
 
 export interface EnrollmentCreate {
     course_id: number;
+    coupon_code?: string;
 }
 
 export type ResourceTypeEnum = "pdf" | "video" | "ppt" | "doc" | "link" | "image" | "other";
