@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { BookOpen, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
@@ -12,9 +12,32 @@ import authLoginIllustration from '../../assets/auth-login-illustration.svg';
 
 declare global {
     interface Window {
-        google?: any;
+        google?: {
+            accounts?: {
+                id?: {
+                    initialize: (config: {
+                        client_id: string;
+                        callback: (response: GoogleCredentialResponse) => void | Promise<void>;
+                        cancel_on_tap_outside?: boolean;
+                    }) => void;
+                    renderButton: (element: HTMLElement | null, options: Record<string, string | number>) => void;
+                };
+            };
+        };
     }
 }
+
+interface GoogleCredentialResponse {
+    credential: string;
+}
+
+const getApiErrorMessage = (error: unknown, fallback: string) => {
+    if (typeof error === 'object' && error !== null && 'response' in error) {
+        const response = (error as { response?: { status?: number; data?: { detail?: string } } }).response;
+        return { message: response?.data?.detail || fallback, status: response?.status };
+    }
+    return { message: fallback, status: undefined };
+};
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -37,7 +60,7 @@ export const LoginPage = () => {
             if (window.google?.accounts?.id) {
                 window.google.accounts.id.initialize({
                     client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
-                    callback: async (response: any) => {
+                    callback: async (response: GoogleCredentialResponse) => {
                         try {
                             const user = await loginWithGoogle(response.credential);
                             toast.success('Welcome to Mindporium!');
@@ -48,13 +71,13 @@ export const LoginPage = () => {
                             } else {
                                 navigate('/dashboard');
                             }
-                        } catch (err: any) {
-                            const detail = err.response?.data?.detail || '';
-                            if (err.response?.status === 404 || detail.includes("sign up") || detail.includes("not found")) {
+                        } catch (error: unknown) {
+                            const { message, status } = getApiErrorMessage(error, 'Google sign in failed');
+                            if (status === 404 || message.includes("sign up") || message.includes("not found")) {
                                 toast.error('No account exists for this Google user. Redirecting to sign up...');
                                 navigate('/register');
                             } else {
-                                toast.error(detail || 'Google sign in failed');
+                                toast.error(message);
                             }
                         }
                     },
@@ -100,8 +123,8 @@ export const LoginPage = () => {
             } else {
                 navigate('/dashboard');
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.detail || 'Invalid email or password');
+        } catch (error: unknown) {
+            toast.error(getApiErrorMessage(error, 'Invalid email or password').message);
         }
     };
 
@@ -113,13 +136,6 @@ export const LoginPage = () => {
                 
                 {/* Content Panel */}
                 <div className="absolute inset-0 flex flex-col p-16 z-20 text-gray-950 dark:text-white animate-in fade-in duration-700">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-white/80 dark:bg-gray-900/80 p-2.5 rounded-2xl backdrop-blur-xl border border-primary-100 dark:border-primary-900/60 shadow-sm">
-                            <BookOpen className="h-8 w-8 text-primary-600 dark:text-primary-400" />
-                        </div>
-                        <span className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Mindporium</span>
-                    </div>
-
                     <div className="flex flex-1 flex-col justify-center space-y-6">
                         <img
                             src={authLoginIllustration}
@@ -139,11 +155,6 @@ export const LoginPage = () => {
             <div className="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16">
                 <div className="w-full max-w-md space-y-8 animate-in slide-in-from-right duration-500">
                     <div className="text-center md:text-left">
-                        {/* Logo for mobile view */}
-                        <div className="inline-flex md:hidden items-center gap-2 mb-6">
-                            <BookOpen className="h-10 w-10 text-primary-600" />
-                            <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Mindporium</span>
-                        </div>
                         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Welcome back</h2>
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 font-medium">Sign in to your account to continue your learning journey</p>
                     </div>

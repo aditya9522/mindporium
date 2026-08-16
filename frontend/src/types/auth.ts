@@ -41,4 +41,5 @@ export interface RegisterData {
     full_name: string;
     password: string;
     role: string;
+    referral_code?: string;
 }

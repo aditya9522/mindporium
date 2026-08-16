@@ -4,11 +4,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { BookOpen, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
 import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import authSignupIllustration from '../../assets/auth-signup-illustration.svg';
+
+interface GoogleCredentialResponse {
+    credential: string;
+}
+
+const getApiErrorMessage = (error: unknown, fallback: string) => {
+    if (typeof error === 'object' && error !== null && 'response' in error) {
+        const response = (error as { response?: { data?: { detail?: string } } }).response;
+        return response?.data?.detail || fallback;
+    }
+    return fallback;
+};
 
 const registerSchema = z.object({
     fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -38,7 +50,7 @@ export const RegisterPage = () => {
             if (window.google?.accounts?.id) {
                 window.google.accounts.id.initialize({
                     client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
-                    callback: async (response: any) => {
+                    callback: async (response: GoogleCredentialResponse) => {
                         try {
                             const user = await signupWithGoogle(response.credential, refCode || undefined);
                             toast.success('Welcome to Mindporium!');
@@ -49,8 +61,8 @@ export const RegisterPage = () => {
                             } else {
                                 navigate('/dashboard');
                             }
-                        } catch (err: any) {
-                            toast.error(err.response?.data?.detail || 'Google sign up failed');
+                        } catch (error: unknown) {
+                            toast.error(getApiErrorMessage(error, 'Google sign up failed'));
                         }
                     },
                     cancel_on_tap_outside: false
@@ -81,7 +93,7 @@ export const RegisterPage = () => {
                 script.removeEventListener('load', initializeGoogle);
             }
         };
-    }, [navigate, signupWithGoogle]);
+    }, [navigate, signupWithGoogle, refCode]);
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -105,8 +117,8 @@ export const RegisterPage = () => {
 
             toast.success('Account created successfully!');
             navigate('/dashboard');
-        } catch (error: any) {
-            toast.error(error.response?.data?.detail || 'Registration failed');
+        } catch (error: unknown) {
+            toast.error(getApiErrorMessage(error, 'Registration failed'));
         }
     };
 
@@ -117,13 +129,6 @@ export const RegisterPage = () => {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_18%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_78%_20%,rgba(244,114,182,0.18),transparent_28%)]" />
                 
                 <div className="absolute inset-0 flex flex-col p-16 z-20 text-gray-950 dark:text-white animate-in fade-in duration-700">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-white/80 dark:bg-gray-900/80 p-2.5 rounded-2xl backdrop-blur-xl border border-primary-100 dark:border-primary-900/60 shadow-sm">
-                            <BookOpen className="h-8 w-8 text-primary-600 dark:text-primary-400" />
-                        </div>
-                        <span className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Mindporium</span>
-                    </div>
-
                     <div className="flex flex-1 flex-col justify-center space-y-6">
                         <img
                             src={authSignupIllustration}
@@ -144,10 +149,6 @@ export const RegisterPage = () => {
             <div className="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 overflow-y-auto">
                 <div className="w-full max-w-md space-y-6 animate-in slide-in-from-right duration-500 py-8">
                     <div className="text-center md:text-left">
-                        <div className="inline-flex md:hidden items-center gap-2 mb-6">
-                            <BookOpen className="h-10 w-10 text-primary-600" />
-                            <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Mindporium</span>
-                        </div>
                         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Create account</h2>
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 font-medium">Join Mindporium and start your learning journey</p>
                     </div>

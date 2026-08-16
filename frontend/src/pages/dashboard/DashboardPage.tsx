@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth.store';
 import { studentService } from '../../services/student.service';
 import { Activity, Award, BookOpen, Calendar, CheckCircle2, Clock, Flame, RefreshCw, Target, TrendingUp, Gift, Copy } from 'lucide-react';
-import api from '../../lib/axios';
+import { referralService } from '../../services/referral.service';
+import type { ReferralInfo } from '../../types/referral';
 import toast from 'react-hot-toast';
 import {
     Area,
@@ -37,7 +38,7 @@ export const DashboardPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [dashboardData, setDashboardData] = useState<any>(null);
 
-    const [referralInfo, setReferralInfo] = useState<any>(null);
+    const [referralInfo, setReferralInfo] = useState<ReferralInfo | null>(null);
     const [inviteEmail, setInviteEmail] = useState('');
     const [inviting, setInviting] = useState(false);
 
@@ -57,7 +58,7 @@ export const DashboardPage = () => {
 
     const fetchReferrals = useCallback(async () => {
         try {
-            const { data } = await api.get('/auth/referrals/info');
+            const data = await referralService.getInfo();
             setReferralInfo(data);
         } catch (error) {
             console.error('Failed to fetch referrals:', error);
@@ -74,7 +75,7 @@ export const DashboardPage = () => {
         if (!inviteEmail) return;
         setInviting(true);
         try {
-            await api.post('/auth/referrals/invite', { email: inviteEmail });
+            await referralService.invite(inviteEmail);
             toast.success(`Invitation sent to ${inviteEmail}`);
             setInviteEmail('');
             fetchReferrals();
@@ -404,8 +405,8 @@ export const DashboardPage = () => {
                             <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950/50">
                                 <h3 className="mb-4 font-bold text-gray-900 dark:text-gray-100">Your Referrals</h3>
                                 <div className="space-y-3">
-                                    {referralInfo?.referrals?.length > 0 ? (
-                                        referralInfo.referrals.map((ref: any, idx: number) => (
+                                    {(referralInfo?.referrals?.length ?? 0) > 0 ? (
+                                        (referralInfo?.referrals ?? []).map((ref, idx: number) => (
                                             <div key={idx} className="flex items-center justify-between rounded-xl bg-white p-3 shadow-sm dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
                                                 <div>
                                                     <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{ref.email}</p>

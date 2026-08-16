@@ -38,6 +38,14 @@ export const authService = {
         return response.data;
     },
 
+    setupPassword: async (token: string, newPassword: string): Promise<User> => {
+        const response = await api.post<User>('/auth/setup-password', {
+            token,
+            new_password: newPassword,
+        });
+        return response.data;
+    },
+
     logout: () => {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('refresh_token');

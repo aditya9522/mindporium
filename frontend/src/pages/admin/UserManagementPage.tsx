@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/admin.service';
-import { Loader2, Search, User, Shield, GraduationCap, MoreVertical, Plus, Trash2, X } from 'lucide-react';
+import { Loader2, MailPlus, Search, User, Shield, GraduationCap, MoreVertical, Plus, Trash2, X } from 'lucide-react';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -19,8 +19,9 @@ export const UserManagementPage = () => {
     const [newUser, setNewUser] = useState({
         full_name: '',
         email: '',
-        password: '',
         role: 'admin',
+        bio: '',
+        experience: '',
     });
     const [isCreating, setIsCreating] = useState(false);
 
@@ -71,10 +72,22 @@ export const UserManagementPage = () => {
         e.preventDefault();
         setIsCreating(true);
         try {
-            await adminService.createAdmin(newUser);
-            toast.success('User created successfully');
+            if (newUser.role === 'instructor') {
+                await adminService.createInstructor({
+                    full_name: newUser.full_name,
+                    email: newUser.email,
+                    bio: newUser.bio || undefined,
+                    experience: newUser.experience || undefined,
+                });
+            } else {
+                await adminService.createAdmin({
+                    full_name: newUser.full_name,
+                    email: newUser.email,
+                });
+            }
+            toast.success('Staff account created and setup email sent');
             setShowCreateModal(false);
-            setNewUser({ full_name: '', email: '', password: '', role: 'admin' });
+            setNewUser({ full_name: '', email: '', role: 'admin', bio: '', experience: '' });
             fetchUsers();
         } catch (error: any) {
             console.error('Failed to create user:', error);
@@ -129,7 +142,7 @@ export const UserManagementPage = () => {
                             className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
                         >
                             <Plus className="w-5 h-5" />
-                            Create User
+                            Invite Staff
                         </button>
                     </div>
                 </div>
@@ -275,7 +288,7 @@ export const UserManagementPage = () => {
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in duration-200 max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-800">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Create New User</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Invite Staff User</h2>
                             <button
                                 onClick={() => setShowCreateModal(false)}
                                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -285,6 +298,18 @@ export const UserManagementPage = () => {
                         </div>
                         <form onSubmit={handleCreateUser}>
                             <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
+                                    <select
+                                        required
+                                        value={newUser.role}
+                                        onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    >
+                                        <option value="admin">Admin</option>
+                                        <option value="instructor">Instructor</option>
+                                    </select>
+                                </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                                     <input
@@ -308,19 +333,42 @@ export const UserManagementPage = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                                    <input
-                                        type="password"
-                                        required
-                                        value={newUser.password}
-                                        onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                        placeholder="••••••••"
-                                        minLength={6}
-                                    />
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password Setup</label>
+                                    <div className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-800/70 dark:text-gray-300">
+                                        Setup link will be emailed
+                                    </div>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        Minimum 6 characters required.
+                                        The backend sends a secure setup link from the welcome email.
                                     </p>
+                                </div>
+                                {newUser.role === 'instructor' && (
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bio</label>
+                                            <textarea
+                                                value={newUser.bio}
+                                                onChange={(e) => setNewUser({ ...newUser, bio: e.target.value })}
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none min-h-20 resize-none"
+                                                placeholder="Short instructor bio"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Experience</label>
+                                            <input
+                                                type="text"
+                                                value={newUser.experience}
+                                                onChange={(e) => setNewUser({ ...newUser, experience: e.target.value })}
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                                placeholder="e.g. 8 years teaching data science"
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                                <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 text-sm text-blue-800 dark:border-blue-900/40 dark:bg-blue-950/30 dark:text-blue-300">
+                                    <div className="flex gap-2">
+                                        <MailPlus className="mt-0.5 h-4 w-4 shrink-0" />
+                                        <p>A welcome email will be sent with a secure password setup link. No temporary password is shown in the UI.</p>
+                                    </div>
                                 </div>
                                 <div className="flex justify-end gap-3 mt-6">
                                     <button
@@ -341,7 +389,7 @@ export const UserManagementPage = () => {
                                                 Creating...
                                             </>
                                         ) : (
-                                            "Create User"
+                                            "Send Invite"
                                         )}
                                     </button>
                                 </div>

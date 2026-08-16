@@ -20,6 +20,7 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { VerifyOTPPage } from './pages/auth/VerifyOTPPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
+import { SetupPasswordPage } from './pages/auth/SetupPasswordPage';
 import { UnauthorizedPage } from './pages/common/UnauthorizedPage';
 import { lazy, Suspense } from 'react';
 import { PageLoader } from './components/common/PageLoader';
@@ -37,6 +38,7 @@ const MyLearningPage = lazy(() => import('./pages/student/MyLearningPage').then(
 const CoursePlayerPage = lazy(() => import('./pages/student/CoursePlayerPage').then(m => ({ default: m.CoursePlayerPage })));
 const StudentTestsPage = lazy(() => import('./pages/student/StudentTestsPage').then(m => ({ default: m.StudentTestsPage })));
 const StudentAttendancePage = lazy(() => import('./pages/student/StudentAttendancePage').then(m => ({ default: m.StudentAttendancePage })));
+const ReferralsPage = lazy(() => import('./pages/student/ReferralsPage').then(m => ({ default: m.ReferralsPage })));
 const InstructorDashboardPage = lazy(() => import('./pages/instructor/InstructorDashboardPage').then(m => ({ default: m.InstructorDashboardPage })));
 const InstructorAttendancePage = lazy(() => import('./pages/instructor/InstructorAttendancePage').then(m => ({ default: m.InstructorAttendancePage })));
 const MyCoursesPage = lazy(() => import('./pages/instructor/MyCoursesPage').then(m => ({ default: m.MyCoursesPage })));
@@ -80,6 +82,7 @@ const CourseMonitoringPage = lazy(() => import('./pages/admin/CourseMonitoringPa
 const CourseTrackingPage = lazy(() => import('./pages/admin/CourseTrackingPage').then(m => ({ default: m.CourseTrackingPage })));
 const AdminCourseDetailViewPage = lazy(() => import('./pages/admin/AdminCourseDetailViewPage').then(m => ({ default: m.AdminCourseDetailViewPage })));
 const AdminCreateCoursePage = lazy(() => import('./pages/admin/AdminCreateCoursePage').then(m => ({ default: m.AdminCreateCoursePage })));
+const CouponManagementPage = lazy(() => import('./pages/admin/CouponManagementPage').then(m => ({ default: m.CouponManagementPage })));
 const TestsManagementPage = lazy(() => import('./pages/instructor/TestsManagementPage').then(m => ({ default: m.TestsManagementPage })));
 const CreateTestPage = lazy(() => import('./pages/instructor/CreateTestPage').then(m => ({ default: m.CreateTestPage })));
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
@@ -125,6 +128,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/verify-otp" element={<VerifyOTPPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/auth/setup-password" element={<SetupPasswordPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/portfolio/:slug" element={<PublicPortfolioPage />} />
@@ -161,8 +165,10 @@ function App() {
               <Route path="/text-compare" element={<TextComparePage />} />
               <Route path="/classrooms" element={<ClassroomListPage />} />
               <Route path="/classroom/:id" element={<ClassroomDetailPage />} />
+              <Route path="/classrooms/:id" element={<ClassroomDetailPage />} />
               <Route path="/chatbot" element={<ChatbotPage />} />
               <Route path="/feedback" element={<StudentFeedbackPage />} />
+              <Route path="/referrals" element={<ReferralsPage />} />
             </Route>
 
             {/* Student Protected Routes */}
@@ -208,6 +214,7 @@ function App() {
               <Route path="/admin/courses" element={<AdminCourseManagementPage />} />
               <Route path="/admin/courses/create" element={<AdminCreateCoursePage />} />
               <Route path="/admin/announcements" element={<AnnouncementManagementPage />} />
+              <Route path="/admin/coupons" element={<CouponManagementPage />} />
               <Route path="/admin/system" element={<SystemSettingsPage />} />
               <Route path="/admin/feedback" element={<AdminFeedbackPage />} />
               <Route path="/admin/instructors" element={<AdminInstructorsPage />} />

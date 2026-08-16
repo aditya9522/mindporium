@@ -4,7 +4,7 @@ import { courseService } from '../../services/course.service';
 import { subjectService } from '../../services/subject.service';
 import { enrollmentService } from '../../services/enrollment.service';
 import { feedbackService } from '../../services/feedback.service';
-import api from '../../lib/axios';
+import { couponService } from '../../services/coupon.service';
 import type { Course } from '../../types/course';
 import type { Subject } from '../../types/enrollment';
 import { useAuthStore } from '../../store/auth.store';
@@ -41,11 +41,13 @@ export const CourseDetailPage = () => {
     const [couponDiscount, setCouponDiscount] = useState(0);
 
     const handleApplyCoupon = async () => {
-        if (!couponCode) return;
+        const normalizedCode = couponCode.trim().toUpperCase();
+        if (!normalizedCode) return;
         setValidatingCoupon(true);
         try {
-            const { data } = await api.post('/courses/coupons/validate', { code: couponCode });
+            const data = await couponService.validate(normalizedCode);
             if (data.valid) {
+                setCouponCode(data.code);
                 setCouponDiscount(data.discount_percent);
                 toast.success(`Coupon applied! ${data.discount_percent}% off`);
             } else {
@@ -306,7 +308,7 @@ export const CourseDetailPage = () => {
                                                                 <div className={`w-3 h-3 rounded-full ${cls.status === 'live' ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50' : 'bg-gray-400'}`}></div>
                                                                 <span className="font-medium text-gray-700 dark:text-gray-300">{cls.title}</span>
                                                             </div>
-                                                            <Link to={`/classrooms/${cls.id}`}>
+                                                            <Link to={`/classroom/${cls.id}`}>
                                                                 <Button size="sm" variant={cls.status === 'live' ? 'default' : 'outline'} className={cls.status === 'live' ? 'bg-red-600 hover:bg-red-700 border-red-600 text-white shadow-md shadow-red-200' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}>
                                                                     {cls.status === 'live' ? 'Join Live' : 'View Class'}
                                                                 </Button>
@@ -469,10 +471,13 @@ export const CourseDetailPage = () => {
                                             {course.category !== 'free' && (
                                                 <div className="flex gap-2">
                                                     <input 
-                                                        type="text" 
-                                                        placeholder="Coupon code" 
-                                                        value={couponCode}
-                                                        onChange={(e) => setCouponCode(e.target.value)}
+                type="text" 
+                placeholder="Coupon code" 
+                value={couponCode}
+                onChange={(e) => {
+                    setCouponCode(e.target.value.toUpperCase());
+                    setCouponDiscount(0);
+                }}
                                                         className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:text-white"
                                                     />
                                                     <Button 

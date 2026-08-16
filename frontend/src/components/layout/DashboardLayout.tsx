@@ -8,7 +8,7 @@ import { getImageUrl } from '../../lib/utils';
 import {
     Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap,
     Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar,
-    X, BriefcaseBusiness, StickyNote, FolderOpen, FileDiff, type LucideIcon,
+    X, BriefcaseBusiness, StickyNote, FolderOpen, FileDiff, Gift, Percent, Newspaper, type LucideIcon,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -83,9 +83,11 @@ export const DashboardLayout = () => {
                     title: 'Content & Media',
                     items: [
                         { icon: Megaphone,     label: 'Announcements', path: '/admin/announcements' },
+                        { icon: Percent,       label: 'Coupons',       path: '/admin/coupons' },
                         { icon: StickyNote,    label: 'Notes',         path: '/notes' },
                         { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
                         { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
+                        { icon: Newspaper,     label: 'News',          path: '/news' },
                     ]
                 },
                 {
@@ -126,6 +128,7 @@ export const DashboardLayout = () => {
                         { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
                         { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
                         { icon: BarChart3,     label: 'Analytics',    path: '/instructor/analytics' },
+                        { icon: Newspaper,     label: 'News',         path: '/news' },
                     ]
                 },
                 {
@@ -167,6 +170,7 @@ export const DashboardLayout = () => {
                     { icon: BriefcaseBusiness, label: 'Career Workspace', path: '/career/job-search' },
                     { icon: Bot,               label: 'AI Assistant',     path: '/chatbot' },
                     { icon: FileDiff,          label: 'Text Compare',     path: '/text-compare' },
+                    { icon: Newspaper,         label: 'News',             path: '/news' },
                 ]
             },
             {
@@ -175,6 +179,7 @@ export const DashboardLayout = () => {
                     { icon: Users,             label: 'Community',        path: '/community' },
                     { icon: GraduationCap,     label: 'Instructors',      path: '/instructors' },
                     { icon: Bell,              label: 'Notifications',    path: '/notifications' },
+                    { icon: Gift,              label: 'Referrals',        path: '/referrals' },
                     { icon: MessageSquare,     label: 'Feedback',         path: '/feedback' },
                     { icon: Settings,          label: 'Settings',         path: '/settings' },
                 ]

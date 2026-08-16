@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { courseService } from '../../services/course.service';
 import { subjectService } from '../../services/subject.service';
+import { enrollmentService } from '../../services/enrollment.service';
 import type { Course } from '../../types/course';
 import type { Subject, Resource } from '../../types/enrollment';
 import { CoursePlayerSidebar } from '../../components/student/CoursePlayerSidebar';
 import { CoursePlayerContent } from '../../components/student/CoursePlayerContent';
 import { PageLoader } from '../../components/common/PageLoader';
-import { ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
+import { ArrowLeft, MessageSquare, CheckCircle, Sparkles, Menu, X, ChevronRight } from 'lucide-react';
 import { AIStudyBuddy } from '../../components/student/AIStudyBuddy';
-import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 
 export const CoursePlayerPage = () => {
@@ -25,6 +25,7 @@ export const CoursePlayerPage = () => {
     const [markingComplete, setMarkingComplete] = useState(false);
     const [completedResources, setCompletedResources] = useState<number[]>([]);
     const [showStudyBuddy, setShowStudyBuddy] = useState(false);
+    const [showMobileLessons, setShowMobileLessons] = useState(false);
 
     // Fetch course data
     useEffect(() => {
@@ -34,14 +35,21 @@ export const CoursePlayerPage = () => {
                 const [courseData, subjectsData, progressData] = await Promise.all([
                     courseService.getCourse(Number(id)),
                     subjectService.getCourseSubjects(Number(id)),
-                    api.get(`/enrollments/progress/${id}`).catch(() => ({ data: { completed_resource_ids: [] } }))
+                    enrollmentService.getCourseProgress(Number(id)).catch(() => ({ completed_resource_ids: [] }))
                 ]);
 
-                setCourse(courseData);
-                setSubjects(subjectsData);
+                const isEnrolled = await enrollmentService.checkEnrollment(Number(id));
+                if (!isEnrolled) {
+                    toast.error('Please enroll in this course to start learning');
+                    navigate(`/courses/${id}`, { replace: true });
+                    return;
+                }
 
-                if (progressData.data?.completed_resource_ids) {
-                    setCompletedResources(progressData.data.completed_resource_ids);
+                setCourse(courseData);
+                setSubjects(sortSubjects(subjectsData));
+
+                if (progressData?.completed_resource_ids) {
+                    setCompletedResources(progressData.completed_resource_ids);
                 }
             } catch (error) {
                 console.error('Failed to load course content:', error);
@@ -51,7 +59,7 @@ export const CoursePlayerPage = () => {
             }
         };
         fetchData();
-    }, [id]);
+    }, [id, navigate]);
 
     // Handle Active Resource Selection based on URL or defaults
     useEffect(() => {
@@ -69,7 +77,7 @@ export const CoursePlayerPage = () => {
                 setActiveResource(foundResource);
             } else {
                 // If ID invalid, default to first
-                const firstResource = subjects[0].resources?.[0];
+                const firstResource = getFirstIncompleteResource(subjects, completedResources) || getFlattenedResources(subjects)[0];
                 if (firstResource) {
                     setActiveResource(firstResource);
                     // Optionally replace URL to correct one, but avoiding continuous redirect loop is key
@@ -77,30 +85,40 @@ export const CoursePlayerPage = () => {
             }
         } else {
             // No param, default to first resource
-            const firstResource = subjects[0].resources?.[0];
+            const firstResource = getFirstIncompleteResource(subjects, completedResources) || getFlattenedResources(subjects)[0];
             if (firstResource) {
                 setActiveResource(firstResource);
             }
         }
-    }, [loading, subjects, resourceIdParam]);
+    }, [loading, subjects, resourceIdParam, completedResources]);
 
     const handleSelectResource = (resource: Resource) => {
         setSearchParams({ resource: resource.id.toString() });
+        setShowMobileLessons(false);
         // State update will happen via useEffect when URL param changes
     };
+
+    const resources = getFlattenedResources(subjects);
+    const activeIndex = activeResource ? resources.findIndex(resource => resource.id === activeResource.id) : -1;
+    const nextResource = activeIndex >= 0 ? resources[activeIndex + 1] : undefined;
 
     const handleMarkComplete = async () => {
         if (!activeResource || markingComplete) return;
         setMarkingComplete(true);
         try {
-            await api.post(`/enrollments/resource/${activeResource.id}/complete`);
-            setCompletedResources(prev => [...prev, activeResource.id]);
+            await enrollmentService.completeResource(activeResource.id);
+            setCompletedResources(prev => prev.includes(activeResource.id) ? prev : [...prev, activeResource.id]);
             toast.success('Lesson marked as complete');
-            // Optional: Auto-advance to next lesson?
         } catch (error) {
             toast.error('Failed to mark complete');
         } finally {
             setMarkingComplete(false);
+        }
+    };
+
+    const handleNextLesson = () => {
+        if (nextResource) {
+            handleSelectResource(nextResource);
         }
     };
 
@@ -118,15 +136,25 @@ export const CoursePlayerPage = () => {
     return (
         <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
             {/* Sidebar */}
-            <div className="w-80 flex-shrink-0 border-r border-gray-800 bg-gray-900 flex flex-col">
+            <div className={`${showMobileLessons ? 'fixed inset-y-0 left-0 z-50 flex' : 'hidden'} w-[min(20rem,calc(100vw-1rem))] flex-shrink-0 border-r border-gray-800 bg-gray-900 flex-col shadow-2xl lg:relative lg:inset-auto lg:z-auto lg:flex lg:w-80 lg:shadow-none`}>
                 <div className="p-4 border-b border-gray-800">
-                    <button
-                        onClick={() => navigate('/my-learning')}
-                        className="flex items-center text-gray-400 hover:text-white transition-colors mb-4"
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Dashboard
-                    </button>
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                        <button
+                            onClick={() => navigate('/my-learning')}
+                            className="flex items-center text-gray-400 hover:text-white transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back to My Learning
+                        </button>
+                        <button
+                            onClick={() => setShowMobileLessons(false)}
+                            className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-800 hover:text-white lg:hidden"
+                            aria-label="Close lessons"
+                            title="Close lessons"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
+                    </div>
                     <h2 className="font-bold text-lg line-clamp-2 mb-3">{course.title}</h2>
 
                     <div className="mb-6">
@@ -172,24 +200,46 @@ export const CoursePlayerPage = () => {
                     />
                 </div>
             </div>
+            {showMobileLessons && (
+                <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setShowMobileLessons(false)} />
+            )}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex items-center justify-between border-b border-gray-800 bg-gray-900/95 px-4 py-3 lg:hidden">
+                    <button
+                        onClick={() => setShowMobileLessons(true)}
+                        className="inline-flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-800 px-3 py-2 text-sm font-bold text-gray-100"
+                    >
+                        <Menu className="h-4 w-4" />
+                        Lessons
+                    </button>
+                    <span className="truncate pl-3 text-sm font-semibold text-gray-400">{activeResource?.title || course.title}</span>
+                </div>
                 <div className="flex-1 overflow-y-auto p-8">
                     {activeResource ? (
                         <>
                             <CoursePlayerContent resource={activeResource} />
-                            <div className="max-w-4xl mx-auto mt-8 flex justify-end">
+                            <div className="max-w-4xl mx-auto mt-8 flex flex-col gap-3 sm:flex-row sm:justify-between">
+                                <button
+                                    onClick={handleNextLesson}
+                                    disabled={!nextResource}
+                                    className="flex items-center justify-center px-6 py-4 rounded-xl font-bold text-lg border border-gray-700 text-gray-200 transition-all hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                    Next Lesson
+                                    <ChevronRight className="w-5 h-5 ml-2" />
+                                </button>
                                 <button
                                     onClick={handleMarkComplete}
-                                    disabled={isCompleted || false}
+                                    disabled={isCompleted || markingComplete}
                                     className={`flex items-center px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${isCompleted
                                         ? 'bg-emerald-500/20 text-emerald-400 cursor-default border border-emerald-500/30'
+                                        : markingComplete ? 'bg-gray-700 text-gray-300 cursor-wait'
                                         : 'bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-indigo-500/20 hover:shadow-indigo-500/30 ring-1 ring-white/10'
                                         }`}
                                 >
                                     <CheckCircle className="w-6 h-6 mr-3" />
-                                    {isCompleted ? 'Completed' : 'Mark as Complete'}
+                                    {isCompleted ? 'Completed' : markingComplete ? 'Saving...' : 'Mark as Complete'}
                                 </button>
                             </div>
                         </>
@@ -213,3 +263,16 @@ export const CoursePlayerPage = () => {
         </div>
     );
 };
+
+const sortSubjects = (subjects: Subject[]) => subjects
+    .slice()
+    .sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
+    .map(subject => ({
+        ...subject,
+        resources: (subject.resources || []).slice().sort((a, b) => (a.order_index || 0) - (b.order_index || 0)),
+    }));
+
+const getFlattenedResources = (subjects: Subject[]) => subjects.flatMap(subject => subject.resources || []);
+
+const getFirstIncompleteResource = (subjects: Subject[], completedResourceIds: number[]) =>
+    getFlattenedResources(subjects).find(resource => !completedResourceIds.includes(resource.id));
