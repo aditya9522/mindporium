@@ -6,6 +6,7 @@ import { Loader2, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
 import { PageLoader } from '../../components/common/PageLoader';
+import { formatNumber } from '../../lib/format';
 
 export const TakeTestPage = () => {
     // ... (state and effects)
@@ -42,6 +43,12 @@ export const TakeTestPage = () => {
 
     const fetchTest = async (testId: number) => {
         try {
+            const submissions = await testService.getMySubmissions();
+            if (submissions.some(submission => submission.test_id === testId)) {
+                toast.error('You have already submitted this test');
+                navigate('/tests', { replace: true });
+                return;
+            }
             const data = await testService.getTest(testId);
             setTest(data);
             setTimeLeft(data.duration_minutes * 60);
@@ -71,12 +78,20 @@ export const TakeTestPage = () => {
                 test_id: parseInt(id),
                 answers
             });
-            toast.success(`Test submitted! Score: ${result.obtained_marks}/${test?.total_marks}`);
-            navigate('/dashboard'); // Or results page
+            toast.success(`Test submitted! Score: ${formatNumber(result.obtained_marks)}/${formatNumber(test?.total_marks)}`);
+            navigate('/tests');
         } catch (error) {
-            toast.error('Failed to submit test');
+            toast.error(getApiErrorMessage(error, 'Failed to submit test'));
             setSubmitting(false);
         }
+    };
+
+    const getApiErrorMessage = (error: unknown, fallback: string) => {
+        if (typeof error === 'object' && error !== null && 'response' in error) {
+            const response = (error as { response?: { data?: { detail?: string } } }).response;
+            return response?.data?.detail || fallback;
+        }
+        return fallback;
     };
 
     const formatTime = (seconds: number) => {
@@ -98,7 +113,7 @@ export const TakeTestPage = () => {
                 <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 mb-8 sticky top-4 z-10 flex justify-between items-center transition-colors duration-300">
                     <div>
                         <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">{test.title}</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Total Marks: {test.total_marks}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Total Marks: {formatNumber(test.total_marks)}</p>
                     </div>
                     <div className={`flex items-center gap-2 text-xl font-mono font-bold ${(timeLeft || 0) < 300 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-indigo-600 dark:text-indigo-400'
                         }`}>

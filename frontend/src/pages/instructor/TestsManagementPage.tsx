@@ -10,6 +10,7 @@ import { MicButton } from '../../components/common/MicButton';
 import { courseService } from '../../services/course.service';
 import { subjectService } from '../../services/subject.service';
 import type { Subject } from '../../types/enrollment';
+import { formatNumber } from '../../lib/format';
 
 export const TestsManagementPage = () => {
     const [tests, setTests] = useState<Test[]>([]);
@@ -24,6 +25,7 @@ export const TestsManagementPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCourseId, setSelectedCourseId] = useState<string>('');
     const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
+    const [selectedStatus, setSelectedStatus] = useState<string>('');
 
     // Data Sources for Filters
     const [courses, setCourses] = useState<any[]>([]);
@@ -55,7 +57,10 @@ export const TestsManagementPage = () => {
     // Filter Logic
     const filteredTests = tests.filter(test => {
         // Search Filter
-        const matchesSearch = test.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const lowerQuery = searchQuery.toLowerCase();
+        const matchesSearch =
+            test.title.toLowerCase().includes(lowerQuery) ||
+            (test.description || '').toLowerCase().includes(lowerQuery);
 
         // Subject Filter
         let matchesSubject = true;
@@ -75,7 +80,9 @@ export const TestsManagementPage = () => {
             }
         }
 
-        return matchesSearch && matchesSubject && matchesCourse;
+        const matchesStatus = selectedStatus ? test.status === selectedStatus : true;
+
+        return matchesSearch && matchesSubject && matchesCourse && matchesStatus;
     });
 
     // Available Subjects based on Course Selection
@@ -179,6 +186,19 @@ export const TestsManagementPage = () => {
                                 ))}
                             </select>
                         </div>
+
+                        <div className="min-w-[180px]">
+                            <select
+                                value={selectedStatus}
+                                onChange={(e) => setSelectedStatus(e.target.value)}
+                                className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-primary-500"
+                            >
+                                <option value="">All Statuses</option>
+                                <option value="published">Published</option>
+                                <option value="draft">Draft</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -189,12 +209,12 @@ export const TestsManagementPage = () => {
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-12 text-center">
                         <FileText className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                            {searchQuery || selectedCourseId || selectedSubjectId ? 'No matching tests found' : 'No tests yet'}
+                            {searchQuery || selectedCourseId || selectedSubjectId || selectedStatus ? 'No matching tests found' : 'No tests yet'}
                         </h3>
                         <p className="text-gray-500 dark:text-gray-400 mb-6">
-                            {searchQuery || selectedCourseId || selectedSubjectId ? 'Try adjusting your filters' : 'Create your first test to assess student learning'}
+                            {searchQuery || selectedCourseId || selectedSubjectId || selectedStatus ? 'Try adjusting your filters' : 'Create your first test to assess student learning'}
                         </p>
-                        {!searchQuery && !selectedCourseId && !selectedSubjectId && (
+                        {!searchQuery && !selectedCourseId && !selectedSubjectId && !selectedStatus && (
                             <Link
                                 to="/instructor/tests/create"
                                 className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-sm"
@@ -257,8 +277,8 @@ export const TestsManagementPage = () => {
                                     </div>
                                     <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                         <CheckCircle className="w-4 h-4 mr-2 text-purple-500" />
-                                        <span className="font-medium dark:text-gray-300">{test.total_marks}</span>
-                                        <span className="ml-1">marks (Pass: {test.passing_marks})</span>
+                                        <span className="font-medium dark:text-gray-300">{formatNumber(test.total_marks)}</span>
+                                        <span className="ml-1">marks (Pass: {formatNumber(test.passing_marks)})</span>
                                     </div>
                                 </div>
 

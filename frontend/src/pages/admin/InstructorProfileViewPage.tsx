@@ -6,6 +6,7 @@ import { PageLoader } from '../../components/common/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
+import { formatNumber } from '../../lib/format';
 
 export const InstructorProfileViewPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -191,7 +192,7 @@ export const InstructorProfileViewPage = () => {
                                 <Star className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.average_rating?.toFixed(1) || '0.0'}</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatNumber(stats?.average_rating)}</p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">Rating</p>
                             </div>
                         </div>

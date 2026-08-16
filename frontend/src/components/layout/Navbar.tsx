@@ -157,7 +157,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                                 {user?.full_name ? user.full_name.charAt(0).toUpperCase() : 'U'}
                                             </div>
                                             <div className="hidden md:block text-left pr-2">
-                                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 max-w-[120px] truncate leading-tight">{user?.full_name || 'User'}</p>
+                                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 max-w-[120px] truncate leading-tight" title={user?.full_name || 'User'}>{user?.full_name || 'User'}</p>
                                                 <p className="text-[10px] text-gray-500 dark:text-gray-400 capitalize font-medium leading-none mt-0.5">{user?.role || 'Guest'}</p>
                                             </div>
                                             <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 mr-1 ${showUserMenu ? 'rotate-180' : ''}`} />
@@ -166,7 +166,7 @@ export const Navbar = ({ showSidebarToggle = false }: NavbarProps) => {
                                         {showUserMenu && (
                                             <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 animate-in fade-in slide-in-from-top-2 ring-1 ring-black/5">
                                                 <div className="px-4 py-2 border-b border-gray-50 dark:border-gray-800 mb-1 lg:hidden">
-                                                    <p className="font-bold text-gray-900 dark:text-gray-100">{user?.full_name || 'User'}</p>
+                                                    <p className="truncate font-bold text-gray-900 dark:text-gray-100" title={user?.full_name || 'User'}>{user?.full_name || 'User'}</p>
                                                     <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role || 'Guest'}</p>
                                                 </div>
                                                 <Link

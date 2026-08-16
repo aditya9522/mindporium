@@ -4,13 +4,25 @@ from pydantic_settings import BaseSettings
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+BACKEND_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(BACKEND_DIR / ".env")
 
 
 class Settings(BaseSettings):
     APP_NAME: str = "Mindporium"
     ENVIRONMENT: str = "production"  # development | staging | production
     DEBUG: bool = False
+
+    @field_validator("DEBUG", mode="before")
+    @classmethod
+    def parse_debug_value(cls, value):
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"release", "production", "prod", "false", "0", "no", "off"}:
+                return False
+            if normalized in {"debug", "development", "dev", "true", "1", "yes", "on"}:
+                return True
+        return value
 
     DATABASE_URL: str
 
@@ -56,6 +68,7 @@ class Settings(BaseSettings):
     SMTP_HOST: Optional[str] = Field(None, env="SMTP_HOST")
     SMTP_USER: Optional[str] = Field(None, env="SMTP_USER")
     SMTP_PASSWORD: Optional[str] = Field(None, env="SMTP_PASSWORD")
+    SMTP_TIMEOUT_SECONDS: int = Field(10, env="SMTP_TIMEOUT_SECONDS")
     EMAILS_FROM_EMAIL: Optional[str] = Field("info@mindporium.ai", env="EMAILS_FROM_EMAIL")
     EMAILS_FROM_NAME: Optional[str] = Field("Mindporium", env="EMAILS_FROM_NAME")
     
@@ -67,7 +80,7 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:5173"
 
     class Config:
-        env_file = ".env"
+        env_file = str(BACKEND_DIR / ".env")
         env_file_encoding = "utf-8"
 
     @property

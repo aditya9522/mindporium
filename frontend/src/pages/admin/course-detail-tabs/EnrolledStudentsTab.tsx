@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
+import { formatPercent } from '../../../lib/format';
 
 interface EnrolledStudentsTabProps {
     courseData: any;
@@ -196,7 +197,7 @@ export const EnrolledStudentsTab = ({ courseData }: EnrolledStudentsTabProps) =>
                                                     />
                                                 </div>
                                                 <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 min-w-[3rem]">
-                                                    {Math.round(enrollment.progress_percent || 0)}%
+                                                    {formatPercent(enrollment.progress_percent)}
                                                 </span>
                                             </div>
                                         </td>

@@ -6,13 +6,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.core import security
-from app.core.config import settings
 from app.models.user import User
 from app.models.enums import RoleEnum
 from app.schemas.user import UserCreateInstructor, UserCreateAdmin
-from app.services.email import email_service
 
 class UserService:
+    def create_setup_token(self, user: User) -> str:
+        return security.create_access_token(
+            subject=user.id,
+            expires_delta=timedelta(days=7)
+        )
+
     async def create_instructor(self, db: AsyncSession, user_in: UserCreateInstructor) -> User:
         # 1. Check if user exists
         result = await db.execute(select(User).where(User.email == user_in.email))
@@ -37,22 +41,9 @@ class UserService:
         await db.commit()
         await db.refresh(user)
 
-        # 3. Generate Setup Token (valid for 7 days)
-        setup_token = security.create_access_token(
-            subject=user.id,
-            expires_delta=timedelta(days=7)
-        )
-
-        # 4. Send Email
-        await email_service.send_welcome_instructor_email(
-            email_to=user.email,
-            full_name=user.full_name,
-            token=setup_token
-        )
-
         return user
 
-    async def create_admin(self, db: AsyncSession, user_in: UserCreateInstructor) -> User:
+    async def create_admin(self, db: AsyncSession, user_in: UserCreateAdmin) -> User:
         # 1. Check if user exists
         result = await db.execute(select(User).where(User.email == user_in.email))
         if result.scalars().first():
@@ -73,19 +64,6 @@ class UserService:
         db.add(user)
         await db.commit()
         await db.refresh(user)
-
-        # 3. Generate Setup Token (valid for 7 days)
-        setup_token = security.create_access_token(
-            subject=user.id,
-            expires_delta=timedelta(days=7)
-        )
-
-        # 4. Send Email
-        await email_service.send_welcome_admin_email(
-            email_to=user.email,
-            full_name=user.full_name,
-            token=setup_token
-        )
 
         return user
 

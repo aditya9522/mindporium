@@ -11,6 +11,7 @@ import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
 import { PageLoader } from '../../components/common/PageLoader';
+import { formatNumber } from '../../lib/format';
 
 interface InstructorStats {
     total_courses: number;
@@ -247,7 +248,7 @@ export const InstructorOverviewPage = () => {
                                     <div>
                                         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Rating</p>
                                         <div className="flex items-baseline gap-2">
-                                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.average_rating.toFixed(1)}</p>
+                                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatNumber(stats.average_rating)}</p>
                                             <span className="text-xs text-gray-400">({stats.reviews_count})</span>
                                         </div>
                                     </div>
@@ -295,7 +296,7 @@ export const InstructorOverviewPage = () => {
                                                         {course.rating && (
                                                             <div className="flex items-center gap-1">
                                                                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                                                                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{course.rating.toFixed(1)}</span>
+                                                                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{formatNumber(course.rating)}</span>
                                                             </div>
                                                         )}
                                                     </div>

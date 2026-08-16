@@ -4,6 +4,7 @@ import type { CourseOverview } from '../../../types/instructor';
 import { Users, TrendingUp, Star, Award, BookOpen, Activity } from 'lucide-react';
 import { PageLoader } from '../../../components/common/PageLoader';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { formatNumber, formatPercent } from '../../../lib/format';
 
 interface AnalyticsTabProps {
     courseId: number;
@@ -77,7 +78,7 @@ export const AnalyticsTab = ({ courseId }: AnalyticsTabProps) => {
                             <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
                         </div>
                         <span className="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded-full">
-                            Rate: {data.engagement.active_student_rate}%
+                            Rate: {formatPercent(data.engagement.active_student_rate)}
                         </span>
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{data.statistics.active_students}</h3>
@@ -90,7 +91,7 @@ export const AnalyticsTab = ({ courseId }: AnalyticsTabProps) => {
                             <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                         </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{data.statistics.completion_rate}%</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatPercent(data.statistics.completion_rate)}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Completion Rate</p>
                 </div>
 
@@ -103,7 +104,7 @@ export const AnalyticsTab = ({ courseId }: AnalyticsTabProps) => {
                             {data.statistics.total_feedback} reviews
                         </span>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{data.statistics.average_rating}</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatNumber(data.statistics.average_rating)}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Average Rating</p>
                 </div>
             </div>

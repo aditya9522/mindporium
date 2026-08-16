@@ -13,6 +13,7 @@ import {
     XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
+import { formatPercent } from '../../lib/format';
 
 interface StudentProfile {
     user_id: number;
@@ -278,7 +279,7 @@ export const StudentProfilePage = () => {
                                             <div className="md:w-64">
                                                 <div className="flex items-center justify-between mb-2">
                                                     <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Progress</span>
-                                                    <span className="text-sm font-bold text-primary-600 dark:text-primary-400">{Math.round(course.progress_percent)}%</span>
+                                                    <span className="text-sm font-bold text-primary-600 dark:text-primary-400">{formatPercent(course.progress_percent)}</span>
                                                 </div>
                                                 <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 shadow-inner overflow-hidden">
                                                     <div

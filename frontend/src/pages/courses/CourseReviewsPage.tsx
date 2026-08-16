@@ -4,6 +4,7 @@ import { Star, MessageSquare, ThumbsUp, User as UserIcon, ChevronDown } from 'lu
 import api from '../../lib/axios';
 import { getImageUrl } from '../../lib/utils';
 import { PageLoader } from '../../components/common/PageLoader';
+import { formatNumber } from '../../lib/format';
 
 interface Review {
     id: number;
@@ -51,7 +52,7 @@ export const CourseReviewsPage = () => {
     };
 
     const averageRating = reviews.length > 0
-        ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+        ? formatNumber(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length)
         : 0;
 
     const ratingDistribution = [5, 4, 3, 2, 1].map(star => {

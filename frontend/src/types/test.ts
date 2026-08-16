@@ -43,6 +43,12 @@ export interface Submission {
     evaluation: Record<string, { is_correct: boolean; marks: number }>;
     obtained_marks: number;
     submitted_at: string;
+    test?: {
+        id: number;
+        title: string;
+        total_marks: number;
+        passing_marks: number;
+    };
     user?: {
         id: number;
         full_name: string;

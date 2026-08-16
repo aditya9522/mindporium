@@ -197,11 +197,12 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
                                 </div>
                                 <button
                                     onClick={generateNotes}
-                                    className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-700 bg-gray-850 text-gray-200 transition-colors hover:border-primary-700 hover:bg-primary-900/30 hover:text-primary-200"
+                                    disabled={loadingNotes}
+                                    className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-700 bg-gray-850 text-gray-200 transition-colors hover:border-primary-700 hover:bg-primary-900/30 hover:text-primary-200 disabled:cursor-not-allowed disabled:opacity-60"
                                     aria-label="Regenerate study notes"
                                     title="Regenerate study notes"
                                 >
-                                    <RefreshCw className="w-4 h-4" />
+                                    <RefreshCw className={`w-4 h-4 ${loadingNotes ? 'animate-spin' : ''}`} />
                                 </button>
                             </div>
                         ) : (
@@ -316,11 +317,12 @@ export const AIStudyBuddy = ({ courseTitle, lessonTitle, lessonDescription, onCl
 
                                     <button
                                         onClick={generateFlashcards}
-                                        className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-700 bg-gray-850 text-gray-200 transition-colors hover:border-primary-700 hover:bg-primary-900/30 hover:text-primary-200"
+                                        disabled={loadingFlashcards}
+                                        className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-700 bg-gray-850 text-gray-200 transition-colors hover:border-primary-700 hover:bg-primary-900/30 hover:text-primary-200 disabled:cursor-not-allowed disabled:opacity-60"
                                         aria-label="Regenerate flashcards"
                                         title="Regenerate flashcards"
                                     >
-                                        <RefreshCw className="w-4 h-4" />
+                                        <RefreshCw className={`w-4 h-4 ${loadingFlashcards ? 'animate-spin' : ''}`} />
                                     </button>
                                 </div>
                             </div>

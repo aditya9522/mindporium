@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
 import { PageLoader } from '../../components/common/PageLoader';
+import { formatNumber } from '../../lib/format';
 
 export const ProfilePage = () => {
     const { user } = useAuthStore();
@@ -54,7 +55,7 @@ export const ProfilePage = () => {
                 ) : (
                     <div className="absolute inset-0 bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-900 via-slate-900 to-black opacity-90"></div>
                 )}
-                <div className="absolute bottom-6 right-6 z-10">
+                <div className="absolute right-4 top-4 z-30 sm:right-6 sm:top-6">
                     <Link
                         to="/settings"
                         className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md text-white rounded-xl hover:bg-white/20 transition-all font-semibold border border-white/20 hover:border-white/40 shadow-lg"
@@ -96,7 +97,7 @@ export const ProfilePage = () => {
                                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-4">
                                     <div>
                                         <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                                            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">{instructor.full_name}</h1>
+                                            <h1 className="break-words text-4xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">{instructor.full_name}</h1>
                                             {instructor.is_verified && (
                                                 <div className="bg-blue-50 dark:bg-blue-900/30 p-1 rounded-full"><CheckCircle className="w-6 h-6 text-blue-600 dark:text-blue-400 fill-blue-500/10 dark:fill-blue-400/10" /></div>
                                             )}
@@ -124,7 +125,7 @@ export const ProfilePage = () => {
                                     <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-600 dark:text-gray-400 font-medium">
                                         <span className="flex items-center gap-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                                             <Mail className="w-4 h-4" />
-                                            {instructor.email}
+                                            <span className="break-all">{instructor.email}</span>
                                         </span>
                                         {instructor.phone_number && (
                                             <span className="flex items-center gap-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
@@ -197,7 +198,7 @@ export const ProfilePage = () => {
                                 <Star className="w-7 h-7" />
                             </div>
                             <div>
-                                <p className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">{stats?.average_rating?.toFixed(1) || '0.0'}</p>
+                                <p className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">{formatNumber(stats?.average_rating)}</p>
                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Rating</p>
                             </div>
                         </div>
@@ -300,7 +301,7 @@ export const ProfilePage = () => {
                                 <div>
                                     <div className="flex justify-between text-sm mb-1">
                                         <span className="text-gray-600 dark:text-gray-400">Rating</span>
-                                        <span className="font-bold text-gray-900 dark:text-gray-100">{stats?.average_rating?.toFixed(1) || '0.0'}/5.0</span>
+                                        <span className="font-bold text-gray-900 dark:text-gray-100">{formatNumber(stats?.average_rating)}/5.0</span>
                                     </div>
                                     <div className="w-full bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden">
                                         <div

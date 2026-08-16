@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
 import type { Course } from '../../types/course';
 import { BookOpen, Clock, DollarSign, Users, Star } from 'lucide-react';
+import { formatNumber } from '../../lib/format';
 
 interface CourseCardProps {
     course: Course;
@@ -86,7 +87,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                                 <div className="flex items-center gap-1" title="Course Rating">
                                     <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                                     <span className="font-bold text-gray-700 dark:text-gray-300">
-                                        {course.rating ? course.rating.toFixed(1) : 'N/A'}
+                                        {course.rating ? formatNumber(course.rating) : 'N/A'}
                                     </span>
                                 </div>
                             </div>

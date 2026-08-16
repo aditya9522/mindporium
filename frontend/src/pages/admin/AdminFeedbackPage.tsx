@@ -8,6 +8,7 @@ import { FeedbackModal } from '../../components/feedback/FeedbackModal';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
+import { formatNumber } from '../../lib/format';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
@@ -121,7 +122,7 @@ export const AdminFeedbackPage = () => {
                                     <Star className="w-6 h-6 text-amber-600 dark:text-amber-500" />
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{analysis?.average_rating || 0}</div>
+                                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatNumber(analysis?.average_rating)}</div>
                                     <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
                                 </div>
                             </div>

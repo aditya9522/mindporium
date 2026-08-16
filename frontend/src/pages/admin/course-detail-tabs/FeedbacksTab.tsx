@@ -4,6 +4,7 @@ import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { formatNumber } from '../../../lib/format';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
@@ -73,7 +74,7 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
                     <div className="text-center">
                         <div className="flex items-center gap-2 justify-center mb-1">
                             <Star className="w-8 h-8 fill-current text-white" />
-                            <span className="text-4xl font-bold text-white">{averageRating.toFixed(1)}</span>
+                            <span className="text-4xl font-bold text-white">{formatNumber(averageRating)}</span>
                         </div>
                         <div className="text-amber-100">{totalFeedbacks} reviews</div>
                     </div>
@@ -88,7 +89,7 @@ export const FeedbacksTab = ({ courseData }: FeedbacksTabProps) => {
                             <Star className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{averageRating.toFixed(1)}</div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatNumber(averageRating)}</div>
                             <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
                         </div>
                     </div>

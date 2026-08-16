@@ -23,6 +23,7 @@ import {
 } from 'recharts';
 import { StatsCardSkeleton } from '../../components/ui/StatsCardSkeleton';
 import { WidgetSkeleton } from '../../components/ui/WidgetSkeleton';
+import { formatPercent } from '../../lib/format';
 
 const COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'];
 const CARD_GRADIENTS = [
@@ -112,7 +113,7 @@ export const DashboardPage = () => {
         { icon: BookOpen, label: 'Enrolled Courses', value: enrolledCourses, note: 'Active learning paths' },
         { icon: Clock, label: 'Classes Attended', value: attended, note: 'Live and recorded sessions' },
         { icon: Award, label: 'Tests Completed', value: completedTests, note: 'Assessments finished' },
-        { icon: TrendingUp, label: 'Avg. Score', value: `${averageScore}%`, note: 'Current performance' },
+        { icon: TrendingUp, label: 'Avg. Score', value: formatPercent(averageScore), note: 'Current performance' },
     ];
 
     const performanceData = dashboardData?.charts?.performance_distribution ? [
@@ -343,7 +344,7 @@ export const DashboardPage = () => {
                                     <Link key={course.course_id} to={`/courses/${course.course_id}`} className="block rounded-2xl border border-gray-100 bg-gray-50 p-4 transition hover:bg-white hover:shadow-sm dark:border-gray-800 dark:bg-gray-950/50 dark:hover:bg-gray-800">
                                         <div className="mb-2 flex items-center justify-between gap-3">
                                             <span className="font-bold text-gray-900 dark:text-gray-100">{course.title}</span>
-                                            <span className="text-sm font-black text-primary-600 dark:text-primary-400">{course.progress_percent}%</span>
+                                            <span className="text-sm font-black text-primary-600 dark:text-primary-400">{formatPercent(course.progress_percent)}</span>
                                         </div>
                                         <div className="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                                             <div className="h-full rounded-full bg-linear-to-r from-primary-500 to-emerald-500 transition-all" style={{ width: `${Math.min(course.progress_percent || 0, 100)}%` }} />

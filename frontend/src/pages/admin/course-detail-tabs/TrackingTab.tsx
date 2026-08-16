@@ -4,6 +4,7 @@ import { TrendingUp, Users, CheckCircle, Activity, Target, Clock, BarChart3 } fr
 import { PageLoader } from '../../../components/common/PageLoader';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import toast from 'react-hot-toast';
+import { formatPercent } from '../../../lib/format';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
@@ -70,14 +71,14 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
                     label="Active Students"
                     value={trackingData.active_students_7d}
                     color="green"
-                    subvalue={`${trackingData.engagement_rate}% engagement`}
+                    subvalue={`${formatPercent(trackingData.engagement_rate)} engagement`}
                 />
                 <MetricCard
                     icon={CheckCircle}
                     label="Completed"
                     value={trackingData.completed_students}
                     color="emerald"
-                    subvalue={`${trackingData.completion_rate}% completion`}
+                    subvalue={`${formatPercent(trackingData.completion_rate)} completion`}
                 />
                 <MetricCard
                     icon={Clock}
@@ -151,7 +152,7 @@ export const TrackingTab = ({ courseId }: TrackingTabProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div>
                             <p className="text-indigo-100 text-sm mb-1 uppercase tracking-wider font-semibold">Average Progress</p>
-                            <p className="text-4xl font-black">{Math.round((trackingData.completion_rate + trackingData.engagement_rate) / 2)}%</p>
+                            <p className="text-4xl font-black">{formatPercent((trackingData.completion_rate + trackingData.engagement_rate) / 2)}</p>
                         </div>
                         <div>
                             <p className="text-indigo-100 text-sm mb-1 uppercase tracking-wider font-semibold">Activity Trend</p>

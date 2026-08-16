@@ -3,6 +3,7 @@ import { userService } from '../../services/user.service';
 import { GraduationCap, Star, Users, BookOpen, ArrowRight, ShieldCheck, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../lib/utils';
+import { formatNumber } from '../../lib/format';
 
 export const InstructorsPage = () => {
     const [instructors, setInstructors] = useState<any[]>([]);
@@ -135,7 +136,7 @@ export const InstructorsPage = () => {
                                         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-md text-xs font-bold border border-amber-100 dark:border-amber-900/50">
                                             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                                             <span>
-                                                {instructor.rating > 0 ? instructor.rating.toFixed(1) : 'New'}
+                                                {instructor.rating > 0 ? formatNumber(instructor.rating) : 'New'}
                                             </span>
                                         </div>
                                     </div>

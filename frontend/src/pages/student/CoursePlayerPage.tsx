@@ -11,6 +11,7 @@ import { PageLoader } from '../../components/common/PageLoader';
 import { ArrowLeft, MessageSquare, CheckCircle, Sparkles, Menu, X, ChevronRight } from 'lucide-react';
 import { AIStudyBuddy } from '../../components/student/AIStudyBuddy';
 import toast from 'react-hot-toast';
+import { formatPercent } from '../../lib/format';
 
 export const CoursePlayerPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -106,11 +107,15 @@ export const CoursePlayerPage = () => {
         if (!activeResource || markingComplete) return;
         setMarkingComplete(true);
         try {
-            await enrollmentService.completeResource(activeResource.id);
-            setCompletedResources(prev => prev.includes(activeResource.id) ? prev : [...prev, activeResource.id]);
+            const result = await enrollmentService.completeResource(activeResource.id);
+            if (result?.progress?.completed_resource_ids) {
+                setCompletedResources(result.progress.completed_resource_ids);
+            } else {
+                setCompletedResources(prev => prev.includes(activeResource.id) ? prev : [...prev, activeResource.id]);
+            }
             toast.success('Lesson marked as complete');
-        } catch (error) {
-            toast.error('Failed to mark complete');
+        } catch (error: unknown) {
+            toast.error(getApiErrorMessage(error, 'Failed to mark complete'));
         } finally {
             setMarkingComplete(false);
         }
@@ -125,7 +130,7 @@ export const CoursePlayerPage = () => {
     const isCompleted = activeResource ? completedResources.includes(activeResource.id) : false;
 
     const totalResources = subjects.reduce((acc, subject) => acc + (subject.resources?.length || 0), 0);
-    const progressPercentage = totalResources > 0 ? Math.round((completedResources.length / totalResources) * 100) : 0;
+    const progressPercentage = totalResources > 0 ? (completedResources.length / totalResources) * 100 : 0;
 
     if (loading) {
         return <PageLoader />;
@@ -159,7 +164,7 @@ export const CoursePlayerPage = () => {
 
                     <div className="mb-6">
                         <div className="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">
-                            <span>{progressPercentage}% Complete</span>
+                            <span>{formatPercent(progressPercentage)} Complete</span>
                             <span>{completedResources.length}/{totalResources} Lessons</span>
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-2.5 shadow-inner">
@@ -276,3 +281,11 @@ const getFlattenedResources = (subjects: Subject[]) => subjects.flatMap(subject 
 
 const getFirstIncompleteResource = (subjects: Subject[], completedResourceIds: number[]) =>
     getFlattenedResources(subjects).find(resource => !completedResourceIds.includes(resource.id));
+
+const getApiErrorMessage = (error: unknown, fallback: string) => {
+    if (typeof error === 'object' && error !== null && 'response' in error) {
+        const response = (error as { response?: { data?: { detail?: string } } }).response;
+        return response?.data?.detail || fallback;
+    }
+    return fallback;
+};

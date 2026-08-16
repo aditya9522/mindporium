@@ -115,8 +115,8 @@ export const ReferralsPage = () => {
                                         Browse Courses
                                     </Link>
                                 </Button>
-                                <Button variant="outline" onClick={() => loadReferrals(true)} isLoading={refreshing}>
-                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                <Button variant="outline" onClick={() => loadReferrals(true)} disabled={refreshing}>
+                                    <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
                                     Refresh
                                 </Button>
                             </div>

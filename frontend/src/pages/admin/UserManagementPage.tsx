@@ -85,7 +85,7 @@ export const UserManagementPage = () => {
                     email: newUser.email,
                 });
             }
-            toast.success('Staff account created and setup email sent');
+            toast.success('Staff account created. Setup email queued.');
             setShowCreateModal(false);
             setNewUser({ full_name: '', email: '', role: 'admin', bio: '', experience: '' });
             fetchUsers();
@@ -338,7 +338,7 @@ export const UserManagementPage = () => {
                                         Setup link will be emailed
                                     </div>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        The backend sends a secure setup link from the welcome email.
+                                        The backend queues a secure setup link in the welcome email.
                                     </p>
                                 </div>
                                 {newUser.role === 'instructor' && (
@@ -367,7 +367,7 @@ export const UserManagementPage = () => {
                                 <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 text-sm text-blue-800 dark:border-blue-900/40 dark:bg-blue-950/30 dark:text-blue-300">
                                     <div className="flex gap-2">
                                         <MailPlus className="mt-0.5 h-4 w-4 shrink-0" />
-                                        <p>A welcome email will be sent with a secure password setup link. No temporary password is shown in the UI.</p>
+                                        <p>A welcome email will be queued with a secure password setup link. No temporary password is shown in the UI.</p>
                                     </div>
                                 </div>
                                 <div className="flex justify-end gap-3 mt-6">

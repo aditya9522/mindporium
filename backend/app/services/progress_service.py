@@ -1,6 +1,6 @@
 from typing import Any, Dict
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_
 from app.models.enrollment import Enrollment
 from app.models.course import Course
 from app.models.subject import Subject
@@ -29,9 +29,10 @@ class ProgressService:
         
         # Get total subjects
         result = await db.execute(
-            select(func.count()).select_from(Subject).where(Subject.course_id == course_id)
+            select(Subject.id).where(Subject.course_id == course_id)
         )
-        total_subjects = result.scalar() or 0
+        subject_ids = result.scalars().all()
+        total_subjects = len(subject_ids)
         
         # Get total classes
         result = await db.execute(
@@ -54,11 +55,22 @@ class ProgressService:
         )
         attended_classes = result.scalar() or 0
         
+        classroom_ids_result = await db.execute(
+            select(Classroom.id).where(Classroom.subject_id.in_(subject_ids))
+        )
+        classroom_ids = classroom_ids_result.scalars().all()
+        test_scope_filters = [Test.subject_id.in_(subject_ids)]
+        if classroom_ids:
+            test_scope_filters.append(Test.classroom_id.in_(classroom_ids))
+
         # Get total tests
         result = await db.execute(
             select(func.count()).select_from(Test)
-            .join(Subject, Test.subject_id == Subject.id)
-            .where(Subject.course_id == course_id, Test.status == "published")
+            .where(
+                or_(*test_scope_filters),
+                Test.status == "published",
+                Test.is_active == True
+            )
         )
         total_tests = result.scalar() or 0
         
@@ -66,9 +78,8 @@ class ProgressService:
         result = await db.execute(
             select(func.count()).select_from(Submission)
             .join(Test, Submission.test_id == Test.id)
-            .join(Subject, Test.subject_id == Subject.id)
             .where(
-                Subject.course_id == course_id,
+                or_(*test_scope_filters),
                 Submission.user_id == user_id
             )
         )

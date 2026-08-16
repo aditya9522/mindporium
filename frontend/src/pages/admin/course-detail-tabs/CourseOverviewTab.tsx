@@ -3,6 +3,7 @@ import {
     TrendingUp, CheckCircle, FileText, MessageSquare, Loader2
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { formatNumber, formatPercent } from '../../../lib/format';
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
 
@@ -59,7 +60,7 @@ export const CourseOverviewTab = ({ courseData }: CourseOverviewTabProps) => {
                     </div>
                     <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.active_students || 0}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Active Students</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{courseData.engagement?.active_student_rate || 0}% engagement</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{formatPercent(courseData.engagement?.active_student_rate)} engagement</p>
                 </div>
 
                 <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-all duration-300">
@@ -79,7 +80,7 @@ export const CourseOverviewTab = ({ courseData }: CourseOverviewTabProps) => {
                             <Star className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                         </div>
                     </div>
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.average_rating || 0}</h3>
+                    <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{formatNumber(stats.average_rating)}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Average Rating</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{stats.total_feedback || 0} reviews</p>
                 </div>
@@ -119,7 +120,7 @@ export const CourseOverviewTab = ({ courseData }: CourseOverviewTabProps) => {
                         <div className="space-y-3">
                             <div className="flex justify-between">
                                 <span className="text-gray-600 dark:text-gray-400">Completion Rate:</span>
-                                <span className="font-semibold text-gray-900 dark:text-gray-100">{stats.completion_rate || 0}%</span>
+                                <span className="font-semibold text-gray-900 dark:text-gray-100">{formatPercent(stats.completion_rate)}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-600 dark:text-gray-400">Total Tests:</span>

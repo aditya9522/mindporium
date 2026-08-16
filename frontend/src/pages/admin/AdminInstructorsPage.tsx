@@ -48,7 +48,7 @@ export const AdminInstructorsPage = () => {
         setSubmitting(true);
         try {
             await adminService.createInstructor(formData);
-            toast.success('Instructor created successfully! Welcome email sent.');
+            toast.success('Instructor created successfully. Welcome email queued.');
             setShowAddModal(false);
             setFormData({ full_name: '', email: '', password: '' });
             fetchInstructors();

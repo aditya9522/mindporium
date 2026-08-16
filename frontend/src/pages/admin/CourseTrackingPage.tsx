@@ -5,6 +5,7 @@ import { ArrowLeft, TrendingUp, Users, CheckCircle, Activity, Target, Clock } fr
 import { PageLoader } from '../../components/common/PageLoader';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import toast from 'react-hot-toast';
+import { formatPercent } from '../../lib/format';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
@@ -92,7 +93,7 @@ export const CourseTrackingPage = () => {
                         </div>
                         <h3 className="text-3xl font-bold text-gray-900">{trackingData.active_students_7d || 0}</h3>
                         <p className="text-sm text-gray-600 mt-1">Active (7 days)</p>
-                        <p className="text-xs text-green-600 mt-2">{trackingData.engagement_rate}% engagement</p>
+                        <p className="text-xs text-green-600 mt-2">{formatPercent(trackingData.engagement_rate)} engagement</p>
                     </div>
 
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
@@ -103,7 +104,7 @@ export const CourseTrackingPage = () => {
                         </div>
                         <h3 className="text-3xl font-bold text-gray-900">{trackingData.completed_students || 0}</h3>
                         <p className="text-sm text-gray-600 mt-1">Completed</p>
-                        <p className="text-xs text-emerald-600 mt-2">{trackingData.completion_rate}% completion</p>
+                        <p className="text-xs text-emerald-600 mt-2">{formatPercent(trackingData.completion_rate)} completion</p>
                     </div>
 
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
@@ -187,7 +188,7 @@ export const CourseTrackingPage = () => {
                                 </div>
                                 <h3 className="font-bold">Engagement Rate</h3>
                             </div>
-                            <p className="text-3xl font-bold">{trackingData.engagement_rate}%</p>
+                            <p className="text-3xl font-bold">{formatPercent(trackingData.engagement_rate)}</p>
                             <p className="text-sm text-indigo-100 mt-2">
                                 {trackingData.active_students_7d} of {trackingData.total_enrolled} students active
                             </p>
@@ -200,7 +201,7 @@ export const CourseTrackingPage = () => {
                                 </div>
                                 <h3 className="font-bold">Completion Rate</h3>
                             </div>
-                            <p className="text-3xl font-bold">{trackingData.completion_rate}%</p>
+                            <p className="text-3xl font-bold">{formatPercent(trackingData.completion_rate)}</p>
                             <p className="text-sm text-indigo-100 mt-2">
                                 {trackingData.completed_students} students completed
                             </p>

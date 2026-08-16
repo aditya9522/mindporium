@@ -8,6 +8,7 @@ import { getImageUrl } from '../../lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { DeleteConfirmationModal } from '../../components/common/DeleteConfirmationModal';
 import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
+import { formatNumber } from '../../lib/format';
 
 export const AdminCourseManagementPage = () => {
     const navigate = useNavigate();
@@ -150,7 +151,7 @@ export const AdminCourseManagementPage = () => {
                                             <div className="flex items-center justify-center gap-1.5 text-slate-500 dark:text-gray-400 text-[10px] uppercase font-bold tracking-wide mb-1">
                                                 <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> Rating
                                             </div>
-                                            <div className="font-bold text-slate-900 dark:text-gray-100">{course.rating ? course.rating.toFixed(1) : '-'}</div>
+                                            <div className="font-bold text-slate-900 dark:text-gray-100">{course.rating ? formatNumber(course.rating) : '-'}</div>
                                         </div>
                                         <div className="bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-lg p-2 text-center">
                                             <div className="flex items-center justify-center gap-1.5 text-slate-500 dark:text-gray-400 text-[10px] uppercase font-bold tracking-wide mb-1">

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { StatsCardSkeleton } from '../../components/ui/StatsCardSkeleton';
 import { WidgetSkeleton } from '../../components/ui/WidgetSkeleton';
+import { formatPercent } from '../../lib/format';
 
 export const InstructorDashboardPage = () => {
     const [dashboard, setDashboard] = useState<InstructorDashboard | null>(null);
@@ -234,7 +235,7 @@ export const InstructorDashboardPage = () => {
                                             <td className="py-4 px-4 text-gray-600 dark:text-gray-400 font-medium group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">{course.active_students}</td>
                                             <td className="py-4 px-4">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-gray-900 dark:text-gray-100 font-bold">{course.completion_rate}%</span>
+                                                    <span className="text-gray-900 dark:text-gray-100 font-bold">{formatPercent(course.completion_rate)}</span>
                                                     <div className="w-24 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                                                         <div className="h-full bg-primary-500 dark:bg-primary-400 rounded-full" style={{ width: `${course.completion_rate}%` }}></div>
                                                     </div>

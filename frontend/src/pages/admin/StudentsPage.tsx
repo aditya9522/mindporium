@@ -6,6 +6,7 @@ import { CardGridSkeleton } from '../../components/ui/CardGridSkeleton';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../store/auth.store';
+import { formatNumber, formatPercent } from '../../lib/format';
 
 interface Student {
     id: number;
@@ -121,7 +122,7 @@ export const StudentsPage = () => {
                                     <p className="text-sm text-gray-600">Avg. Courses/Student</p>
                                     <p className="text-2xl font-bold text-gray-900">
                                         {students.length > 0
-                                            ? (students.reduce((sum, s) => sum + (s.enrolled_courses || 0), 0) / students.length).toFixed(1)
+                                            ? formatNumber(students.reduce((sum, s) => sum + (s.enrolled_courses || 0), 0) / students.length)
                                             : '0'}
                                     </p>
                                 </div>
@@ -134,8 +135,8 @@ export const StudentsPage = () => {
                                     <p className="text-sm text-gray-600">Avg. Grade</p>
                                     <p className="text-2xl font-bold text-gray-900">
                                         {students.length > 0
-                                            ? (students.reduce((sum, s) => sum + (s.average_grade || 0), 0) / students.length).toFixed(1)
-                                            : '0'}%
+                                            ? formatPercent(students.reduce((sum, s) => sum + (s.average_grade || 0), 0) / students.length)
+                                            : '0%'}
                                     </p>
                                 </div>
                                 <Award className="w-8 h-8 text-yellow-600 opacity-20" />
@@ -221,7 +222,7 @@ export const StudentsPage = () => {
                                             <p className="text-xs text-gray-600">Courses</p>
                                         </div>
                                         <div className="text-center p-3 bg-gray-50 rounded-lg">
-                                            <p className="text-2xl font-bold text-green-600">{student.average_grade || 0}%</p>
+                                            <p className="text-2xl font-bold text-green-600">{formatPercent(student.average_grade)}</p>
                                             <p className="text-xs text-gray-600">Avg Grade</p>
                                         </div>
                                     </div>

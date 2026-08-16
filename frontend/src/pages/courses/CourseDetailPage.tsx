@@ -19,6 +19,7 @@ import { AnnouncementsList } from '../../components/course/AnnouncementsList';
 import { FeedbackModal } from '../../components/feedback/FeedbackModal';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../lib/utils';
+import { formatNumber, formatPercent } from '../../lib/format';
 import { PageLoader } from '../../components/common/PageLoader';
 
 export const CourseDetailPage = () => {
@@ -49,7 +50,7 @@ export const CourseDetailPage = () => {
             if (data.valid) {
                 setCouponCode(data.code);
                 setCouponDiscount(data.discount_percent);
-                toast.success(`Coupon applied! ${data.discount_percent}% off`);
+                toast.success(`Coupon applied! ${formatPercent(data.discount_percent)} off`);
             } else {
                 toast.error('Invalid coupon code');
                 setCouponDiscount(0);
@@ -192,7 +193,7 @@ export const CourseDetailPage = () => {
                             )}
                             <div className="flex items-center gap-2">
                                 <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
-                                <span>{course.rating ? course.rating.toFixed(1) : 'New'} rating</span>
+                                <span>{course.rating ? formatNumber(course.rating) : 'New'} rating</span>
                             </div>
                             <Button
                                 variant="outline"
@@ -435,7 +436,7 @@ export const CourseDetailPage = () => {
                                                 <span className="text-lg text-gray-400 font-medium tracking-tight">USD</span>
                                             </div>
                                             {couponDiscount > 0 && (
-                                                <span className="text-sm font-bold text-emerald-500">Coupon applied: {couponDiscount}% off!</span>
+                                                <span className="text-sm font-bold text-emerald-500">Coupon applied: {formatPercent(couponDiscount)} off!</span>
                                             )}
                                         </div>
                                     )}

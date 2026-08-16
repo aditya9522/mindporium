@@ -8,6 +8,7 @@ import { PageLoader } from '../../components/common/PageLoader';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import toast from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
+import { formatNumber } from '../../lib/format';
 
 export const InstructorAnalyticsPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -96,7 +97,7 @@ export const InstructorAnalyticsPage = () => {
                         </div>
                         <div className="text-center">
                             <div className="text-6xl font-bold mb-2">
-                                {(((performanceData?.average_rating || 0) / 5) * 100).toFixed(0)}
+                                {formatNumber(((performanceData?.average_rating || 0) / 5) * 100)}
                             </div>
                             <p className="text-purple-100">out of 100</p>
                         </div>
@@ -141,7 +142,7 @@ export const InstructorAnalyticsPage = () => {
                                 <Star className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                             </div>
                         </div>
-                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{performanceData?.average_rating?.toFixed(1)}</h3>
+                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatNumber(performanceData?.average_rating)}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Average Rating</p>
                     </div>
                 </div>
@@ -328,7 +329,7 @@ export const InstructorAnalyticsPage = () => {
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-indigo-500 mt-1">•</span>
-                                <span>{performanceData?.average_rating?.toFixed(1) || 0}/5.0 average rating</span>
+                                <span>{formatNumber(performanceData?.average_rating)}/5.0 average rating</span>
                             </li>
                         </ul>
                     </div>

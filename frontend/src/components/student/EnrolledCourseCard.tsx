@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import type { Enrollment } from '../../types/enrollment';
 import { BookOpen, PlayCircle, Award } from 'lucide-react';
 import { getImageUrl } from '../../lib/utils';
+import { formatPercent } from '../../lib/format';
 
 interface EnrolledCourseCardProps {
     enrollment: Enrollment;
@@ -46,7 +47,7 @@ export const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
                     <div className="mt-auto pt-4">
                         {/* Progress Bar */}
                         <div className="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">
-                            <span>{progress}% Complete</span>
+                            <span>{formatPercent(progress)} Complete</span>
                             {progress === 100 && (
                                 <span className="flex items-center text-emerald-600 dark:text-emerald-400">
                                     <Award className="w-4 h-4 mr-1" />

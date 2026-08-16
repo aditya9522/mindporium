@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { couponService } from '../../services/coupon.service';
 import type { CouponCreatePayload, CouponValidationResponse } from '../../types/coupon';
+import { formatPercent } from '../../lib/format';
 
 const makeCouponCode = () => {
     const chunk = Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -116,7 +117,7 @@ export const CouponManagementPage = () => {
                                     </Button>
                                 </div>
                                 <p className="mt-3 text-sm font-semibold text-gray-500 dark:text-gray-400">
-                                    {payload.discount_percent || 0}% off, {payload.max_uses || 0} use{payload.max_uses === 1 ? '' : 's'}
+                                    {formatPercent(payload.discount_percent)} off, {payload.max_uses || 0} use{payload.max_uses === 1 ? '' : 's'}
                                 </p>
                             </div>
                         </div>
@@ -238,7 +239,7 @@ export const CouponManagementPage = () => {
                                         <CheckCircle2 className="h-5 w-5" />
                                         <div>
                                             <p className="font-black">{validation.code} is valid</p>
-                                            <p className="text-sm font-semibold opacity-80">{validation.discount_percent}% discount available</p>
+                                            <p className="text-sm font-semibold opacity-80">{formatPercent(validation.discount_percent)} discount available</p>
                                         </div>
                                     </div>
                                 </div>
@@ -263,7 +264,7 @@ export const CouponManagementPage = () => {
                                             <Copy className="h-4 w-4" />
                                         </Button>
                                     </div>
-                                    <p className="mt-3 text-sm font-semibold text-gray-500 dark:text-gray-400">{lastCreated.discount_percent}% off at enrollment checkout.</p>
+                                    <p className="mt-3 text-sm font-semibold text-gray-500 dark:text-gray-400">{formatPercent(lastCreated.discount_percent)} off at enrollment checkout.</p>
                                 </div>
                             ) : (
                                 <p className="mt-5 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500 dark:bg-gray-950/50 dark:text-gray-400">

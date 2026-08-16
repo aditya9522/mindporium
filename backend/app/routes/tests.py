@@ -14,6 +14,7 @@ from app.schemas.test import TestCreate, TestResponse, TestUpdate
 from app.models.enums import RoleEnum, TestStatusEnum
 from app.services.notification_service import notification_service
 from app.models.enrollment import Enrollment
+from app.models.submission import Submission
 
 router = APIRouter()
 
@@ -117,6 +118,22 @@ async def read_test(
     test = result.scalars().first()
     if not test:
         raise HTTPException(status_code=404, detail="Test not found")
+
+    if current_user.role == RoleEnum.student:
+        if not test.is_active or test.status != TestStatusEnum.published.value:
+            raise HTTPException(status_code=403, detail="This test is not available")
+
+        course_id = await resolve_test_course_id(db, test)
+        if course_id:
+            enrollment_result = await db.execute(
+                select(Enrollment.id).where(
+                    Enrollment.user_id == current_user.id,
+                    Enrollment.course_id == course_id,
+                )
+            )
+            if not enrollment_result.scalar_one_or_none():
+                raise HTTPException(status_code=403, detail="You are not enrolled for this test")
+
     return test
 
 
@@ -219,14 +236,25 @@ async def get_available_tests(
     )
     subject_ids = [row[0] for row in subjects_query.all()]
     
-    # Get published tests from these subjects
+    classroom_ids_query = await db.execute(
+        select(Classroom.id).where(Classroom.subject_id.in_(subject_ids))
+    )
+    classroom_ids = [row[0] for row in classroom_ids_query.all()]
+    test_scope_filters = [Test.subject_id.in_(subject_ids)]
+    if classroom_ids:
+        test_scope_filters.append(Test.classroom_id.in_(classroom_ids))
+
+    # Get published tests from enrolled course subjects and their classrooms.
     query = (
         select(Test)
         .options(selectinload(Test.questions))
         .where(
-            Test.subject_id.in_(subject_ids),
+            or_(*test_scope_filters),
             Test.status == TestStatusEnum.published.value,
-            Test.is_active == True
+            Test.is_active == True,
+            ~Test.id.in_(
+                select(Submission.test_id).where(Submission.user_id == current_user.id)
+            )
         )
         .order_by(desc(Test.created_at))
         .offset(skip)
@@ -374,3 +402,24 @@ async def delete_test(
     await db.delete(test)
     await db.commit()
     return {"message": "Test deleted successfully"}
+
+
+async def resolve_test_course_id(db: AsyncSession, test: Test) -> int | None:
+    if test.subject_id:
+        result = await db.execute(
+            select(Subject.course_id).where(Subject.id == test.subject_id)
+        )
+        return result.scalar_one_or_none()
+
+    if test.classroom_id:
+        result = await db.execute(
+            select(Classroom).where(Classroom.id == test.classroom_id)
+        )
+        classroom = result.scalar_one_or_none()
+        if classroom and classroom.subject_id:
+            subject_result = await db.execute(
+                select(Subject.course_id).where(Subject.id == classroom.subject_id)
+            )
+            return subject_result.scalar_one_or_none()
+
+    return None

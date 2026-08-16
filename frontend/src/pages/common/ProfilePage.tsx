@@ -161,10 +161,10 @@ export const ProfilePage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user?.full_name}</h2>
-                                    <div className="flex items-center justify-center gap-2 mb-4 text-gray-500 dark:text-gray-400 font-medium bg-gray-50 dark:bg-gray-800/50 py-1 px-3 rounded-full inline-flex mx-auto border border-gray-100 dark:border-gray-700">
-                                        <Mail className="w-3.5 h-3.5" />
-                                        <span className="text-sm">{user?.email}</span>
+                                    <h2 className="break-words text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user?.full_name}</h2>
+                                    <div className="inline-flex max-w-full items-center justify-center gap-2 mb-4 text-gray-500 dark:text-gray-400 font-medium bg-gray-50 dark:bg-gray-800/50 py-1 px-3 rounded-full mx-auto border border-gray-100 dark:border-gray-700">
+                                        <Mail className="w-3.5 h-3.5 shrink-0" />
+                                        <span className="truncate text-sm">{user?.email}</span>
                                     </div>
                                     <div className="mt-4 flex justify-center">
                                         {getRoleBadge(user?.role)}
@@ -213,7 +213,7 @@ export const ProfilePage = () => {
                                         style={watch('banner_image') ? { backgroundImage: `url(${getImageUrl(watch('banner_image'))})` } : undefined}
                                     />
                                     <div className="px-5 pb-5">
-                                        <div className="-mt-8 flex items-end gap-4">
+                                        <div className="-mt-8 flex items-start gap-4">
                                             <div className="w-16 h-16 rounded-full border-4 border-white dark:border-gray-900 bg-primary-100 dark:bg-primary-900/40 overflow-hidden flex items-center justify-center shrink-0">
                                                 {watch('photo') ? (
                                                     <img src={getImageUrl(watch('photo'))} alt="Profile preview" className="w-full h-full object-cover" />
@@ -221,9 +221,9 @@ export const ProfilePage = () => {
                                                     <User className="w-7 h-7 text-primary-600 dark:text-primary-400" />
                                                 )}
                                             </div>
-                                            <div className="min-w-0 pb-1">
+                                            <div className="min-w-0 pt-10">
                                                 <p className="text-xs font-bold uppercase tracking-wide text-primary-600 dark:text-primary-400">Profile Preview</p>
-                                                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 truncate">{watch('full_name') || user?.full_name}</h4>
+                                                <h4 className="break-words text-lg font-bold text-gray-900 dark:text-gray-100">{watch('full_name') || user?.full_name}</h4>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{watch('email') || user?.email}</p>
                                             </div>
                                         </div>

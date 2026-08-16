@@ -5,6 +5,7 @@ import type { CourseOverview } from '../../types/instructor';
 import { ArrowLeft, Users, BookOpen, TrendingUp, Star, Calendar, Award } from 'lucide-react';
 import { PageLoader } from '../../components/common/PageLoader';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { formatNumber, formatPercent } from '../../lib/format';
 
 export const CourseAnalyticsPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -92,7 +93,7 @@ export const CourseAnalyticsPage = () => {
                         <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{data.statistics.active_students}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Active Students</p>
                         <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                            {data.engagement.active_student_rate}% engagement
+                            {formatPercent(data.engagement.active_student_rate)} engagement
                         </p>
                     </div>
 
@@ -100,7 +101,7 @@ export const CourseAnalyticsPage = () => {
                         <div className="flex items-center justify-between mb-2">
                             <Award className="w-8 h-8 text-purple-600 dark:text-purple-500" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{data.statistics.completion_rate}%</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatPercent(data.statistics.completion_rate)}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Completion Rate</p>
                     </div>
 
@@ -108,7 +109,7 @@ export const CourseAnalyticsPage = () => {
                         <div className="flex items-center justify-between mb-2">
                             <Star className="w-8 h-8 text-yellow-600 dark:text-yellow-500" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{data.statistics.average_rating}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatNumber(data.statistics.average_rating)}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Average Rating</p>
                         <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                             {data.statistics.total_feedback} reviews

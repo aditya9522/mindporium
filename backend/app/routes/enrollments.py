@@ -14,7 +14,6 @@ from app.schemas.enrollment import EnrollmentCreate, EnrollmentResponse
 from app.services.progress_service import progress_service
 from app.models.resource import Resource
 from app.models.resource_completion import ResourceCompletion
-from app.models.subject import Subject
 from app.services.notification_service import notification_service
 from app.models.enums import RoleEnum
 
@@ -113,6 +112,13 @@ async def read_my_enrollments(
     """
     Get current user's enrollments.
     """
+    enrollment_ids_result = await db.execute(
+        select(Enrollment.course_id).where(Enrollment.user_id == current_user.id)
+    )
+    course_ids = [course_id for course_id in enrollment_ids_result.scalars().all()]
+    for course_id in course_ids:
+        await progress_service.calculate_course_progress(db, current_user.id, course_id)
+
     result = await db.execute(
         select(Enrollment)
         .options(selectinload(Enrollment.course))
@@ -164,45 +170,63 @@ async def get_course_enrollments(
 async def complete_resource(
     resource_id: int,
     db: AsyncSession = Depends(deps.get_db),
-    background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Mark a resource as complete.
     """
     # Check if resource exists
-    result = await db.execute(select(Resource).where(Resource.id == resource_id))
+    result = await db.execute(
+        select(Resource)
+        .options(selectinload(Resource.subject))
+        .where(Resource.id == resource_id)
+    )
     resource = result.scalars().first()
     if not resource:
         raise HTTPException(status_code=404, detail="Resource not found")
+    if not resource.subject:
+        raise HTTPException(status_code=400, detail="This resource is not attached to a course subject")
+
+    result = await db.execute(
+        select(Enrollment).where(
+            Enrollment.user_id == current_user.id,
+            Enrollment.course_id == resource.subject.course_id
+        )
+    )
+    enrollment = result.scalars().first()
+    if not enrollment:
+        raise HTTPException(status_code=403, detail="Please enroll in this course before completing lessons")
 
     # Check if already completed
     result = await db.execute(
         select(ResourceCompletion).where(
             ResourceCompletion.user_id == current_user.id,
-            ResourceCompletion.resource_id == resource_id
+            ResourceCompletion.resource_id == resource_id,
+            ResourceCompletion.enrollment_id == enrollment.id
         )
     )
     existing = result.scalars().first()
     if existing:
-        return {"message": "Already completed"}
+        enrollment.last_accessed_at = datetime.utcnow()
+        db.add(enrollment)
+        await db.commit()
+        progress = await progress_service.calculate_course_progress(db, current_user.id, resource.subject.course_id)
+        return {"message": "Already completed", "progress": progress}
 
     # Create completion
     completion = ResourceCompletion(
         user_id=current_user.id,
-        resource_id=resource_id
+        resource_id=resource_id,
+        enrollment_id=enrollment.id
     )
+    enrollment.last_accessed_at = datetime.utcnow()
     db.add(completion)
+    db.add(enrollment)
     await db.commit()
-    
-    # Update course progress
-    result = await db.execute(select(Subject).where(Subject.id == resource.subject_id))
-    subject = result.scalars().first()
-    
-    if subject:
-        background_tasks.add_task(progress_service.calculate_course_progress, db, current_user.id, subject.course_id)
 
-    return {"message": "Resource marked as complete"}
+    progress = await progress_service.calculate_course_progress(db, current_user.id, resource.subject.course_id)
+
+    return {"message": "Resource marked as complete", "progress": progress}
 
 
 @router.delete("/{enrollment_id}")

@@ -8,7 +8,7 @@ import { getImageUrl } from '../../lib/utils';
 import {
     Home, BookOpen, Users, Settings, BarChart3, Shield, GraduationCap,
     Bot, FileText, Video, MessageSquare, Megaphone, User, Bell, Calendar,
-    X, BriefcaseBusiness, StickyNote, FolderOpen, FileDiff, Gift, Percent, Newspaper, type LucideIcon,
+    X, BriefcaseBusiness, StickyNote, FolderOpen, FileDiff, Gift, Percent, type LucideIcon,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -84,10 +84,6 @@ export const DashboardLayout = () => {
                     items: [
                         { icon: Megaphone,     label: 'Announcements', path: '/admin/announcements' },
                         { icon: Percent,       label: 'Coupons',       path: '/admin/coupons' },
-                        { icon: StickyNote,    label: 'Notes',         path: '/notes' },
-                        { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
-                        { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
-                        { icon: Newspaper,     label: 'News',          path: '/news' },
                     ]
                 },
                 {
@@ -126,9 +122,7 @@ export const DashboardLayout = () => {
                     items: [
                         { icon: StickyNote,    label: 'My Notes',     path: '/notes' },
                         { icon: FolderOpen,    label: 'Media Library', path: '/media-library' },
-                        { icon: FileDiff,      label: 'Text Compare',  path: '/text-compare' },
                         { icon: BarChart3,     label: 'Analytics',    path: '/instructor/analytics' },
-                        { icon: Newspaper,     label: 'News',         path: '/news' },
                     ]
                 },
                 {
@@ -170,7 +164,6 @@ export const DashboardLayout = () => {
                     { icon: BriefcaseBusiness, label: 'Career Workspace', path: '/career/job-search' },
                     { icon: Bot,               label: 'AI Assistant',     path: '/chatbot' },
                     { icon: FileDiff,          label: 'Text Compare',     path: '/text-compare' },
-                    { icon: Newspaper,         label: 'News',             path: '/news' },
                 ]
             },
             {
@@ -257,6 +250,7 @@ export const DashboardLayout = () => {
                     <div
                         className="flex items-center gap-2.5 lg:gap-3 p-2.5 lg:p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group hover:bg-white dark:hover:bg-gray-900 hover:border-primary-200 dark:hover:border-primary-800 hover:shadow-md transition-all duration-200 cursor-pointer"
                         onClick={() => navigate('/settings')}
+                        title="Open profile settings"
                     >
                         {user.photo ? (
                             <img
@@ -272,7 +266,7 @@ export const DashboardLayout = () => {
                             </div>
                         )}
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors leading-tight">
+                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors leading-tight" title={user.full_name}>
                                 {user.full_name}
                             </p>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400 capitalize font-medium leading-tight">{user.role}</p>

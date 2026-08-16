@@ -6,6 +6,7 @@ import { ArrowLeft, Users, Clock, BookOpen, TrendingUp, BarChart3 } from 'lucide
 import { PageLoader } from '../../components/common/PageLoader';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import toast from 'react-hot-toast';
+import { formatNumber, formatPercent } from '../../lib/format';
 
 export const AdminCourseAnalyticsPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -99,7 +100,7 @@ export const AdminCourseAnalyticsPage = () => {
                                 <Clock className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                             </div>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{analytics?.avg_completion_rate || 0}%</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatPercent(analytics?.avg_completion_rate)}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Avg. Completion Rate</p>
                     </div>
 
@@ -119,7 +120,7 @@ export const AdminCourseAnalyticsPage = () => {
                                 <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
                             </div>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{analytics?.engagement_score || 0}/10</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatNumber(analytics?.engagement_score)}/10</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Engagement Score</p>
                     </div>
                 </div>

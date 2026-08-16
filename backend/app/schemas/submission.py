@@ -4,6 +4,16 @@ from datetime import datetime
 from app.schemas.user import UserResponse
 
 
+class SubmissionTestResponse(BaseModel):
+    id: int
+    title: str
+    total_marks: float
+    passing_marks: float
+
+    class Config:
+        from_attributes = True
+
+
 class SubmissionBase(BaseModel):
     test_id: int
     answers: Dict[str, Any] # {"question_id": "answer"}
@@ -20,6 +30,7 @@ class SubmissionResponse(SubmissionBase):
     evaluation: Dict[str, Any]
     submitted_at: Optional[datetime] = None
     user: Optional[UserResponse] = None
+    test: Optional[SubmissionTestResponse] = None
 
     class Config:
         from_attributes = True

@@ -314,7 +314,6 @@ async def invite_referral(
     Send email invitation with referral link.
     """
     from app.models.referral import Referral
-    from pydantic import EmailStr
     
     email = request.email
     base = current_user.full_name.replace(" ", "").lower()[:4]
@@ -339,7 +338,12 @@ async def invite_referral(
         
     referral_link = f"{settings.FRONTEND_URL}/register?ref={custom_code}"
     
-    # background_tasks.add_task(email_service.send_referral_email, email, referral_link)
+    background_tasks.add_task(
+        email_service.send_referral_email,
+        email_to=email,
+        referrer_name=current_user.full_name,
+        referral_link=referral_link
+    )
     
     return {"message": f"Invitation sent to {email}", "success": True, "referral_link": referral_link}
 
@@ -376,7 +380,7 @@ async def setup_password(
 async def forgot_password(
     *,
     db: AsyncSession = Depends(deps.get_db),
-    background_tasks: BackgroundTasks = BackgroundTasks(),
+    background_tasks: BackgroundTasks,
     request: ForgotPasswordRequest,
 ) -> Any:
     """
